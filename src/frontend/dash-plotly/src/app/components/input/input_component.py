@@ -5,15 +5,17 @@ class InputComponent:
     def __init__(self) -> None:
         pass
 
-    def render(self, label: str, type: str, id: str, name=None,value=None, placeholder=None, feedback_text=None, feedback_class=None, debounce=None):
-        return html.Div([
+    def render(self, label: str, type: str, id: str, classname=None ,name=None,value=None, placeholder=None, feedback_text=None, feedback_class=None, debounce=None):
+        return html.Div(
+            className=classname,
+            children=[
             html.Div(
                 [
                     html.Label(
                         label,
                         className="form-label",
                     ),
-                    dcc.Input(type=type, id=id, className="form-control", value=value, name=name, placeholder=placeholder, debounce=debounce),
+                    dcc.Input(type=type, id=id, className="", value=value, name=name, placeholder=placeholder, debounce=debounce),
                 ],
                 className="input-style-1",
             ),

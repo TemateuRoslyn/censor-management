@@ -1,5 +1,6 @@
 import plotly.express as px
 import pandas as pd
+import requests
 
 graph ={
     'icons':None,
@@ -19,16 +20,11 @@ def renderGraph(option:str, x:str, y:str, color:str, df):
         return px.bar(df, x, y, color)
     
 def renderDF():
-    return pd.DataFrame({
-            "Fruits": ["Pommes", "Oranges", "Bananes", "pommes", "Oranges",
-                    "Bananes", "Pommes", "Oranges", "Bananes", "Pommes", 
-                    "Oranges", "Bananes"],
-            "prix": [400, 150, 225, 254, 444, 545, 765, 409, 692, 950, 300, 275],
-            "ville": [
-                "Dschang", "Bafoussam", "Bouda", "Badjoun", "Bangangte", 
-                "Baham", "Douala", "Kribi", "Mbepanda", "Fomopea", "Bafia",
-                "Tongolo"]
-        })
+    insert = requests.get("http://127.0.0.1:8000/accelerometre/insert")
+    datas = requests.get("http://127.0.0.1:8000/accelerometre/next")
+    if datas.status_code == requests.codes.ok:
+        json_datas = datas.json()
+        return pd.DataFrame(data=json_datas)
 
 user = {
     'email':'tom@gmail.com',
