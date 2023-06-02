@@ -27,7 +27,7 @@ class RenderCallback:
         self.sidebar = SidebarComponent()
 
         self.pages = {
-            "/sign-up":{"content": self.sign_up.render()},
+            "/sign-up": {"content": self.sign_up.render()},
             "/accueil": {"content": self.acceuil.render()},
             "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
@@ -46,13 +46,15 @@ class RenderCallback:
             ],
             prevent_update=True,
         )
-        def render_pages(pathname:str):
+        def render_pages(pathname: str):
             if pathname in self.pages:
-                if pathname.__eq__('/') or pathname.__eq__('/sign-up'):
+                if pathname.__eq__("/") or pathname.__eq__("/sign-up"):
                     return self.pages[pathname]["content"]
                 else:
-                    return html.Div(children=[
-                        self.sidebar.render(),
-                        self.pages[pathname]["content"]
-                    ])
+                    return html.Div(
+                        children=[
+                            self.sidebar.render(),
+                            self.pages[pathname]["content"],
+                        ]
+                    )
             return html.H1("Page d'erreur")

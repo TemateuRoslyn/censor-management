@@ -4151,15 +4151,15 @@ h6,
 .fw-900 {
   font-weight: 900;
 }
-.alert{
+.alert {
   transition: all 3s ease-in-out;
   opacity: 1;
 }
 
-.alert-off{
+.alert-off {
   opacity: 0;
 }
 
-.alert-off::backdrop{
+.alert-off::backdrop {
   display: none;
 }

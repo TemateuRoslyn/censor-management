@@ -11,14 +11,15 @@ class LoginView:
     def render(self):
         return html.Div(
             className="mt-5 left-content show-up header-text wow fadeInLeft",
-            style={'visibility': 'visible',
-                   '-webkit-animation-duration': '1s',
-                    '-moz-animation-duration': '1s', 
-                    'animation-duration': '1s',
-                    "-webkit-animation-delay": '0.5s', 
-                    '-moz-animation-delay': '0.5s', 
-                    'animation-delay': '0.5s'
-                    },
+            style={
+                "visibility": "visible",
+                "-webkit-animation-duration": "1s",
+                "-moz-animation-duration": "1s",
+                "animation-duration": "1s",
+                "-webkit-animation-delay": "0.5s",
+                "-moz-animation-delay": "0.5s",
+                "animation-delay": "0.5s",
+            },
             children=html.Div(
                 html.Div(
                     html.Div(
@@ -26,7 +27,7 @@ class LoginView:
                             [
                                 html.Div(
                                     id="correct-login",
-                                    className="position-absolute m-auto"
+                                    className="position-absolute m-auto",
                                 ),
                                 html.Div(
                                     html.H3("CONNEXION", className="text-center"),
@@ -41,14 +42,14 @@ class LoginView:
                                                 id="login-email",
                                                 name="email",
                                                 placeholder="softmaes@yahoo.fr",
-                                                debounce=True
+                                                debounce=True,
                                             ),
                                             self.input.render(
                                                 "Mot de passe:",
                                                 type="password",
                                                 id="login-password",
                                                 name="password",
-                                                debounce=True
+                                                debounce=True,
                                             ),
                                             html.Div(
                                                 self.login_button.render(
@@ -62,8 +63,8 @@ class LoginView:
                                                 "S'enregistrer",
                                                 href="/sign-up",
                                                 className="mt-2 text-reset",
-                                                refresh=True
-                                                )
+                                                refresh=True,
+                                            ),
                                         ]
                                     ),
                                     id="login-form",
@@ -77,5 +78,5 @@ class LoginView:
                     className="col-md-6",
                 ),
                 className="row h-100 justify-content-center align-items-center",
-            )
+            ),
         )
