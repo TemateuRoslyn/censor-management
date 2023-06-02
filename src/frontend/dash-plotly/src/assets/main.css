@@ -1,0 +1,23 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif !important;
+  font-weight: normal;
+  font-style: normal;
+  color: #5d657b;
+  overflow-x: hidden;
+  background: #f1f5f9;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+/*# sourceMappingURL=main.css.map */
