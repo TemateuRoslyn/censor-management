@@ -63,7 +63,7 @@ class SignUpView:
                                             html.Div(
                                                 self.login_button.render(
                                                     "S'enregistrer",
-                                                    type="primary-btn w-100",
+                                                    type="btn btn-secondary w-100",
                                                     id="register",
                                                 ),
                                                 className="col-12",
@@ -80,9 +80,9 @@ class SignUpView:
                     ),
                     className="col-md-6",
                 ),
-                className="row h-100 justify-content-center align-items-center",
+                className="row h-100 justify-content-center align-items-center pt-75",
             ),
-            className="mt-5 left-content show-up header-text wow fadeInLeft",
+            className="mt-0 left-content show-up header-text wow fadeInLeft",
             style={'visibility': 'visible',
                    '-webkit-animation-duration': '1s',
                     '-moz-animation-duration': '1s', 

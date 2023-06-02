@@ -1,5 +1,6 @@
 from dash import html
 from components.button.button_component import ButtonComponent
+from config import user
 
 
 class HeaderComponent:
@@ -29,13 +30,13 @@ class HeaderComponent:
                                             self.button.render(
                                                 html.Span(
                                                     "close",
-                                                    className="material-symbols-outlined",
+                                                    className="material-symbols-outlined m-0",
                                                     id="menu-close-btn",
                                                 ),
-                                                type="primary-btn",
+                                                type="btn btn-secondary p-1",
                                                 id="menu-toggle",
                                             ),
-                                            className="menu-toggle-btn mr-20",
+                                            className="",
                                         ),
                                         className="header-left d-flex align-items-center",
                                     ),
@@ -51,7 +52,7 @@ class HeaderComponent:
                                                             html.Div(
                                                                 [
                                                                     html.H6(
-                                                                        "Rushclin 02"
+                                                                        user.get('name')
                                                                     ),
                                                                     self.profile_image,
                                                                 ],
@@ -82,5 +83,5 @@ class HeaderComponent:
                     className="container-fluid",
                 )
             ],
-            className="header",
+            className="header p-1 pb-2 border-bottom border-primary border-1 bg-dark",
         )

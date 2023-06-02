@@ -9,11 +9,11 @@ class ButtonComponent:
         if type is not None:
             return html.Button(
                 title,
-                className="main-btn " + type,
+                className=type,
                 id=id,
             )
         return html.Button(
             title,
-            className="main-btn primary-btn",
+            className="main-btn btn-primary",
             id=id,
         )

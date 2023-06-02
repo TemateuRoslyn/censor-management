@@ -22,7 +22,7 @@ class TitlePageComponent:
                                 html.Ol(
                                     html.Li(
                                         dcc.Link(description, href=""),
-                                        className="breadcrumb-item",
+                                        className="breadcrumb-item fs-5",
                                     ),
                                     className="breadcrumb",
                                 )

@@ -13,7 +13,7 @@ class AppLayout:
                 # self.sidebar.render(),
                 html.Main(
                     id="main-wrapper",
-                    className="main-wrapper",
+                    className="main-wrapper p-0 bg-dark m-0",
                 ),
                 dcc.Interval(
                     id="interval-component",
@@ -26,4 +26,5 @@ class AppLayout:
                 ),
             ],
             id="app-layout",
+            className='bg-dark'
         )

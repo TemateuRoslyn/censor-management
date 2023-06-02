@@ -13,7 +13,7 @@ class InputComponent:
                 [
                     html.Label(
                         label,
-                        className="form-label",
+                        className="text-primary fs-6",
                     ),
                     dcc.Input(type=type, id=id, className="", value=value, name=name, placeholder=placeholder, debounce=debounce),
                 ],

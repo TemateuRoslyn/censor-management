@@ -14,6 +14,22 @@ class GraphFigure:
         self.login_button = ButtonComponent()
         self.dropdown = Dropdown()
         self.inputg = InputGroup()
+from dash import html, dcc
+import pandas as pd
+import plotly.express as px
+import requests
+from components.input import InputComponent
+from components.button import ButtonComponent
+from components.dropdown.dropdown import Dropdown
+from components.input_group.input_group import InputGroup
+from config import graph as g
+
+class GraphFigure:
+    def __init__(self) -> None:
+        self.input = InputComponent()
+        self.login_button = ButtonComponent()
+        self.dropdown = Dropdown()
+        self.inputg = InputGroup()
 
     def render(self,xlabel,ylabel,color):
         insert = requests.get("http://127.0.0.1:8000/accelerometre/insert")
@@ -28,7 +44,7 @@ class GraphFigure:
                     )
                 ]),
                 # html.Div(id='graph-param', className='p-0', children=[
-                    html.Form(id='', disable_n_clicks=True, className=' m-0 mb-5', children=[
+                    html.Form(id='', disable_n_clicks=True, className=' m-0 mb-5 mt-3 text-dark', children=[
                         html.Div(id='', className='row', children=[
                             html.Div(id='', className='col-lg-3', children=[
                                 self.dropdown.render(id='graph-type',icons=g.get('icons'),options=g.get('label'), droplabel='Changer le graphique')

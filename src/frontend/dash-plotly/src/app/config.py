@@ -27,6 +27,7 @@ def renderDF():
         return pd.DataFrame(data=json_datas)
 
 user = {
-    'email':'tom@gmail.com',
-    'password':'tom12345'
+    'email':'softmaes@gmail.com',
+    'password':'softm12345',
+    'name':'SOFT'
 }

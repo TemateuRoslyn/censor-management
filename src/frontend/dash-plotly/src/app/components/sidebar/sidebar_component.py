@@ -68,6 +68,6 @@ class SidebarComponent:
                     className="sidebar-nav",
                 ),
             ],
-            className="sidebar-nav-wrapper",
+            className="sidebar-nav-wrapper bg-dark",
             id="sidebar-nav-wrapper",
         )

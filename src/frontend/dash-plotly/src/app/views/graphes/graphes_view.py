@@ -29,7 +29,7 @@ class GrapheView:
                                     disabled=False,
                                     n_intervals=0,
                                     interval=2500,
-                                    max_intervals=10
+                                    max_intervals=0
                                 ),
                                 self.title_page.render(
                                     "GRAPHIQUE",
@@ -37,23 +37,23 @@ class GrapheView:
                                 ),
                                 html.Div(
                                     [
-                                        html.Div(id='', className='row', children=[
+                                        html.Div(id='', className='row m-0', children=[
                                             self.input.render(
                                                 id="quantity",label="Quantite de donnees",
-                                                type="range", value=100,
-                                                classname="col-lg-6 fs-6"),
+                                                type="range", value=25,
+                                                classname="col-lg-6"),
                                             self.input.render(
                                                 id="interval",label="Interval de recuperation",
                                                 type="range", value=25,
-                                                classname="col-lg-6 fs-6"),
+                                                classname="col-lg-6"),
                                         ])
                                         ,
                                         html.Div(
                                             self.graph.render(xlabel='times',ylabel='temperatures',color='humidites'),
-                                            className="mb-2",
+                                            className="",
                                         ),
                                     ],
-                                    className="row mt-3",
+                                    className="row mt-0",
                                 ),
                             ],
                             className="container-fluid",
@@ -62,7 +62,7 @@ class GrapheView:
                             className="container-fluid",
                         )
                     ],
-                    className="section",
+                    className="section bg-dark text-white",
                 ),
             ]
         )
