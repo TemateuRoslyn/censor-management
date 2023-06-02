@@ -89,3 +89,13 @@ class AcceuilView:
                 ),
             ]
         )
+
+    def render(self):
+        return html.Div([
+            self.header.render(),
+            html.Section([
+                html.Div([
+                    html.H1("Bonjour le genie Rushclin")
+                ], className="container-fluid")
+        ], className="section")]
+        )
