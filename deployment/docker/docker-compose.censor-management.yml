@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  censor-management-front:
+    build:
+      context: ./../../src/frontend/dash-plotly/
+    restart: always
+    ports:
+      - 5000:4000
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
