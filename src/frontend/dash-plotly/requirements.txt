@@ -1,0 +1,8 @@
+dash
+dash_daq
+plotly
+pandas
+gunicorn
+dash_bootstrap_components
+# redis
+requests
