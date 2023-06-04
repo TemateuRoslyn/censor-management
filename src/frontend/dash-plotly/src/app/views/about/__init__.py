@@ -1,1 +1,1 @@
-from .about_page import AboutPage
+from .about_view import AboutView
