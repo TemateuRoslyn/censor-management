@@ -1,6 +1,7 @@
 from dash import Dash
 
 from layouts.app_layout import AppLayout
+from callbacks.main_callback import MainCallback
 class App :
     def __init__(self) -> None:
         self.layout = AppLayout()
@@ -8,6 +9,8 @@ class App :
             __name__,
             suppress_callback_exceptions=True
         )
+
+        self.callback = MainCallback(self.app)
 
     def run_app(self):
         self.app.layout = self.layout.render()
