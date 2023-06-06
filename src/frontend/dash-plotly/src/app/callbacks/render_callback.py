@@ -1,4 +1,4 @@
-from dash import Input, Output
+from dash import Input, Output, html
 
 from views.acceuil.acceuil_view import AcceuilView
 from views.statistiques.statistiques_view import StatistiqueView
@@ -15,7 +15,10 @@ class RenderCallback:
     def register(self):
         @self.app.callback(
             Output("main-wrapper", "children"),
-            Input("url", "pathname"),
+            [
+                Input("url", "pathname"),
+            ],
+            prevent_update=True,
         )
         def render_pages(pathname):
             if pathname == "/acceuil":
@@ -24,4 +27,4 @@ class RenderCallback:
                 return self.statistique.render()
             elif pathname == "/about":
                 return self.about.render()
-            return self.acceuil.render()
+            return html.H1("Page d'erreur")
