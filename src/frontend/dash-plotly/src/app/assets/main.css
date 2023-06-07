@@ -261,7 +261,7 @@ h6,
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  padding: 0px 40px;
+  padding: 7px 40px;
   font-weight: 500;
   font-size: 12px;
   line-height: 24px;
@@ -1084,7 +1084,7 @@ h6,
   margin-bottom: 30px;
 }
 .input-style-1 label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: #262d3f;
   display: block;
@@ -1096,10 +1096,11 @@ h6,
   background: rgba(239, 239, 239, 0.5);
   border: 1px solid #e5e5e5;
   border-radius: 4px;
-  padding: 16px;
+  padding: 10px;
   color: var(--text-color);
   resize: none;
   transition: all 0.3s;
+  font-size: 12px;
 }
 .input-style-1 input:focus,
 .input-style-1 textarea:focus {
