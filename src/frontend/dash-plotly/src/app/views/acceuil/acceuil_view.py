@@ -1,7 +1,6 @@
 from dash import html
 
 from components.header import HeaderComponent
-
 from components.title_page import TitlePageComponent
 
 
