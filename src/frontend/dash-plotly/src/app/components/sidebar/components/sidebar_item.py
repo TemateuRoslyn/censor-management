@@ -1,4 +1,4 @@
-from dash import html
+from dash import html, dcc
 
 
 class SidebarItem:
@@ -7,7 +7,7 @@ class SidebarItem:
 
     def render(self, title, href, icon):
         return html.Li(
-            html.A(
+            dcc.Link(
                 [
                     html.Span(
                         icon,

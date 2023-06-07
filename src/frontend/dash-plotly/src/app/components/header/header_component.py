@@ -1,4 +1,5 @@
 from dash import html
+from components.button.button_component import ButtonComponent
 
 
 class HeaderComponent:
@@ -13,6 +14,7 @@ class HeaderComponent:
                 "border-radius": 50,
             },
         )
+        self.button = ButtonComponent()
 
     def render(self):
         return html.Header(
@@ -24,12 +26,12 @@ class HeaderComponent:
                                 html.Div(
                                     html.Div(
                                         html.Div(
-                                            html.Button(
+                                            self.button.render(
                                                 html.Span(
                                                     "menu",
-                                                    className="material-symbols-outlined icon",
+                                                    className="material-symbols-outlined",
                                                 ),
-                                                className="main-btn primary-btn btn-hover",
+                                                type="primary-btn",
                                                 id="menu-toggle",
                                             ),
                                             className="menu-toggle-btn mr-20",
