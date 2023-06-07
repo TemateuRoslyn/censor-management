@@ -8,10 +8,10 @@ class HeaderComponent:
             src="./assets/imgs/profile.png",
             style={
                 "height": 50,
-                "padding-left": 10,
-                "padding-bottom": 10,
-                "padding-top": 10,
-                "border-radius": 50,
+                "paddingLeft": 10,
+                "paddingBottom": 10,
+                "paddingTop": 10,
+                "borderRadius": 50,
             },
         )
         self.button = ButtonComponent()
