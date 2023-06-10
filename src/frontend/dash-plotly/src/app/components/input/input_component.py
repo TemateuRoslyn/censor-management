@@ -12,7 +12,7 @@ class InputComponent:
                     label,
                     className="form-label",
                 ),
-                dcc.Input(type=type, className="form-control", id=id),
+                dcc.Input(type=type, id=id, className="form-control", value=None),
             ],
             className="input-style-1",
         )
