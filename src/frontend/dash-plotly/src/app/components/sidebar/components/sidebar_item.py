@@ -18,4 +18,5 @@ class SidebarItem:
                 href=href,
             ),
             className="nav-item",
+            id="active-nav-item",
         )
