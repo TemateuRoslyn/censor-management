@@ -9,6 +9,7 @@ class ToogleSidebarCallback:
         @self.app.callback(
             Output("sidebar-nav-wrapper", "className"),
             Output("main-wrapper", "className"),
+            Output("menu-close-btn", "children"),
             Input("menu-toggle", "n_clicks"),
             [
                 State("sidebar-nav-wrapper", "className"),
@@ -20,10 +21,12 @@ class ToogleSidebarCallback:
                 return [
                     " ".join(sidebar_class.split() + ["active"]),
                     " ".join(main_class.split() + ["active"]),
+                    "menu",
                 ]
 
             else:
                 return [
                     sidebar_class.replace(" active", ""),
                     main_class.replace(" active", ""),
+                    "close",
                 ]

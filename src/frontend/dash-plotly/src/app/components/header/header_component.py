@@ -28,8 +28,9 @@ class HeaderComponent:
                                         html.Div(
                                             self.button.render(
                                                 html.Span(
-                                                    "menu",
+                                                    "close",
                                                     className="material-symbols-outlined",
+                                                    id="menu-close-btn",
                                                 ),
                                                 type="primary-btn",
                                                 id="menu-toggle",
