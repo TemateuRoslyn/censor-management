@@ -53,6 +53,7 @@ class SidebarComponent:
                                     href="about",
                                     title="A Propos de nous",
                                 ),
+                                self.divider.render(),
                                 html.Div(
                                     [
                                         html.H3("SOFTMAES"),
@@ -60,7 +61,8 @@ class SidebarComponent:
                                     ],
                                     className="promo-box",
                                 ),
-                            ]
+                            ],
+                            id="nav-sidebar",
                         )
                     ],
                     className="sidebar-nav",
