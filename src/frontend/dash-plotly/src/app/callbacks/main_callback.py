@@ -6,4 +6,4 @@ class MainCallback:
     def __init__(self, app) -> None:
         RenderCallback(app).register()
         ToogleSidebarCallback(app).register()
-        ToogleSidebarCallback(app).register_sidebar_callbacks()
+        # ToogleSidebarCallback(app).register_sidebar_callbacks()
