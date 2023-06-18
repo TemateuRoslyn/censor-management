@@ -25,7 +25,6 @@ class RenderCallback:
         self.transformations = TransformationsView()
 
         self.pages = {
-            "/": {"content": self.login.render()},
             "/sign-up":{"content": self.sign_up.render()},
             "/acceuil": {"content": self.acceuil.render()},
             "/statistiques": {"content": self.statistique.render()},
@@ -34,6 +33,7 @@ class RenderCallback:
             "/transformations": {"content": self.transformations.render()},
             "/graphes": {"content": self.graphes.render()},
             "/parametrages": {"content": self.parametrages.render()},
+            "/": {"content": self.login.render()},
         }
 
     def register(self):

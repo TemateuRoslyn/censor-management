@@ -20,7 +20,7 @@ class SignUpView:
                                     className="card-header",
                                 ),
                                 html.Div(
-                                    html.Div(
+                                    html.Form(
                                         [
                                             self.input.render(
                                                 "Nom:",
@@ -52,8 +52,8 @@ class SignUpView:
                                             self.input.render(
                                                 "Confirmer le mot de passe:",
                                                 type="password",
-                                                id="password",
-                                                name="password"
+                                                id="password-confirm",
+                                                name="password-confirm"
                                             ),
                                             html.Div(
                                                 self.login_button.render(
@@ -77,5 +77,13 @@ class SignUpView:
                 ),
                 className="row h-100 justify-content-center align-items-center",
             ),
-            className="container",
+            className="mt-5 left-content show-up header-text wow fadeInLeft",
+            style={'visibility': 'visible',
+                   '-webkit-animation-duration': '1s',
+                    '-moz-animation-duration': '1s', 
+                    'animation-duration': '1s',
+                    "-webkit-animation-delay": '0.5s', 
+                    '-moz-animation-delay': '0.5s', 
+                    'animation-delay': '0.5s'
+                    }
         )

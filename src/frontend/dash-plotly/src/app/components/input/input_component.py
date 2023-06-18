@@ -17,5 +17,6 @@ class InputComponent:
                 ],
                 className="input-style-1",
             ),
-            html.Div(id=id+"-feedback",children=feedback_text)
+            html.Div(id=id+"-feedback",children=feedback_text),
+            html.Div(id=id+"-matching-feedback",children=feedback_text)
         ])
