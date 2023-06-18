@@ -17,7 +17,7 @@ class SidebarComponent:
                         html.Ul(
                             [
                                 self.item.render(
-                                    icon="home", href="acceuil", title="Acceuil"
+                                    icon="home", href="accueil", title="Acceuil"
                                 ),
                                 self.divider.render(),
                                 self.item.render(

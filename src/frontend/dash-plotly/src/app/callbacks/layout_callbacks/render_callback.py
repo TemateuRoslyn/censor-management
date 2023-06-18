@@ -9,7 +9,7 @@ from views.graphes.graphes_view import GrapheView
 from views.notifications.notifications_view import NotificationsView
 from views.parametrage.parametrage_view import ParametrageView
 from views.transformations.transformations_view import TransformationsView
-
+from components.sidebar import SidebarComponent
 
 class RenderCallback:
     def __init__(self, app) -> None:
@@ -23,10 +23,11 @@ class RenderCallback:
         self.notifications = NotificationsView()
         self.parametrages = ParametrageView()
         self.transformations = TransformationsView()
+        self.sidebar = SidebarComponent()
 
         self.pages = {
             "/sign-up":{"content": self.sign_up.render()},
-            "/acceuil": {"content": self.acceuil.render()},
+            "/accueil": {"content": self.acceuil.render()},
             "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
             "/notifications": {"content": self.notifications.render()},
@@ -44,7 +45,14 @@ class RenderCallback:
             ],
             prevent_update=True,
         )
-        def render_pages(pathname):
+        def render_pages(pathname:str):
             if pathname in self.pages:
-                return self.pages[pathname]["content"]
+                if pathname.__eq__('/') or pathname.__eq__('/sign-up'):
+                    return self.pages[pathname]["content"]
+                else:
+                    return html.Div(children=[
+                        self.sidebar.render(),
+                        self.pages[pathname]["content"]
+                    ])
+
             return html.H1("Page d'erreur")

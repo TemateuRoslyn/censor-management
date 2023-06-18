@@ -24,10 +24,9 @@ class LoginView:
                     html.Div(
                         html.Div(
                             [
-                                # html.Div(
-                                #     html.H1(id="login-error"),
-                                #     className="alert alert-danger",
-                                # ),
+                                html.Div(
+                                    id="correct-login"
+                                ),
                                 html.Div(
                                     html.H3("CONNEXION", className="text-center"),
                                     className="card-header",
