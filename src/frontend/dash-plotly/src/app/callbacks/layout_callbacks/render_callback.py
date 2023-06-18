@@ -4,6 +4,7 @@ from views.acceuil.acceuil_view import AcceuilView
 from views.statistiques.statistiques_view import StatistiqueView
 from views.about.about_view import AboutView
 from views.login.login_view import LoginView
+from views.accounts.sign_up import SignUpView
 from views.graphes.graphes_view import GrapheView
 from views.notifications.notifications_view import NotificationsView
 from views.parametrage.parametrage_view import ParametrageView
@@ -17,6 +18,7 @@ class RenderCallback:
         self.statistique = StatistiqueView()
         self.about = AboutView()
         self.login = LoginView()
+        self.sign_up = SignUpView()
         self.graphes = GrapheView()
         self.notifications = NotificationsView()
         self.parametrages = ParametrageView()
@@ -24,6 +26,7 @@ class RenderCallback:
 
         self.pages = {
             "/": {"content": self.login.render()},
+            "/sign-up":{"content": self.sign_up.render()},
             "/acceuil": {"content": self.acceuil.render()},
             "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
