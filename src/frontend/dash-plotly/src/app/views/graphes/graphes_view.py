@@ -2,13 +2,14 @@ from dash import html
 from components.header.header_component import HeaderComponent
 from components.title_page import TitlePageComponent
 from components.figures.graph_figures import GraphFigure
+from config import renderDF
 
 
 class GrapheView:
     def __init__(self) -> None:
         self.header = HeaderComponent()
         self.title_page = TitlePageComponent()
-        self.graph = GraphFigure()
+        self.graph = GraphFigure(df=renderDF())
 
     def render(self):
         return html.Div(
@@ -27,7 +28,7 @@ class GrapheView:
                                 html.Div(
                                     [
                                         html.Div(
-                                            self.graph.render(),
+                                            self.graph.render(xlabel='Fruits',ylabel='prix',color='ville'),
                                             className="mb-2",
                                         ),
                                     ],
