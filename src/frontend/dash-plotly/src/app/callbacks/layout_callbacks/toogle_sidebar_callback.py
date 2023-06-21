@@ -30,8 +30,9 @@ class ToogleSidebarCallback:
                     main_class.replace(" active", ""),
                     "close",
                 ]
-    def register_sidebar_callbacks(self):
-        @self.app.callback(
-            Output('active-nav-item', 'className'),
-            Input('', '')
-        )
+
+    # def register_sidebar_callbacks(self):
+    #     @self.app.callback(
+    #         Output('active-nav-item', 'className'),
+    #         Input('', '')
+    #     )

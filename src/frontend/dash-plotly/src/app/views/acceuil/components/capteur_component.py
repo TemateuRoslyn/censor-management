@@ -1,10 +1,11 @@
 from dash import html
 import dash_daq as daq
+from components.button.button_component import ButtonComponent
 
 
 class CapteurComponent:
     def __init__(self):
-        pass
+        self.button = ButtonComponent()
 
     def render(self, id: str, value=0, label="Label"):
         return html.Div(
@@ -19,6 +20,7 @@ class CapteurComponent:
                     min=0,
                     max=200,
                 ),
+                self.button.render(title="Parametrer", id="btn", type="primary"),
             ],
             className="card rounded-corner pt-2 pb-0",
         )
