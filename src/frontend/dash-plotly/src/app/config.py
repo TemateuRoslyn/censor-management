@@ -29,3 +29,8 @@ def renderDF():
                 "Baham", "Douala", "Kribi", "Mbepanda", "Fomopea", "Bafia",
                 "Tongolo"]
         })
+
+user = {
+    'email':'tom@gmail.com',
+    'password':'tom12345'
+}

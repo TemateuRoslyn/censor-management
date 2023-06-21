@@ -1,7 +1,7 @@
 from dash import Output, Input, State,html, dcc
 
 class RegisterControlCallback:
-    def __init__(self, app) -> None:
+    def __init__(self, app) -> object:
         self.app = app
         self.form_state = 0
 
@@ -126,6 +126,7 @@ class RegisterControlCallback:
             if nclicks is not None:
                 if value1 is not None and value2 is not None:
                     if value2.__eq__(value1):
+                        print(self.form_state)
                         return html.Div(className='alert alert-success', role='alert', children=[
                             "Les mots de passe correspondent !"
                         ])

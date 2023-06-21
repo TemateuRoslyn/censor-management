@@ -1,9 +1,12 @@
 from dash import Output, Input, State,html, dcc
+from components.toasts.simple_toast import SimpleToast
+from config import user
 
 class LoginCallback:
     def __init__(self, app) -> None:
         self.app = app
         self.form_state = 0
+        self.toast = SimpleToast()
      
     def control_email(self):
         @self.app.callback(
@@ -58,16 +61,23 @@ class LoginCallback:
                 Input(component_id="login-password", component_property="value")
             ]
         )
-        def redirection(n_clicks,email,password):
+        def redirection(n_clicks,email:str,password:str):
             if email is not None and password is not None:
-                if '@gmail.com' in email or '@yahoo.' in email:
-                    if not len(password) < 8:
-                        print('ok')
+                if email.__eq__(user.get('email')):
+                    if password.__eq__(user.get('password')):
                         return dcc.Location(
                             id="connected",
                             pathname="/accueil",
                             refresh=True
                         )
+                    else:
+                        return self.toast.render(
+                            msg="Le mot de passe est incorrect !",
+                            title="ERREUR", ico='danger', cstyle="text-bg-danger text-dark")
+                else:
+                    return self.toast.render(
+                        msg="L'email est incorrecte !",
+                        title="ERREUR", ico='danger', cstyle="text-bg-danger text-dark")
 
     def render_callbacks(self):
         self.control_email()

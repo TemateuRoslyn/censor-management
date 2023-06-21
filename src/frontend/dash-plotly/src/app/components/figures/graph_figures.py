@@ -24,8 +24,8 @@ class GraphFigure:
                     animate=True,
                 )
             ]),
-            html.Div(id='graph-param', className='', children=[
-                html.Form(id='', disable_n_clicks=True, className='fill-form', children=[
+            # html.Div(id='graph-param', className='p-0', children=[
+                html.Form(id='', disable_n_clicks=True, className=' m-0 mb-5', children=[
                     html.Div(id='', className='row', children=[
                         html.Div(id='', className='col-lg-3', children=[
                             self.dropdown.render(id='graph-type',icons=g.get('icons'),options=g.get('label'), droplabel='Changer le graphique')
@@ -39,10 +39,10 @@ class GraphFigure:
                         html.Div(id='', className='col-lg-3', children=[
                             self.dropdown.render(id='graph-color',options=[color, xlabel, ylabel], droplabel='Changer le pattern de coloration')
                         ]),
-                        html.Div(id='', className='col-lg-3', children=[
-                            self.inputg.render(id='',label='sfsefdeff', value='1')
-                        ])
+                        # html.Div(id='', className='col-lg-3', children=[
+                        #     self.inputg.render(id='',label='sfsefdeff', value='1')
+                        # ])
                     ])
                 ])
-            ])
+            # ])
         ])

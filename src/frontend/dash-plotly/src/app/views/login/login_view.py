@@ -25,7 +25,8 @@ class LoginView:
                         html.Div(
                             [
                                 html.Div(
-                                    id="correct-login"
+                                    id="correct-login",
+                                    className="position-absolute m-auto"
                                 ),
                                 html.Div(
                                     html.H3("CONNEXION", className="text-center"),
@@ -39,13 +40,15 @@ class LoginView:
                                                 type="email",
                                                 id="login-email",
                                                 name="email",
-                                                placeholder="softmaes@yahoo.fr"
+                                                placeholder="softmaes@yahoo.fr",
+                                                debounce=True
                                             ),
                                             self.input.render(
                                                 "Mot de passe:",
                                                 type="password",
                                                 id="login-password",
-                                                name="password"
+                                                name="password",
+                                                debounce=True
                                             ),
                                             html.Div(
                                                 self.login_button.render(
@@ -53,11 +56,6 @@ class LoginView:
                                                     type="primary-btn w-100",
                                                     id="login",
                                                 ),
-                                                # html.Button(
-                                                #     "Se connecter",
-                                                #     className="main-btn primary-btn",
-                                                #     id="login-main-btn",
-                                                # ),
                                                 className="col-12",
                                             ),
                                             dcc.Link(

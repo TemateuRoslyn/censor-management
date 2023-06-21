@@ -20,7 +20,7 @@ class SignUpView:
                                     className="card-header",
                                 ),
                                 html.Div(
-                                    html.Form(
+                                    html.Div(
                                         [
                                             self.input.render(
                                                 "Nom:",
@@ -28,32 +28,37 @@ class SignUpView:
                                                 id="nom",
                                                 name="nom",
                                                 placeholder="Entrez votre nom",
+                                                debounce=True
                                             ),
                                             self.input.render(
                                                 "Prenom:",
                                                 type="text",
                                                 id="prenom",
                                                 name="prenom",
-                                                placeholder="Entrez votre prenom"
+                                                placeholder="Entrez votre prenom",
+                                                debounce=True
                                             ),
                                             self.input.render(
                                                 "Adreese email:",
                                                 type="email",
                                                 id="email",
                                                 name="email",
-                                                placeholder="softmaes@yahoo.fr"
+                                                placeholder="softmaes@yahoo.fr",
+                                                debounce=True
                                             ),
                                             self.input.render(
                                                 "Mot de passe:",
                                                 type="password",
                                                 id="password",
-                                                name="password"
+                                                name="password",
+                                                debounce=True
                                             ),
                                             self.input.render(
                                                 "Confirmer le mot de passe:",
                                                 type="password",
                                                 id="password-confirm",
-                                                name="password-confirm"
+                                                name="password-confirm",
+                                                debounce=True
                                             ),
                                             html.Div(
                                                 self.login_button.render(
