@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+
 class SimpleToast:
     def __init__(self) -> None:
         pass
