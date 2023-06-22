@@ -20,7 +20,7 @@ class CapteurComponent:
                     min=0,
                     max=200,
                 ),
-                self.button.render(title="Parametrer", id="btn", type="primary"),
+                self.button.render(title="Parametrer", id="modal-btn", type="primary"),
             ],
             className="card rounded-corner pt-2 pb-0",
         )
