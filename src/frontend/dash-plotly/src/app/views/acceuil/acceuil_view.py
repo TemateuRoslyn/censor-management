@@ -7,18 +7,6 @@ from views.acceuil.components.capteur_component import CapteurComponent
 from views.acceuil.components.sparkline_component import SparkLineComponent
 
 
-from components.title_page import TitlePageComponent
-
-from views.acceuil.components.capteur_component import CapteurComponent
-from views.acceuil.components.sparkline_component import SparkLineComponent
-
-
-from components.title_page import TitlePageComponent
-
-from views.acceuil.components.capteur_component import CapteurComponent
-from views.acceuil.components.sparkline_component import SparkLineComponent
-
-
 class AcceuilView:
     def __init__(self) -> None:
         self.header = HeaderComponent()
@@ -33,7 +21,6 @@ class AcceuilView:
                 html.Section(
                     [
                         html.Div(
-                            [html.H1("Bonjour le genie Rushclin")],
                             [
                                 self.title_page.render(
                                     "Acceuil",
