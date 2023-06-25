@@ -21,7 +21,6 @@ class AcceuilView:
                 html.Section(
                     [
                         html.Div(
-                            [html.H1("Bonjour le genie Rushclin")],
                             [
                                 self.title_page.render(
                                     "Acceuil",
