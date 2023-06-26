@@ -11,6 +11,7 @@ from views.parametrage.parametrage_view import ParametrageView
 from views.transformations.transformations_view import TransformationsView
 from components.sidebar import SidebarComponent
 
+
 class RenderCallback:
     def __init__(self, app) -> None:
         self.app = app
@@ -54,5 +55,4 @@ class RenderCallback:
                         self.sidebar.render(),
                         self.pages[pathname]["content"]
                     ])
-
             return html.H1("Page d'erreur")

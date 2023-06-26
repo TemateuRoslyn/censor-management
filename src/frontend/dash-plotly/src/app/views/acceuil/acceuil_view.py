@@ -89,7 +89,6 @@ class AcceuilView:
                 ),
             ]
         )
-
     def render(self):
         return html.Div([
             self.header.render(),
