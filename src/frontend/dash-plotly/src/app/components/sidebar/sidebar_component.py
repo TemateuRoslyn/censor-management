@@ -17,7 +17,7 @@ class SidebarComponent:
                         html.Ul(
                             [
                                 self.item.render(
-                                    icon="home", href="acceuil", title="Acceuil"
+                                    icon="home", href="accueil", title="Acceuil"
                                 ),
                                 self.divider.render(),
                                 self.item.render(
@@ -53,6 +53,7 @@ class SidebarComponent:
                                     href="about",
                                     title="A Propos de nous",
                                 ),
+                                self.divider.render(),
                                 html.Div(
                                     [
                                         html.H3("SOFTMAES"),
@@ -60,7 +61,8 @@ class SidebarComponent:
                                     ],
                                     className="promo-box",
                                 ),
-                            ]
+                            ],
+                            id="nav-sidebar",
                         )
                     ],
                     className="sidebar-nav",
