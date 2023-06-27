@@ -772,6 +772,16 @@ h6,
   margin-bottom: 15px;
 }
 
+.card-style {
+  background: #fff;
+  box-sizing: border-box;
+  padding: 25px 30px;
+  position: relative;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0px 10px 20px rgba(200, 208, 216, 0.3);
+  border-radius: 10px;
+}
+
 /* ======= icon-card ======== */
 .icon-card {
   display: flex;
