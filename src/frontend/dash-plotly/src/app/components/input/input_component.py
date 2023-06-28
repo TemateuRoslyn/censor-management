@@ -5,7 +5,19 @@ class InputComponent:
     def __init__(self) -> None:
         pass
 
-    def render(self, label: str, type: str, id: str, classname=None ,name=None,value=None, placeholder=None, feedback_text=None, feedback_class=None, debounce=None):
+    def render(
+        self,
+        label: str,
+        type: str,
+        id: str,
+        classname=None,
+        name=None,
+        value=None,
+        placeholder=None,
+        feedback_text=None,
+        feedback_class=None,
+        debounce=None,
+    ):
         return html.Div(
             className=classname,
             children=[
