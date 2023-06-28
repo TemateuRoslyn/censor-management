@@ -10,16 +10,15 @@ class LoginView:
 
     def render(self):
         return html.Div(
-            className="mt-5 left-content show-up header-text wow fadeInLeft",
-            style={
-                "visibility": "visible",
-                "-webkit-animation-duration": "1s",
-                "-moz-animation-duration": "1s",
-                "animation-duration": "1s",
-                "-webkit-animation-delay": "0.5s",
-                "-moz-animation-delay": "0.5s",
-                "animation-delay": "0.5s",
-            },
+            className="left-content show-up header-text wow fadeInLeft",
+            style={'visibility': 'visible',
+                   '-webkit-animation-duration': '1s',
+                    '-moz-animation-duration': '1s', 
+                    'animation-duration': '1s',
+                    "-webkit-animation-delay": '0.5s', 
+                    '-moz-animation-delay': '0.5s', 
+                    'animation-delay': '0.5s'
+                    },
             children=html.Div(
                 html.Div(
                     html.Div(

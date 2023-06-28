@@ -13,3 +13,21 @@ class Interval:
         )
         def switchInterval(value):
             return (m.floor(float(value))*100)
+    def intervalStepCallback(self):
+        @self.app.callback(
+            Output(component_id="interval-step", component_property="children"),
+            [
+                Input(component_id="interval", component_property="value"),
+            ]
+        )
+        def switchInterval1(value):
+            return ("{0}%".format(m.floor(float(value))))
+    def intervalQuantityCallback(self):
+        @self.app.callback(
+            Output(component_id="quantity-step", component_property="children"),
+            [
+                Input(component_id="quantity", component_property="value"),
+            ]
+        )
+        def switchInterval2(value):
+            return ("{0}%".format(m.floor(float(value))))

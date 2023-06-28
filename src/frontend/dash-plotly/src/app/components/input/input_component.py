@@ -21,25 +21,19 @@ class InputComponent:
         return html.Div(
             className=classname,
             children=[
-                html.Div(
-                    [
-                        html.Label(
+            html.Div(
+                [
+                    html.Label(
+                        [
                             label,
-                            className="form-label",
-                        ),
-                        dcc.Input(
-                            type=type,
-                            id=id,
-                            className="",
-                            value=value,
-                            name=name,
-                            placeholder=placeholder,
-                            debounce=debounce,
-                        ),
-                    ],
-                    className="input-style-1",
-                ),
-                html.Div(id=id + "-feedback", children=feedback_text),
-                html.Div(id=id + "-matching-feedback", children=feedback_text),
-            ],
-        )
+                            html.Label(id=id+'-step', className='', children='')
+                        ],
+                        className="form-label",
+                    ),
+                    dcc.Input(type=type, id=id, className="", value=value, name=name, placeholder=placeholder, debounce=debounce),
+                ],
+                className="input-style-1",
+            ),
+            html.Div(id=id+"-feedback",children=feedback_text),
+            html.Div(id=id+"-matching-feedback",children=feedback_text)
+        ])

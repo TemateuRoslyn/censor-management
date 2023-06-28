@@ -9,6 +9,10 @@ class MainCallback:
     def __init__(self, app) -> None:
         RenderCallback(app).register()
         ToogleSidebarCallback(app).register()
-        AcceuilCallback(app).register()
-        AcceuilStateCallback(app).register()
-        AcceuilCamembergCallback(app).register()
+        RegisterControlCallback(app).render_callbacks()
+        LoginCallback(app).render_callbacks()
+        Switch(app).switchCallback()
+        Interval(app).intervalCallback()
+        Interval(app).intervalStepCallback()
+        Interval(app).intervalQuantityCallback()
+        # ToogleSidebarCallback(app).register_sidebar_callbacks()
