@@ -12,7 +12,10 @@ class InputComponent:
             html.Div(
                 [
                     html.Label(
-                        label,
+                        [
+                            label,
+                            html.Label(id=id+'-step', className='', children='')
+                        ],
                         className="form-label",
                     ),
                     dcc.Input(type=type, id=id, className="", value=value, name=name, placeholder=placeholder, debounce=debounce),
