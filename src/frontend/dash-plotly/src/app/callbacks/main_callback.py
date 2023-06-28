@@ -13,4 +13,6 @@ class MainCallback:
         LoginCallback(app).render_callbacks()
         Switch(app).switchCallback()
         Interval(app).intervalCallback()
+        Interval(app).intervalGraphCallback()
+        Interval(app).intervalQuantityCallback()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
