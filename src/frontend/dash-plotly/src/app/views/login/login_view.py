@@ -10,31 +10,46 @@ class LoginView:
 
     def render(self):
         return html.Div(
-            html.Div(
+            className="mt-5 left-content show-up header-text wow fadeInLeft",
+            style={
+                "visibility": "visible",
+                "-webkit-animation-duration": "1s",
+                "-moz-animation-duration": "1s",
+                "animation-duration": "1s",
+                "-webkit-animation-delay": "0.5s",
+                "-moz-animation-delay": "0.5s",
+                "animation-delay": "0.5s",
+            },
+            children=html.Div(
                 html.Div(
                     html.Div(
                         html.Div(
                             [
-                                # html.Div(
-                                #     html.H1(id="login-error"),
-                                #     className="alert alert-danger",
-                                # ),
+                                html.Div(
+                                    id="correct-login",
+                                    className="position-absolute m-auto",
+                                ),
                                 html.Div(
                                     html.H3("CONNEXION", className="text-center"),
                                     className="card-header",
                                 ),
                                 html.Div(
-                                    html.Form(
+                                    html.Div(
                                         [
                                             self.input.render(
-                                                "Adreese Email",
+                                                "Email:",
                                                 type="email",
-                                                id="email",
+                                                id="login-email",
+                                                name="email",
+                                                placeholder="softmaes@yahoo.fr",
+                                                debounce=True,
                                             ),
                                             self.input.render(
-                                                "Mot de passe",
+                                                "Mot de passe:",
                                                 type="password",
-                                                id="password",
+                                                id="login-password",
+                                                name="password",
+                                                debounce=True,
                                             ),
                                             html.Div(
                                                 self.login_button.render(
@@ -42,15 +57,17 @@ class LoginView:
                                                     type="primary-btn w-100",
                                                     id="login",
                                                 ),
-                                                # html.Button(
-                                                #     "Se connecter",
-                                                #     className="main-btn primary-btn",
-                                                #     id="login-main-btn",
-                                                # ),
                                                 className="col-12",
+                                            ),
+                                            dcc.Link(
+                                                "S'enregistrer",
+                                                href="/sign-up",
+                                                className="mt-2 text-reset",
+                                                refresh=True,
                                             ),
                                         ]
                                     ),
+                                    id="login-form",
                                     className="card-body py-5 px-md-5",
                                 ),
                             ],
@@ -62,5 +79,4 @@ class LoginView:
                 ),
                 className="row h-100 justify-content-center align-items-center",
             ),
-            className="container",
         )

@@ -1,18 +1,16 @@
 from dash import dcc, html
 
-from components.sidebar import SidebarComponent
 from components.navbar import NavbarComponent
 
 
 class AppLayout:
     def __init__(self) -> None:
-        self.sidebar = SidebarComponent()
         self.navbar = NavbarComponent()
 
     def render(self):
         return html.Div(
             [
-                self.sidebar.render(),
+                # self.sidebar.render(),
                 html.Main(
                     id="main-wrapper",
                     className="main-wrapper",
@@ -24,7 +22,7 @@ class AppLayout:
                 ),
                 dcc.Location(
                     id="url",
-                    refresh=False,
+                    refresh=True,
                 ),
             ],
             id="app-layout",
