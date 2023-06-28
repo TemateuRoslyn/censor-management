@@ -1,1 +1,0 @@
-from . statistiques_view import StatistiqueView
