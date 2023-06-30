@@ -9,7 +9,7 @@ from callbacks.main_callback import MainCallback
 class App:
     def __init__(self) -> None:
         self.layout = AppLayout()
-        self.app = Dash(__name__, suppress_callback_exceptions=True)
+        self.app = Dash(__name__, title="Sensor managment", update_title="Chargement...", suppress_callback_exceptions=True)
 
         self.callback = MainCallback(self.app)
 
