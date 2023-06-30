@@ -11,6 +11,8 @@ class App:
         self.layout = AppLayout()
         self.app = Dash(
             __name__,
+            title="Sensor managment",
+            update_title="Chargement...",
             suppress_callback_exceptions=True,
         )
 

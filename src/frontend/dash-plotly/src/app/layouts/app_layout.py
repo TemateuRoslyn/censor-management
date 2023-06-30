@@ -25,5 +25,6 @@ class AppLayout:
                     refresh=True,
                 ),
             ],
+            className="bg-light",
             id="app-layout",
         )
