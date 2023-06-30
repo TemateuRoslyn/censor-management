@@ -9,6 +9,7 @@ from views.graphes.graphes_view import GrapheView
 from views.notifications.notifications_view import NotificationsView
 from views.parametrage.parametrage_view import ParametrageView
 from views.transformations.transformations_view import TransformationsView
+from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
 
 
@@ -25,15 +26,17 @@ class RenderCallback:
         self.parametrages = ParametrageView()
         self.transformations = TransformationsView()
         self.sidebar = SidebarComponent()
+        self.track = TrackingView()
 
         self.pages = {
             "/sign-up": {"content": self.sign_up.render()},
             "/accueil": {"content": self.acceuil.render()},
-            "/statistiques": {"content": self.statistique.render()},
+            "/tracking": {"content": self.track.render()},
+            # "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
             "/notifications": {"content": self.notifications.render()},
-            "/transformations": {"content": self.transformations.render()},
-            "/graphes": {"content": self.graphes.render()},
+            # "/transformations": {"content": self.transformations.render()},
+            # "/graphes": {"content": self.graphes.render()},
             "/parametrages": {"content": self.parametrages.render()},
             "/": {"content": self.login.render()},
         }
