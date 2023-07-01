@@ -40,7 +40,7 @@ class TrackingView:
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             mapbox={
                 'style':'open-street-map',
-                'zoom':17,
+                'zoom':16,
                 'center':{'lon': 2.334100321220237, 'lat': 48.867453414742315},
                 'bounds':{'west':0, 'east':10, 'south':0, 'north':50}
             }
@@ -58,23 +58,36 @@ class TrackingView:
                                 id="track-interval",
                                 disabled=False,
                                 n_intervals=0,
-                                interval=10000,
-                                max_intervals=-1
+                                interval=5000,
+                                max_intervals=0
                             ),
-                            html.Div(
-                                [
-                                    dcc.Graph(
-                                        id="maps-render",
-                                        figure=fig,
-                                    )
-                                ],
-                                className="row ",
-                            ),
+                            html.Span(id='', className='d-flex justify-content-around ', children=[
+                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                    html.Span(id='', className='', children=[
+                                        html.Span(id='', className='material-symbols-outlined icon', children=['zoom_in'])
+                                        ,html.Label(id='', className='fs-4', children="Zoom"),
+                                    ])
+                                    
+                                ]),
+                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                        html.Span(id='', className='material-symbols-outlined icon', children=['add_location'])
+                                        ,html.Label(id='', className='fs-4', children="Point Special"),
+                                ]),
+                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                        html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])
+                                        ,html.Label(id='', className='fs-4', children="Layouts"),
+                                ])
+                            ]),
+                            dcc.Graph(
+                                id="maps-render",
+                                figure=fig,
+                                className="shadow p-3 mb-5 bg-body rounded"
+                            )
                         ],
                         className="container-fluid",
                         )
                     ],
-                    className="section m-5 shadow p-3 mb-5 bg-body rounded",
+                    className="section m-5",
                 ),
             ]
         )
