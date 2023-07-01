@@ -7,7 +7,6 @@ from components.modal.modal_behaviour import ModalBehaviour
 import plotly.graph_objects as go
 import plotly.express as px
 import requests
-import requests
 
 
 
@@ -20,25 +19,14 @@ class TrackingView:
     def render(self):
         insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
         datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
-        datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
 
 
-        # print(datas.get('lat'))
         # print(datas.get('lat'))
         fig = go.Figure(
             data=go.Scattermapbox(
             mode="markers+lines",
             lat=datas.get('lat'),
             lon=datas.get('lon'),
-            marker={'size':10},
-            connectgaps=True,
-            selectedpoints=[0],
-            selected={
-                'marker':{
-                    'color':'green',
-                    'size':15,
-                }
-            },
             marker={'size':10},
             connectgaps=True,
             selectedpoints=[0],
