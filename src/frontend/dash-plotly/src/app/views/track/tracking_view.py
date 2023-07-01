@@ -62,16 +62,16 @@ class TrackingView:
                                 id="track-interval",
                                 disabled=False,
                                 n_intervals=0,
-                                interval=5000,
-                                max_intervals=0
+                                interval=6000,
+                                max_intervals=-1
                             ),
                             html.Span(id='', className='d-flex justify-content-around ', children=[
-                                html.Button(id='style-id', className='btn btn-secondary m-2 p-2', children=[
-                                    html.Span(id='', className='', children=[
-                                        html.Span(id='', className='material-symbols-outlined icon', children=['map'])
-                                        ,html.Label(id='', className='fs-4', children="Style"),
-                                    ]),
-                                ],n_clicks=0),
+                                # html.Button(id='style-id', className='btn btn-secondary m-2 p-2', children=[
+                                #     html.Span(id='', className='', children=[
+                                #         html.Span(id='', className='material-symbols-outlined icon', children=['map'])
+                                #         ,html.Label(id='', className='fs-4', children="Style"),
+                                #     ]),
+                                # ],n_clicks=0),
                                 html.Button(id='zoom-id', className='btn btn-secondary m-2 p-2', children=[
                                     html.Span(id='', className='', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['zoom_in'])
@@ -121,16 +121,22 @@ class TrackingView:
                                                 ]),
                                             ])
                                 ],n_clicks=0),
-                                html.Button(id='layouts-id', className='btn btn-secondary m-2 p-2', children=[
-                                        html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])
-                                        ,html.Label(id='', className='fs-4', children="Layouts"),
-                                ])
+                                # html.Button(id='layouts-id', className='btn btn-secondary m-2 p-2', children=[
+                                #         html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])
+                                #         ,html.Label(id='', className='fs-4', children="Layouts"),
+                                        
+                                # ],n_clicks=0)
                             ]),
                             dcc.Graph(
                                 id="maps-render",
                                 figure=fig,
                                 className="shadow p-3 mb-5 bg-body rounded"
-                            )
+                            ),
+                            dcc.Input(id='id-1', className="opacity-0"),
+                            dcc.Input(id='id-2', className="opacity-0"),
+                            dcc.Input(id='id-3', className="opacity-0"),
+                            dcc.Input(id='id-4', className="opacity-0"),
+                            dcc.Input(id='id-5', className="opacity-0")
                         ],
                         className="container-fluid",
                         )

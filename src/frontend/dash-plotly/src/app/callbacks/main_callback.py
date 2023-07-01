@@ -9,7 +9,6 @@ from callbacks.graphs.switching_graphs import Switch
 from callbacks.interval.interval import Interval
 from callbacks.tracking.tracking import TrackerCallback
 from callbacks.modal.modal_callbacks import ModalCallback
-from callbacks.tracking.maps_callback import MapCallback
 
 
 class MainCallback:
@@ -24,5 +23,4 @@ class MainCallback:
         # Interval(app).intervalQuantityCallback()
         TrackerCallback(app).loadAllCallbacks()
         ModalCallback(app).closeModalCallback()
-        # MapCallback(app).changeMapCallback()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()

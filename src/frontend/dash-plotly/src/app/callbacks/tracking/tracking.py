@@ -25,7 +25,7 @@ class TrackerCallback:
             # fig = figure.get('data')[0]
             figure.get('data')[0].update(lat=datas.get('lat'),lon=datas.get('lon'))
             figure.get('layout').get('mapbox').update({'zoom':math.floor(float(zoom))})
-            # print(figure.get('layout').get('mapbox'),"\n")
+            # print(figure.get('layout').get('mapbox'),"\n\n")
             # print(fig)
             return figure
     
@@ -179,6 +179,22 @@ class TrackerCallback:
             if n1 > 0:
                 return True
             return False
+        
+    def showLayoutsBehaviourCallback(self):
+        @self.app.callback(
+            Output(component_id="modal-behaviour", component_property="is_open"),
+            [
+                Input(component_id="layouts-id", component_property="n_clicks"),
+                Input(component_id="pays", component_property="value"),
+                Input(component_id="lat", component_property="value"),
+                Input(component_id="ville", component_property="value"),
+                Input(component_id="lon", component_property="value"),
+                Input(component_id="close-backdrop", component_property="n_clicks"),
+            ],
+            [State(component_id="modal-behaviour", component_property="is_open")]
+        )
+        def showLayoutBehaviour():
+            pass
            
     def loadAllCallbacks(self):
         self.updateTrackCallback()
