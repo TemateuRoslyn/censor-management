@@ -1,6 +1,8 @@
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 from components.header.header_component import HeaderComponent
 from components.title_page import TitlePageComponent
+from components.modal.modal_backdrop import ModalBackdrop
 import plotly.graph_objects as go
 import plotly.express as px
 import requests
@@ -11,6 +13,7 @@ class TrackingView:
     def __init__(self) -> None:
         self.header = HeaderComponent()
         self.title_page = TitlePageComponent()
+        self.modal = ModalBackdrop()
 
     def render(self):
         insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
@@ -53,7 +56,7 @@ class TrackingView:
                     [
                             html.Div(
                         [
-
+                            html.Div(id='factice', className='',),
                             dcc.Interval(
                                 id="track-interval",
                                 disabled=False,
@@ -62,18 +65,25 @@ class TrackingView:
                                 max_intervals=0
                             ),
                             html.Span(id='', className='d-flex justify-content-around ', children=[
-                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                html.Button(id='style-id', className='btn btn-secondary m-2 p-2', children=[
+                                    html.Span(id='', className='', children=[
+                                        html.Span(id='', className='material-symbols-outlined icon', children=['map'])
+                                        ,html.Label(id='', className='fs-4', children="Style"),
+                                    ]),
+                                    
+                                ],n_clicks=0),
+                                html.Button(id='zoom-id', className='btn btn-secondary m-2 p-2', children=[
                                     html.Span(id='', className='', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['zoom_in'])
                                         ,html.Label(id='', className='fs-4', children="Zoom"),
                                     ])
                                     
                                 ]),
-                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                html.Button(id='special-id', className='btn btn-secondary m-2 p-2', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['add_location'])
                                         ,html.Label(id='', className='fs-4', children="Point Special"),
                                 ]),
-                                html.Div(id='', className='border rounded m-2 p-2', children=[
+                                html.Button(id='layouts-id', className='btn btn-secondary m-2 p-2', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])
                                         ,html.Label(id='', className='fs-4', children="Layouts"),
                                 ])
