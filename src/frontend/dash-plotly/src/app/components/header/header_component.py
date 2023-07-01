@@ -82,5 +82,5 @@ class HeaderComponent:
                     className="container-fluid",
                 )
             ],
-            className="header p-1",
+            className="header p-2",
         )

@@ -5,29 +5,33 @@ import json,time
 
 # models
 from accelerometre_rand import Accelerometre1
+from tracking import Tracker
 
 app = Flask(__name__)
 
 acc1 =  Accelerometre1()
+tr = Tracker()
 
 
 @app.route('/', methods=['GET'])
 def index():
     return 'welcome to our website'
 
-@app.route('/accelerometre/insert', methods=['GET'])
-def store_data():
-    if acc1.set_next():
+@app.route('/tracking/insert', methods=['GET'])
+def store_position():
+    city = request.args.get('city')
+    state = request.args.get('state')
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    if tr.set_next(city, state, lat, lon):
         return 'Insert successfully !'
     else :
         return 'An error occur !'
 
-@app.route('/accelerometre/next', methods=['GET'],)
-def get_employees():
-    cycle = 5
-    if request.args.get('cycle') is not None:
-        cycle = request.args.get('cycle')
-    nextCapteurValue = acc1.get_next(float(cycle))
+
+@app.route('/tracking/next', methods=['GET'],)
+def coordinates():
+    nextCapteurValue = tr.get_next()
     return json.dumps(nextCapteurValue)
 
 

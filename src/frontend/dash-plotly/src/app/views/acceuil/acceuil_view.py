@@ -151,19 +151,13 @@ class AcceuilView:
                                             self.capteur.render(
                                                 id="capteur-1", label="Capteur 1"
                                             ),
-                                            className="col-md-4 col-xs-12 mb-2",
+                                            className="col-md-6 col-xs-12 mb-2",
                                         ),
                                         html.Div(
                                             self.capteur.render(
                                                 id="capteur-1", label="Capteur 2"
                                             ),
-                                            className="col-md-4 col-xs-12 mb-2",
-                                        ),
-                                        html.Div(
-                                            self.capteur.render(
-                                                id="capteur-1", label="Capteur 3"
-                                            ),
-                                            className="col-md-4 col-xs-12 mb-2",
+                                            className="col-md-6 col-xs-12 mb-2",
                                         ),
                                     ],
                                     className="row mt-3",
