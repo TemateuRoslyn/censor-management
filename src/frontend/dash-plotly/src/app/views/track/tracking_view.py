@@ -7,6 +7,10 @@ from components.modal.modal_behaviour import ModalBehaviour
 import plotly.graph_objects as go
 import plotly.express as px
 import requests
+<<<<<<< HEAD
+=======
+import requests
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 
 
 
@@ -19,9 +23,17 @@ class TrackingView:
     def render(self):
         insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
         datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
+<<<<<<< HEAD
 
 
         # print(datas.get('lat'))
+=======
+        datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
+
+
+        # print(datas.get('lat'))
+        # print(datas.get('lat'))
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
         fig = go.Figure(
             data=go.Scattermapbox(
             mode="markers+lines",
@@ -36,6 +48,18 @@ class TrackingView:
                     'size':15,
                 }
             },
+<<<<<<< HEAD
+=======
+            marker={'size':10},
+            connectgaps=True,
+            selectedpoints=[0],
+            selected={
+                'marker':{
+                    'color':'green',
+                    'size':15,
+                }
+            },
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
             )
         )
 
@@ -132,6 +156,14 @@ class TrackingView:
                                 figure=fig,
                                 className="shadow p-3 mb-5 bg-body rounded"
                             ),
+<<<<<<< HEAD
+=======
+                            dcc.Input(id='id-1', className="opacity-0"),
+                            dcc.Input(id='id-2', className="opacity-0"),
+                            dcc.Input(id='id-3', className="opacity-0"),
+                            dcc.Input(id='id-4', className="opacity-0"),
+                            dcc.Input(id='id-5', className="opacity-0")
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
                         ],
                         className="container-fluid",
                         )

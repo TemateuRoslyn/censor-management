@@ -10,9 +10,16 @@ from views.notifications.notifications_view import NotificationsView
 from views.data.data import DataView
 from views.transformations.transformations_view import TransformationsView
 from views.track.tracking_view import TrackingView
+<<<<<<< HEAD
+=======
+from views.track.tracking_view import TrackingView
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 from components.sidebar import SidebarComponent
 from views.sauvegardes.sauvegardes_view import SauvegardeView
+<<<<<<< HEAD
 from views.not_found.not_found import NotFound
+=======
+>>>>>>> ad6c424 (parent c88a30575362290d564b94468eef6a5cd76becb1)
 
 
 class RenderCallback:

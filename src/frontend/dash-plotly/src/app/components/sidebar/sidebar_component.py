@@ -46,7 +46,15 @@ class SidebarComponent:
                                 #     href="transformations",
                                 #     title="Transformations",
                                 # ),
+                                # self.item.render(
+                                #     icon="transform",
+                                #     href="transformations",
+                                #     title="Transformations",
+                                # ),
                                 self.item.render(
+                                    icon="save",
+                                    href="sauvegardes",
+                                    title="Sauvegardes",
                                     icon="save",
                                     href="sauvegardes",
                                     title="Sauvegardes",
