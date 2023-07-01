@@ -8,7 +8,9 @@ from views.accounts.sign_up import SignUpView
 from views.graphes.graphes_view import GrapheView
 from views.notifications.notifications_view import NotificationsView
 from views.data.data import DataView
+from views.data.data import DataView
 from views.transformations.transformations_view import TransformationsView
+from views.track.tracking_view import TrackingView
 from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
 from views.sauvegardes.sauvegardes_view import SauvegardeView
@@ -25,6 +27,7 @@ class RenderCallback:
         self.graphes = GrapheView()
         self.notifications = NotificationsView()
         self.datas = DataView()
+        self.datas = DataView()
         self.transformations = TransformationsView()
         self.sidebar = SidebarComponent()
         self.sauvegardes = SauvegardeView()
@@ -35,8 +38,13 @@ class RenderCallback:
             "/accueil": {"content": self.acceuil.render()},
             "/tracking": {"content": self.track.render()},
             # "/statistiques": {"content": self.statistique.render()},
+            "/tracking": {"content": self.track.render()},
+            # "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
             "/notifications": {"content": self.notifications.render()},
+            # "/transformations": {"content": self.transformations.render()},
+            # "/graphes": {"content": self.graphes.render()},
+            "/datas": {"content": self.datas.render()},
             # "/transformations": {"content": self.transformations.render()},
             # "/graphes": {"content": self.graphes.render()},
             "/datas": {"content": self.datas.render()},
