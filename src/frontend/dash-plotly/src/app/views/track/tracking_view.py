@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 from components.header.header_component import HeaderComponent
 from components.title_page import TitlePageComponent
 from components.modal.modal_backdrop import ModalBackdrop
+from components.modal.modal_behaviour import ModalBehaviour
 import plotly.graph_objects as go
 import plotly.express as px
 import requests
@@ -70,18 +71,33 @@ class TrackingView:
                                         html.Span(id='', className='material-symbols-outlined icon', children=['map'])
                                         ,html.Label(id='', className='fs-4', children="Style"),
                                     ]),
-                                    
                                 ],n_clicks=0),
                                 html.Button(id='zoom-id', className='btn btn-secondary m-2 p-2', children=[
                                     html.Span(id='', className='', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['zoom_in'])
                                         ,html.Label(id='', className='fs-4', children="Zoom"),
-                                    ])
+                                    ]),
+                                    dbc.Toast(
+                                        id="zoom-toast",
+                                        dismissable=True,
+                                        is_open=False,
+                                        header="Regler le niveau du zoom",
+                                        children=[
+                                            dbc.Input(id="zoom-size", type='range', value=16, max=20, min=1, className="form-range bg-tranparent border-0")
+                                        ],
+                                        className="position-absolute top-0 start-25 bg-body"
+                                    )
                                     
-                                ]),
+                                ],n_clicks=0),
                                 html.Button(id='special-id', className='btn btn-secondary m-2 p-2', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['add_location'])
                                         ,html.Label(id='', className='fs-4', children="Point Special"),
+                                        ModalBehaviour().render(
+                                            modalheadermsg="Rentrez les coordonnees de la zones !",
+                                            modalbody=[
+                                                
+                                            ],
+                                            isopen=True)
                                 ]),
                                 html.Button(id='layouts-id', className='btn btn-secondary m-2 p-2', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])

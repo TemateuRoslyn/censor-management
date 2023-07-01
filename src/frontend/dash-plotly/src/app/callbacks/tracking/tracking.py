@@ -1,7 +1,7 @@
-from dash import Input, Output, dcc
+from dash import Input, Output, dcc, no_update
 import dash_bootstrap_components as dbc
 import requests
-import pandas as pd
+import math
 import plotly.graph_objects as go
 from components.modal.modal_backdrop import ModalBackdrop
 
@@ -13,16 +13,19 @@ class TrackerCallback:
             Output(component_id="maps-render", component_property="figure"),
             [
                 Input(component_id="track-interval", component_property="n_intervals"),
+                Input(component_id="zoom-size", component_property="value"),
                 Input(component_id="maps-render", component_property="figure"),
             ]
         )
-        def update(n_intervals, figure):
+        def update(n_intervals, zoom, figure):
             insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
             datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
 
-            # print(figure.get('data')[0],"\n\n\n\n")
+            print("zoom = {0}".format(math.floor(float(zoom))))
             # fig = figure.get('data')[0]
             figure.get('data')[0].update(lat=datas.get('lat'),lon=datas.get('lon'))
+            figure.get('layout').get('mapbox').update({'zoom':math.floor(float(zoom))})
+            print(figure.get('layout').get('mapbox'),"\n")
             # print(fig)
             return figure
     
@@ -55,7 +58,7 @@ class TrackerCallback:
                                                                     }
                                                                 )
                                                             ),
-                                                            dbc.Button(id="open-street-map",children="Selectioner", className="btn btn-secondary mt-2")
+                                                            dbc.Button(id="open-street-map",children="Selectioner", className="btn btn-secondary mt-2", n_clicks=0)
                                                         ],
                                                         title='Open Street Map'
                                                     ),
@@ -74,7 +77,7 @@ class TrackerCallback:
                                                                     }
                                                                 )
                                                             ),
-                                                            dbc.Button(id="carto-positron",children="Selectioner", className="btn btn-secondary mt-2")
+                                                            dbc.Button(id="carto-positron",children="Selectioner", className="btn btn-secondary mt-2", n_clicks=10000)
                                                         ],
                                                         title='Carto Positron'
                                                     ),
@@ -93,7 +96,7 @@ class TrackerCallback:
                                                                     }
                                                                 )
                                                             ),
-                                                            dbc.Button(id="carto-darkmatter",children="Selectioner", className="btn btn-secondary mt-2")
+                                                            dbc.Button(id="carto-darkmatter",children="Selectioner", className="btn btn-secondary mt-2", n_clicks=20000)
                                                         ],
                                                         title='Carto Darkmatter'
                                                     ),
@@ -112,7 +115,7 @@ class TrackerCallback:
                                                                     }
                                                                 )
                                                             ),
-                                                            dbc.Button(id="stamen-terrain",children="Selectioner", className="btn btn-secondary mt-2")
+                                                            dbc.Button(id="stamen-terrain",children="Selectioner", className="btn btn-secondary mt-2", n_clicks=40000)
                                                         ],
                                                         title='Stamen Terrain'
                                                     ),
@@ -131,7 +134,7 @@ class TrackerCallback:
                                                                     }
                                                                 )
                                                             ),
-                                                            dbc.Button(id="stamen-toner",children="Selectioner", className="btn btn-secondary mt-2")
+                                                            dbc.Button(id="stamen-toner",children="Selectioner", className="btn btn-secondary mt-2", n_clicks=50000)
                                                         ],
                                                         title='Stamen Toner'
                                                     ),
@@ -140,6 +143,20 @@ class TrackerCallback:
                                         ]
                                     , isopen=True)
         
+    def updateZoomCallback(self):
+        @self.app.callback(
+            Output(component_id="zoom-toast", component_property="is_open"),
+            [
+                Input(component_id="zoom-id", component_property="n_clicks"),
+            ]
+        )
+        def update(nclicks):
+            print(nclicks)
+            if not (nclicks % 2 == 0):
+                return True
+            return no_update
+
     def loadAllCallbacks(self):
         self.updateTrackCallback()
         self.showModalCallback()
+        self.updateZoomCallback()
