@@ -11,29 +11,15 @@ class TrackerCallback:
             Output(component_id="maps-render", component_property="figure"),
             [
                 Input(component_id="track-interval", component_property="n_intervals"),
+                Input(component_id="maps-render", component_property="figure"),
             ]
         )
-        def update(n_intervals):
+        def update(n_intervals, figure):
             insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
-            datas = requests.get("http://127.0.0.1:8000/tracking/next")
+            datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
 
-
-            fig = px.scatter_mapbox(
-                data_frame=datas.json(),
-                lat="lat",
-                lon="lon",
-                hover_name="city",
-                hover_data=["state"],
-                zoom=15,
-                height=350,
-                title="Tracker"
-            )
-            fig.update_layout(mapbox_style="open-street-map")
-            fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-            # fig.update_layout(mapbox_bounds={"west": 0, "east": 10, "south": 0, "north": 51})
-
-            fig.update_layout(
-                autosize=True,
-                hovermode='closest'
-            )
-            return fig
+            # print(figure.get('data')[0],"\n\n\n\n")
+            # fig = figure.get('data')[0]
+            figure.get('data')[0].update(lat=datas.get('lat'),lon=datas.get('lon'))
+            # print(fig)
+            return figure

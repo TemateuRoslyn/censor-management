@@ -20,5 +20,5 @@ class MainCallback:
         # Interval(app).intervalCallback()
         # Interval(app).intervalStepCallback()
         # Interval(app).intervalQuantityCallback()
-        # TrackerCallback(app).updateTrackCallback()
+        TrackerCallback(app).updateTrackCallback()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
