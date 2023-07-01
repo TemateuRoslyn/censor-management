@@ -7,7 +7,7 @@ from views.login.login_view import LoginView
 from views.accounts.sign_up import SignUpView
 from views.graphes.graphes_view import GrapheView
 from views.notifications.notifications_view import NotificationsView
-from views.parametrage.parametrage_view import ParametrageView
+from views.data.data import DataView
 from views.transformations.transformations_view import TransformationsView
 from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
@@ -23,7 +23,7 @@ class RenderCallback:
         self.sign_up = SignUpView()
         self.graphes = GrapheView()
         self.notifications = NotificationsView()
-        self.parametrages = ParametrageView()
+        self.datas = DataView()
         self.transformations = TransformationsView()
         self.sidebar = SidebarComponent()
         self.track = TrackingView()
@@ -37,7 +37,7 @@ class RenderCallback:
             "/notifications": {"content": self.notifications.render()},
             # "/transformations": {"content": self.transformations.render()},
             # "/graphes": {"content": self.graphes.render()},
-            "/parametrages": {"content": self.parametrages.render()},
+            "/datas": {"content": self.datas.render()},
             "/": {"content": self.login.render()},
         }
 

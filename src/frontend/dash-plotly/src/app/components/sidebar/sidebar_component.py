@@ -21,26 +21,26 @@ class SidebarComponent:
                                 ),
                                 self.divider.render(),
                                 self.item.render(
-                                    icon="insert_chart",
-                                    href="statistiques",
-                                    title="Statistiques",
+                                    icon="map",
+                                    href="tracking",
+                                    title="Tracker",
                                 ),
-                                self.item.render(
-                                    icon="auto_graph",
-                                    href="graphes",
-                                    title="Graphes",
-                                ),
+                                # self.item.render(
+                                #     icon="auto_graph",
+                                #     href="graphes",
+                                #     title="Graphes",
+                                # ),
                                 self.divider.render(),
                                 self.item.render(
-                                    icon="settings",
-                                    href="parametrages",
-                                    title="Paramétrages",
+                                    icon="analytics",
+                                    href="datas",
+                                    title="donnees",
                                 ),
-                                self.item.render(
-                                    icon="transform",
-                                    href="transformations",
-                                    title="Transformations",
-                                ),
+                                # self.item.render(
+                                #     icon="transform",
+                                #     href="transformations",
+                                #     title="Transformations",
+                                # ),
                                 self.divider.render(),
                                 self.item.render(
                                     icon="notifications",
