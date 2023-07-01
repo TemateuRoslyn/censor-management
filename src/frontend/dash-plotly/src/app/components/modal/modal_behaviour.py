@@ -5,9 +5,9 @@ class ModalBehaviour:
     def __init__(self) -> object:
         pass
 
-    def render(self, modalheadermsg, modalbody, isopen):
+    def render(self, modalheadermsg, modalbody):
         return dbc.Modal(
-            [dbc.ModalHeader(dbc.ModalTitle(modalheadermsg)),
+            [dbc.ModalHeader(dbc.ModalTitle(modalheadermsg), close_button=False),
             dbc.ModalBody(
                 modalbody
             ),
@@ -19,6 +19,8 @@ class ModalBehaviour:
                     n_clicks=0
                 )
             )],
-            id="modal-backdrop",
-            is_open=isopen
+            id="modal-behaviour",
+            keyboard=False,
+            is_open=False,
+            backdrop='static'
         )

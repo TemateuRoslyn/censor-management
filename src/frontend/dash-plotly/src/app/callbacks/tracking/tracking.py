@@ -1,4 +1,4 @@
-from dash import Input, Output, dcc, no_update
+from dash import Input, Output, State, dcc, no_update
 import dash_bootstrap_components as dbc
 import requests
 import math
@@ -21,11 +21,11 @@ class TrackerCallback:
             insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
             datas = requests.get("http://127.0.0.1:8000/tracking/next").json()
 
-            print("zoom = {0}".format(math.floor(float(zoom))))
+            # print("zoom = {0}".format(math.floor(float(zoom))))
             # fig = figure.get('data')[0]
             figure.get('data')[0].update(lat=datas.get('lat'),lon=datas.get('lon'))
             figure.get('layout').get('mapbox').update({'zoom':math.floor(float(zoom))})
-            print(figure.get('layout').get('mapbox'),"\n")
+            # print(figure.get('layout').get('mapbox'),"\n")
             # print(fig)
             return figure
     
@@ -156,7 +156,32 @@ class TrackerCallback:
                 return True
             return no_update
 
+    def showBehaviourCallback(self):
+        @self.app.callback(
+            Output(component_id="modal-behaviour", component_property="is_open"),
+            [
+                Input(component_id="special-id", component_property="n_clicks"),
+                Input(component_id="pays", component_property="value"),
+                Input(component_id="lat", component_property="value"),
+                Input(component_id="ville", component_property="value"),
+                Input(component_id="lon", component_property="value"),
+                Input(component_id="close-backdrop", component_property="n_clicks"),
+            ],
+            [State(component_id="modal-behaviour", component_property="is_open")]
+        )
+        def showBehaviour(n1, pays, lat, ville, lon, n2, is_open):
+            if n2 > 0:
+                if pays is not None and lat is not None and ville is not None and lon is not None:
+                    if len(pays) > 2 and len(ville) > 2 and len(lat) > 4 and len(lon) > 4:
+                        insert = requests.get("http://127.0.0.1:8000/tracking/insert?city={0}&state={1}&lat={2}&lon={3}".format(ville, pays, lat, lon))
+                        # print(insert)
+                        return False
+            if n1 > 0:
+                return True
+            return False
+           
     def loadAllCallbacks(self):
         self.updateTrackCallback()
         self.showModalCallback()
         self.updateZoomCallback()
+        self.showBehaviourCallback()

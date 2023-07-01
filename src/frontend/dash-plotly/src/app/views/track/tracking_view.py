@@ -95,10 +95,32 @@ class TrackingView:
                                         ModalBehaviour().render(
                                             modalheadermsg="Rentrez les coordonnees de la zones !",
                                             modalbody=[
-                                                
-                                            ],
-                                            isopen=True)
-                                ]),
+                                                html.Div(id='', className='row mb-2', children=[
+                                                    html.Div(id='', className='col-lg-6', children=[
+                                                       dbc.InputGroup(
+                                                        [dbc.InputGroupText('Pays :'), dbc.Input(id='pays',placeholder='France')]
+                                                       ) 
+                                                    ]),
+                                                    html.Div(id='', className='col-lg-6', children=[
+                                                       dbc.InputGroup(
+                                                        [dbc.InputGroupText('Latitude :'), dbc.Input(id='lat',placeholder='48.8588897')]
+                                                       ) 
+                                                    ]),
+                                                ]),
+                                                html.Div(id='', className='row', children=[
+                                                    html.Div(id='', className='col-lg-6', children=[
+                                                        dbc.InputGroup(
+                                                            [dbc.InputGroupText('Ville :'), dbc.Input(id='ville',placeholder='Paris')]
+                                                        ) 
+                                                    ]),
+                                                    html.Div(id='', className='col-lg-6', children=[
+                                                        dbc.InputGroup(
+                                                            [dbc.InputGroupText('Longitude :'), dbc.Input(id='lon',placeholder='2.320041')]
+                                                        ) 
+                                                    ]),
+                                                ]),
+                                            ])
+                                ],n_clicks=0),
                                 html.Button(id='layouts-id', className='btn btn-secondary m-2 p-2', children=[
                                         html.Span(id='', className='material-symbols-outlined icon', children=['dashboard'])
                                         ,html.Label(id='', className='fs-4', children="Layouts"),
