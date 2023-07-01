@@ -1,4 +1,4 @@
-from dash import Input, Output, html
+from dash import Input, Output, html, dcc
 
 from views.acceuil.acceuil_view import AcceuilView
 from views.statistiques.statistiques_view import StatistiqueView
@@ -10,6 +10,7 @@ from views.notifications.notifications_view import NotificationsView
 from views.parametrage.parametrage_view import ParametrageView
 from views.transformations.transformations_view import TransformationsView
 from components.sidebar import SidebarComponent
+from views.sauvegardes.sauvegardes_view import SauvegardeView
 
 
 class RenderCallback:
@@ -25,6 +26,7 @@ class RenderCallback:
         self.parametrages = ParametrageView()
         self.transformations = TransformationsView()
         self.sidebar = SidebarComponent()
+        self.sauvegardes = SauvegardeView()
 
         self.pages = {
             "/sign-up": {"content": self.sign_up.render()},
@@ -36,6 +38,7 @@ class RenderCallback:
             "/graphes": {"content": self.graphes.render()},
             "/parametrages": {"content": self.parametrages.render()},
             "/": {"content": self.login.render()},
+            "/sauvegardes": {"content": self.sauvegardes.render()},
         }
 
     def register(self):
@@ -57,4 +60,18 @@ class RenderCallback:
                             self.pages[pathname]["content"],
                         ]
                     )
-            return html.H1("Page d'erreur")
+            return html.Div(
+                [
+                    html.H1("404", className="display-1"),
+                    html.H4("Page Not Found !", className="display-5"),
+                    html.P(
+                        "Cette page n'existe pas, vous pouve vous retrouver en cliquant sur le lien ci-dessous",
+                    ),
+                    dcc.Link(
+                        "Retour à l'accueil",
+                        href="accueil",
+                        className="btn btn-outline-dark",
+                    ),
+                ],
+                className="jumbotron justify-center",
+            )

@@ -1,4 +1,4 @@
-from dash import dcc
+from dash import dcc, html
 import plotly.graph_objs as go
 import numpy as np
 
@@ -54,4 +54,10 @@ class SparkLineComponent:
             className="py-2 px-4 bg-dark rounded",
         )
 
-        return fig
+        return html.Div(
+            [
+                html.H6(name, className="mb-3"),
+                fig,
+            ],
+            className="card-style",
+        )
