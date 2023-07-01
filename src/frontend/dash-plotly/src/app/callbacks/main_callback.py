@@ -9,6 +9,8 @@ from callbacks.graphs.switching_graphs import Switch
 from callbacks.interval.interval import Interval
 from callbacks.tracking.tracking import TrackerCallback
 from callbacks.modal.modal_callbacks import ModalCallback
+from callbacks.cards.table_card import FullModalCallback
+from callbacks.modal.full_modal_callbacks import PaginateCallback
 
 
 class MainCallback:
@@ -23,4 +25,7 @@ class MainCallback:
         # Interval(app).intervalQuantityCallback()
         TrackerCallback(app).loadAllCallbacks()
         ModalCallback(app).closeModalCallback()
+        FullModalCallback(app).closeFullModalCallback()
+        PaginateCallback(app).paginateCallback()
+        PaginateCallback(app).downloadCallbacks()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
