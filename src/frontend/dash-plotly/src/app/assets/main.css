@@ -4172,3 +4172,8 @@ h6,
 .alert-off::backdrop {
   display: none;
 }
+
+.DateInput,
+.DateInput_1 {
+  width: 100%;
+}

@@ -4,6 +4,11 @@ from components.title_page.title_page_component import TitlePageComponent
 from components.input_group.input_group import InputGroup
 from components.dropdown.dropdown import Dropdown
 from components.date_range.date_range import DateRange
+from components.input.input_component import InputComponent
+from components.button.button_component import ButtonComponent
+from datetime import datetime, date
+import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 
 
 class SauvegardeView:
@@ -13,6 +18,8 @@ class SauvegardeView:
         self.input_group = InputGroup()
         self.dropdown = Dropdown()
         self.date_range = DateRange()
+        self.input = InputComponent()
+        self.button = ButtonComponent()
 
     def render(self):
         return html.Div(
@@ -22,7 +29,7 @@ class SauvegardeView:
                     html.Div(
                         [
                             self.title_page.render(
-                                "Historisation des capteurs",
+                                "Historisation des données",
                             ),
                             html.Div(
                                 html.P(
@@ -34,23 +41,85 @@ class SauvegardeView:
                             html.Div(
                                 [
                                     html.Div(
-                                        self.dropdown.render(
-                                            droplabel="Hello",
-                                            title="Choisir un capteur",
-                                            id="Hello",
-                                            options=["hello", "h"],
+                                        dmc.Select(
+                                            data=["Capteur 1", "Capteur 2"],
+                                            searchable=True,
+                                            style={"width": "100%"},
+                                            id="svg_capteur",
+                                            label="Choisir un capteur",
+                                            value="Capteur 1",
                                         ),
                                         className="col-md-6",
                                     ),
                                     html.Div(
-                                        self.date_range.render(
-                                            id="he",
-                                            label="Date de début et date de fin",
+                                        dmc.Select(
+                                            data=["CSV", "TXT", "JSON"],
+                                            searchable=True,
+                                            style={"width": "100%"},
+                                            id="svg_format",
+                                            label="Selectionnez le format de données",
+                                            value="CSV",
                                         ),
                                         className="col-md-6",
                                     ),
                                 ],
                                 className="row mt-2",
+                            ),
+                            html.Div(
+                                [
+                                    html.Div(
+                                        [
+                                            dmc.DatePicker(
+                                                id="svg_date_begin",
+                                                label="Date de début",
+                                                minDate=date(2020, 8, 5),
+                                                value=datetime.now().date(),
+                                                style={"width": "100%"},
+                                            ),
+                                        ],
+                                        className="col-md-4",
+                                    ),
+                                    html.Div(
+                                        [
+                                            dmc.DatePicker(
+                                                id="svg_date_end",
+                                                label="Date de fin",
+                                                minDate=date(2020, 8, 5),
+                                                value=datetime.now().date(),
+                                                style={"width": "100%"},
+                                            ),
+                                        ],
+                                        className="col-md-4",
+                                    ),
+                                    html.Div(
+                                        dmc.TextInput(
+                                            label="La taille des donnees à téléchager ",
+                                            style={"width": "100%"},
+                                            # error="Entrez un nombre positif",
+                                            id="svg_size",
+                                            type="number",
+                                        ),
+                                        className="col-md-4",
+                                    ),
+                                ],
+                                className="row mt-3",
+                            ),
+                            html.Div(
+                                [
+                                    html.Div(
+                                        dmc.Button(
+                                            "Télécharger",
+                                            leftIcon=DashIconify(
+                                                icon="fluent:database-plug-connected-20-filled",
+                                            ),
+                                            id="svg_download",
+                                            variant="outline",
+                                        ),
+                                        className="col-md-4",
+                                    ),
+                                    dcc.Download(id="download_data"),
+                                ],
+                                className="row mt-3",
                             ),
                         ],
                         className="container-fluid",

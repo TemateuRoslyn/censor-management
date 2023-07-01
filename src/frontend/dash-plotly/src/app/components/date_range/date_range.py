@@ -1,5 +1,4 @@
 from dash import html, dcc
-from datetime import datetime
 
 
 class DateRange:
@@ -13,11 +12,14 @@ class DateRange:
                     label,
                     className="mb-2",
                 ),
-                dcc.DatePickerRange(
-                    id=id,
-                    start_date=datetime.today(),
-                    end_date_placeholder_text="Selectionez une date de fin!",
+                html.Div(
+                    dcc.DatePickerRange(
+                        id=id,
+                        start_date_placeholder_text="Date de début",
+                        end_date_placeholder_text="Date de fin",
+                        # className="dash-date-picker-range",
+                    ),
+                    # className="bg-danger",
                 ),
             ],
-            className="w-100",
         )
