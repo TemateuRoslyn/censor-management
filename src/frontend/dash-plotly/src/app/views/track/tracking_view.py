@@ -3,30 +3,9 @@ from components.header.header_component import HeaderComponent
 from components.title_page import TitlePageComponent
 import plotly.graph_objects as go
 import plotly.express as px
-import pandas as pd
+import requests
 
-us_cities = pd.read_csv(
-    "https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv"
-)
 
-fig = px.scatter_mapbox(
-    us_cities,
-    lat="lat",
-    lon="lon",
-    hover_name="City",
-    hover_data=["State", "Population"],
-    color_discrete_sequence=["fuchsia"],
-    zoom=3,
-    height=300,
-)
-fig.update_layout(mapbox_style="open-street-map")
-fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-fig.update_layout(mapbox_bounds={"west": -180, "east": -50, "south": 20, "north": 90})
-
-fig.update_layout(
-    autosize=True,
-    hovermode='closest'
-)
 
 class TrackingView:
     def __init__(self) -> None:
@@ -34,6 +13,29 @@ class TrackingView:
         self.title_page = TitlePageComponent()
 
     def render(self):
+        insert = requests.get("http://127.0.0.1:8000/tracking/insert?city=Paris&state=France&lat=48.866667&lon=2.333333")
+        datas = requests.get("http://127.0.0.1:8000/tracking/next")
+
+
+        print(datas)
+        fig = px.scatter_mapbox(
+            data_frame=datas.json(),
+            lat="lat",
+            lon="lon",
+            hover_name="city",
+            hover_data=["state"],
+            zoom=15,
+            height=350,
+            title="Tracker"
+        )
+        fig.update_layout(mapbox_style="open-street-map")
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        # fig.update_layout(mapbox_bounds={"west": 0, "east": 10, "south": 0, "north": 51})
+
+        fig.update_layout(
+            autosize=True,
+            hovermode='closest'
+        )
         return html.Div(
             [
                 self.header.render(),
@@ -43,21 +45,17 @@ class TrackingView:
                         [
 
                             dcc.Interval(
-                                id="graph-interval",
+                                id="track-interval",
                                 disabled=False,
                                 n_intervals=0,
-                                interval=2500,
-                                max_intervals=10
-                            ),
-                            self.title_page.render(
-                                "TRACKING",
-                                description="Suivez votre evolution a la trace !",
+                                interval=3000,
+                                max_intervals=-1
                             ),
                             html.Div(
                                 [
                                     dcc.Graph(
                                         id="maps-render",
-                                        figure=fig
+                                        figure=fig,
                                     )
                                 ],
                                 className="row ",
