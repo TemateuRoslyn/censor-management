@@ -24,9 +24,6 @@ class SidebarComponent:
                                     icon="map",
                                     href="tracking",
                                     title="Tracker",
-                                    icon="map",
-                                    href="tracking",
-                                    title="Tracker",
                                 ),
                                 # # self.item.render(
                                 # #     icon="insert_chart",
@@ -40,9 +37,6 @@ class SidebarComponent:
                                 # # ),
                                 self.divider.render(),
                                 self.item.render(
-                                    icon="analytics",
-                                    href="datas",
-                                    title="donnees",
                                     icon="analytics",
                                     href="datas",
                                     title="donnees",
