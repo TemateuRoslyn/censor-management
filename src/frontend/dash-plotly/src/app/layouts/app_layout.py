@@ -10,7 +10,6 @@ class AppLayout:
     def render(self):
         return html.Div(
             [
-                # self.sidebar.render(),
                 html.Main(
                     id="main-wrapper",
                     className="main-wrapper",
