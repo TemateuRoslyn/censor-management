@@ -11,6 +11,8 @@ from callbacks.acceuil.acceuil_capteur_callback import AcceuilCapteurCallback
 from callbacks.acceuil.acceuil_accelerometre_callback import AcceuilAccelerometreCallcak
 from callbacks.tracking.tracking import TrackerCallback
 from callbacks.modal.modal_callbacks import ModalCallback
+from callbacks.cards.table_card import FullModalCallback
+from callbacks.modal.full_modal_callbacks import PaginateCallback
 
 
 class MainCallback:
@@ -19,10 +21,15 @@ class MainCallback:
         ToogleSidebarCallback(app).register()
         RegisterControlCallback(app).render_callbacks()
         LoginCallback(app).render_callbacks()
-        Switch(app).switchCallback()
-        Interval(app).intervalCallback()
-        Interval(app).intervalStepCallback()
-        Interval(app).intervalQuantityCallback()
+        # Switch(app).switchCallback()
+        # Interval(app).intervalCallback()
+        # Interval(app).intervalStepCallback()
+        # Interval(app).intervalQuantityCallback()
+        TrackerCallback(app).loadAllCallbacks()
+        ModalCallback(app).closeModalCallback()
+        FullModalCallback(app).closeFullModalCallback()
+        PaginateCallback(app).paginateCallback()
+        PaginateCallback(app).downloadCallbacks()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
 
         AcceuilAccelerometreCallcak(app).register_acc_1()
@@ -41,3 +48,7 @@ class MainCallback:
 
         TrackerCallback(app).loadAllCallbacks()
         ModalCallback(app).closeModalCallback()
+        FullModalCallback(app).closeFullModalCallback()
+        PaginateCallback(app).paginateCallback()
+        PaginateCallback(app).downloadCallbacks()
+        # ToogleSidebarCallback(app).register_sidebar_callbacks()
