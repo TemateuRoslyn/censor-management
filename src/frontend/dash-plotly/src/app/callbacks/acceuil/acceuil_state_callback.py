@@ -1,4 +1,4 @@
-from dash import Output, Input, State
+from dash import Output, Input
 import numpy as np
 
 
@@ -10,24 +10,20 @@ class AcceuilStateCallback:
         @self.app.callback(
             [
                 [
-                    Output("id_capt_health_title", "children"),
-                    Output("id_capt_health_valeur", "children"),
-                    Output("id_capt_health_etat", "children"),
+                    Output("id_capt1_health_valeur", "children"),
+                    Output("id_capt1_health_etat", "children"),
                 ],
                 [
-                    Output("id_acc_health_title", "children"),
-                    Output("id_acc_health_valeur", "children"),
-                    Output("id_acc_health_etat", "children"),
+                    Output("id_acc1_health_valeur", "children"),
+                    Output("id_acc1_health_etat", "children"),
                 ],
                 [
-                    Output("id_ther_health_title", "children"),
-                    Output("id_ther_health_valeur", "children"),
-                    Output("id_ther_health_etat", "children"),
+                    Output("id_acc2_health_valeur", "children"),
+                    Output("id_acc2_health_etat", "children"),
                 ],
                 [
-                    Output("id_pres_health_title", "children"),
-                    Output("id_pres_health_valeur", "children"),
-                    Output("id_pres_health_etat", "children"),
+                    Output("id_capt_gps_health_valeur", "children"),
+                    Output("id_capt_gps_health_etat", "children"),
                 ],
             ],
             Input("interval-component", "n_intervals"),
@@ -43,22 +39,18 @@ class AcceuilStateCallback:
                 etat_cap_health = "Bon état"
             return [
                 [
-                    "Santé des Capteurs",
                     (str(valeur_cap_health) + "%"),
                     etat_cap_health,
                 ],
                 [
-                    "Accélerometres",
                     (str(valeur_cap_health) + "%"),
                     etat_cap_health,
                 ],
                 [
-                    "Capteurs Thermiques",
                     (str(valeur_cap_health) + "%"),
                     etat_cap_health,
                 ],
                 [
-                    "Capteurs de Pression",
                     (str(valeur_cap_health) + "%"),
                     etat_cap_health,
                 ],
