@@ -1,6 +1,9 @@
 from dash import dcc, html
+from dash import dcc, html
 import plotly.graph_objs as go
 import numpy as np
+import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 
 np.random.seed(1)
 
@@ -11,7 +14,7 @@ class SparkLineComponent:
         self.random_x = np.linspace(0, 10, self.N)
         self.random_y = np.random.randn(self.N)
 
-    def render(self, id, x, y, name="Graph"):
+    def render(self, id: str, x=None, y=None, name="Graph"):
         if x is None:
             x = self.random_x
         if y is None:
@@ -56,7 +59,25 @@ class SparkLineComponent:
 
         return html.Div(
             [
-                html.H6(name, className="mb-3"),
+                html.Div(
+                    [
+                        html.H6(name, className="mb-3"),
+                        dmc.ActionIcon(
+                            DashIconify(icon="clarity:settings-line", width=15),
+                            size="md",
+                            variant="outline",
+                            id=id + "_modal_btn",
+                            n_clicks=0,
+                            mb=1,
+                        ),
+                        dcc.Interval(
+                            id=id + "_interval",
+                            n_intervals=0,
+                            interval=1 * 1000,
+                        ),
+                    ],
+                    className="mb-3 d-flex justify-content-between",
+                ),
                 fig,
             ],
             className="card-style",

@@ -28,5 +28,5 @@ class HealthCard:
                     className="content mx-2",
                 ),
             ],
-            className="icon-card md-4",
+            className="icon-card md-4 mb-2",
         )

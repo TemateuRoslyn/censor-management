@@ -1,5 +1,7 @@
 from dash import html, dcc
 import dash_daq as daq
+import dash_mantine_components as dmc
+from dash_iconify import DashIconify
 
 
 class CapteurComponent:
@@ -9,7 +11,20 @@ class CapteurComponent:
     def render(self, id: str, value=0, label="Label"):
         return html.Div(
             [
-                html.H6(label, className="mb-3"),
+                html.Div(
+                    [
+                        html.H6(label),
+                        dmc.ActionIcon(
+                            DashIconify(icon="clarity:settings-line", width=15),
+                            size="md",
+                            variant="outline",
+                            id=id + "_modal_btn",
+                            n_clicks=0,
+                            mb=1,
+                        ),
+                    ],
+                    className="mb-3 d-flex justify-content-between",
+                ),
                 html.Div(
                     [
                         html.Div(
@@ -23,14 +38,14 @@ class CapteurComponent:
                                 min=0,
                                 max=200,
                             ),
-                            # className="card-body",
                         ),
-                        # html.Div(
-                        #     html.Button("Modifier", className="btn btn-primary"),
-                        #     className="card-footer",
-                        # ),
                     ],
                     className="rounded pt-2 pb-0 bg-dark",
+                ),
+                dcc.Interval(
+                    id=id + "_interval",
+                    n_intervals=0,
+                    interval=1 * 1000,
                 ),
             ],
             className="card-style",
