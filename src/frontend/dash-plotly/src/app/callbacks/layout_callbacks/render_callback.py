@@ -12,6 +12,7 @@ from views.transformations.transformations_view import TransformationsView
 from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
 from views.sauvegardes.sauvegardes_view import SauvegardeView
+from views.sauvegardes.sauvegardes_view import SauvegardeView
 
 
 class RenderCallback:
