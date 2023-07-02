@@ -10,12 +10,15 @@ class Tracker:
         self.lat = []
         self.lon = []
         self.state = []
+        self.iter = 10
 
     def set_next(self,city, state, lat, lon):
+        self.iter +=1
+        print(self.iter)
         self.city.append(city)
         self.state.append(state)
-        self.lat.append(float(lat) + random.uniform(0.000122,0.000889))
-        self.lon.append(float(lon) + random.uniform(0.000122,0.000889))
+        self.lat.append(float(lat) + random.uniform(0.000555,0.000889)/self.iter)
+        self.lon.append(float(lon) + random.uniform(0.000555,0.000889)/self.iter)
 
     def get_next(self):
         return {

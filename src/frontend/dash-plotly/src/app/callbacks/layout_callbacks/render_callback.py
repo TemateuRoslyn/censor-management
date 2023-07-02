@@ -10,11 +10,9 @@ from views.notifications.notifications_view import NotificationsView
 from views.data.data import DataView
 from views.transformations.transformations_view import TransformationsView
 from views.track.tracking_view import TrackingView
-from views.track.tracking_view import TrackingView
-from views.track.tracking_view import TrackingView
-from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
 from views.sauvegardes.sauvegardes_view import SauvegardeView
+from views.not_found.not_found import NotFound
 
 
 class RenderCallback:
@@ -66,18 +64,4 @@ class RenderCallback:
                             self.pages[pathname]["content"],
                         ]
                     )
-            return html.Div(
-                [
-                    html.H1("404", className="display-1"),
-                    html.H4("Page Not Found !", className="display-5"),
-                    html.P(
-                        "Cette page n'existe pas, vous pouve vous retrouver en cliquant sur le lien ci-dessous",
-                    ),
-                    dcc.Link(
-                        "Retour à l'accueil",
-                        href="accueil",
-                        className="btn btn-outline-dark",
-                    ),
-                ],
-                className="jumbotron justify-center",
-            )
+            return NotFound().render()
