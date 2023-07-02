@@ -6,7 +6,7 @@ from components.divider.divider_component import DividerComponent
 from components.button.button_component import ButtonComponent
 
 
-class ParametrageView:
+class DataView:
     def __init__(self) -> None:
         self.header = HeaderComponent()
         self.title_page = TitlePageComponent()

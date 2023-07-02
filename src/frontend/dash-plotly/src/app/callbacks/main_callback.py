@@ -9,6 +9,8 @@ from callbacks.interval.interval import Interval
 from callbacks.sauvegardes.sauvegardes_callback import SauvegardesCallback
 from callbacks.acceuil.acceuil_capteur_callback import AcceuilCapteurCallback
 from callbacks.acceuil.acceuil_accelerometre_callback import AcceuilAccelerometreCallcak
+from callbacks.tracking.tracking import TrackerCallback
+from callbacks.modal.modal_callbacks import ModalCallback
 
 
 class MainCallback:
@@ -21,18 +23,21 @@ class MainCallback:
         Interval(app).intervalCallback()
         Interval(app).intervalStepCallback()
         Interval(app).intervalQuantityCallback()
-        Interval(app).capteur_1_interval()
-        Interval(app).capteur_gps_interval()
-        Interval(app).capteur_acc_1_interval()
-        Interval(app).capteur_acc_2_interval()
-        SauvegardesCallback(app).register()
-        AcceuilStateCallback(app).register()
-        AcceuilCapteurCallback(app).register_capteur_1()
-        AcceuilCapteurCallback(app).register_capteur_gps()
-        AcceuilCapteurCallback(app).register_modal_capteur_1()
-        AcceuilCapteurCallback(app).register_modal_capteur_gps()
+        # ToogleSidebarCallback(app).register_sidebar_callbacks()
 
         AcceuilAccelerometreCallcak(app).register_acc_1()
         AcceuilAccelerometreCallcak(app).register_acc_2()
         AcceuilAccelerometreCallcak(app).register_acc_1_modal()
         AcceuilAccelerometreCallcak(app).register_acc_2_modal()
+        AcceuilCapteurCallback(app).register_capteur_1()
+        AcceuilCapteurCallback(app).register_capteur_gps()
+        AcceuilCapteurCallback(app).register_modal_capteur_1()
+        AcceuilCapteurCallback(app).register_modal_capteur_gps()
+        AcceuilCamembergCallback(app).register()
+
+        AcceuilStateCallback(app).register()
+
+        SauvegardesCallback(app).register()
+
+        TrackerCallback(app).loadAllCallbacks()
+        ModalCallback(app).closeModalCallback()

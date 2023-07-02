@@ -19,12 +19,12 @@ class SauvegardesCallback:
             prevent_initial_call=True,
         )
         def register_callback(
+            svg_download,
             svg_capteur,
             svg_format,
             svg_date_begin,
             svg_date_end,
             svg_size,
-            svg_download,
         ):
             print(
                 svg_capteur,
@@ -34,4 +34,6 @@ class SauvegardesCallback:
                 svg_size,
                 svg_download,
             )
-            return dcc.send_file("https://cm.linkedin.com/in/rushclin-takam-1601a6213")
+            # return dcc.send_file("hello.txt")
+
+            return dict(content="hello world", filename="hello.txt")
