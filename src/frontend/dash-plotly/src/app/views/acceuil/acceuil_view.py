@@ -15,7 +15,7 @@ class AcceuilView:
         self.header = HeaderComponent()
         self.title_page = TitlePageComponent()
         self.capteur = CapteurComponent()
-        self.sparkline = SparkLineComponent()
+        self.accelerometre = SparkLineComponent()
         self.health = HealthCard()
         self.camemberg_1 = CamembergComponent()
         self.modal = ModalCapteur()
@@ -113,22 +113,16 @@ class AcceuilView:
                                 html.Div(
                                     [
                                         html.Div(
-                                            self.sparkline.render(
-                                                id="sparkline-1",
-                                                name="Sparkline",
-                                                x=None,
-                                                y=None,
+                                            self.accelerometre.render(
+                                                id="acc_1", name="Accéléromètre 1"
                                             ),
-                                            className="col-md-6 col-sm-12 col-xs-12 mb-2",
+                                            className="col-md-12 col-sm-12 col-xs-12 mb-2",
                                         ),
                                         html.Div(
-                                            self.sparkline.render(
-                                                id="sparkline-1",
-                                                name="Sparkline",
-                                                x=None,
-                                                y=None,
+                                            self.accelerometre.render(
+                                                id="acc_2", name="Accéléromètre 2"
                                             ),
-                                            className="col-md-6 col-sm-12 col-xs-12 mb-2",
+                                            className="col-md-12 col-sm-12 col-xs-12 mb-2",
                                         ),
                                     ],
                                     className="row mt-3",
@@ -146,6 +140,14 @@ class AcceuilView:
                 self.modal.render(
                     title="Parametrer le capteur GPS",
                     id="capteur_gps_modal",
+                ),
+                self.modal.render(
+                    title="Parametrer l'accélérometre 1",
+                    id="acc_1_modal",
+                ),
+                self.modal.render(
+                    title="Parametrer l'accélérometre 2",
+                    id="acc_2_modal",
                 ),
             ]
         )

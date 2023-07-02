@@ -55,3 +55,23 @@ class Interval:
             if value == "":
                 return 1
             return m.floor(float(value)) * 1000
+
+    def capteur_acc_1_interval(self):
+        @self.app.callback(
+            Output("acc_1_interval", "interval"),
+            Input("acc_1_modal_freq", "value"),
+        )
+        def switch_capteur_gps_interval(value: float):
+            if value == "":
+                return 1
+            return m.floor(float(value)) * 1000
+
+    def capteur_acc_2_interval(self):
+        @self.app.callback(
+            Output("acc_2_interval", "interval"),
+            Input("acc_2_modal_freq", "value"),
+        )
+        def switch_capteur_gps_interval(value: float):
+            if value == "":
+                return 1
+            return m.floor(float(value)) * 1000
