@@ -34,20 +34,23 @@ class ModalFull:
                         dbc.ModalTitle("DONNEES GPS DES ETATS UNIS"),
                         dbc.Accordion([
                             dbc.AccordionItem([
-                                html.Button(id='', className='btn btn-lg border-0', children=[
-                                    html.Span(id='', className='material-symbols-outlined icon fs-1 text-warning', children="csv")
-                                ]),
-                                html.Button(id='', className='btn btn-lg border-0', children=[
-                                    html.Span(id='', className='material-symbols-outlined icon fs-1', children="csv")
-                                ]),
-                                html.Button(id='', className='btn btn-lg border-0', children=[
-                                    html.Span(id='', className='material-symbols-outlined icon fs-1', children="csv")
-                                ]),
+                                html.Button(id='exp-csv', className='btn btn-lg border-0', children=[
+                                    html.Span(id='', className='material-symbols-outlined icon fs-1 text-success', children="csv"),
+                                    dcc.Download(id="exp-csv-d")
+                                ],n_clicks=0),
+                                html.Button(id='exp-html', className='btn btn-lg border-0', children=[
+                                    html.Span(id='', className='material-symbols-outlined icon fs-1 text-warning', children="html"),
+                                    dcc.Download(id="exp-html-d")
+                                ],n_clicks=0),
+                                html.Button(id='exp-json', className='btn btn-lg border-0', children=[
+                                    html.Span(id='', className='material-symbols-outlined icon fs-1 text-dark', children="data_object"),
+                                    dcc.Download(id="exp-json-d")
+                                ],n_clicks=0),
                             ],
                             title="Exporter",
                             className="justify-content-between")
                         ],
-                        # start_collapsed=True,
+                        start_collapsed=True,
                         className="ms-5 w-25")
                     ],
                     close_button=True,
@@ -83,6 +86,6 @@ class ModalFull:
             id="modal-full",
             keyboard=False,
             size="xl",
-            is_open=True,
+            # is_open=True,
             backdrop='static',
         )

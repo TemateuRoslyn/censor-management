@@ -27,4 +27,5 @@ class MainCallback:
         ModalCallback(app).closeModalCallback()
         FullModalCallback(app).closeFullModalCallback()
         PaginateCallback(app).paginateCallback()
+        PaginateCallback(app).downloadCallbacks()
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
