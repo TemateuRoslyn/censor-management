@@ -1,13 +1,15 @@
 from dash import html
 
+import dash_daq as daq
+
 from components.header import HeaderComponent
 from components.title_page import TitlePageComponent
 
 from views.acceuil.components.capteur_component import CapteurComponent
 from views.acceuil.components.sparkline_component import SparkLineComponent
-from views.acceuil.components.health_card import HealthCard
 from views.acceuil.components.camemberg_component import CamembergComponent
 from views.acceuil.components.modal.modal_component import ModalCapteur
+from views.acceuil.components.analogic_input import AnalogicInput
 
 
 class AcceuilView:
@@ -16,9 +18,9 @@ class AcceuilView:
         self.title_page = TitlePageComponent()
         self.capteur = CapteurComponent()
         self.accelerometre = SparkLineComponent()
-        self.health = HealthCard()
         self.camemberg_1 = CamembergComponent()
         self.modal = ModalCapteur()
+        self.analogic_input = AnalogicInput()
 
     def render(self):
         return html.Div(
@@ -35,38 +37,71 @@ class AcceuilView:
                                 html.Div(
                                     [
                                         html.Div(
-                                            self.health.render(
-                                                icon="settings_panorama",
-                                                etat="Etat inconnue",
-                                                title="Capteur 1",
-                                                id="id_capt1_health",
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 0",
+                                                id="ai_0",
                                             ),
                                             className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
                                         ),
                                         html.Div(
-                                            self.health.render(
-                                                icon="trending_up",
-                                                etat="Etat inconnue",
-                                                title="Accéleromètre 1",
-                                                id="id_acc1_health",
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 1",
+                                                id="ai_1",
                                             ),
                                             className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
                                         ),
                                         html.Div(
-                                            self.health.render(
-                                                icon="database",
-                                                etat="Inconnue",
-                                                title="Accéleromètre 2",
-                                                id="id_acc2_health",
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 2",
+                                                id="ai_2",
                                             ),
                                             className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
                                         ),
                                         html.Div(
-                                            self.health.render(
-                                                icon="share_location",
-                                                etat="Inconnue",
-                                                title="Capteur GPS",
-                                                id="id_capt_gps_health",
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 3",
+                                                id="ai_3",
+                                            ),
+                                            className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
+                                        ),
+                                    ],
+                                    className="row mt-3",
+                                ),
+                                html.Div(
+                                    [
+                                        html.Div(
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 4",
+                                                id="ai_4",
+                                            ),
+                                            className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
+                                        ),
+                                        html.Div(
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 5",
+                                                id="ai_5",
+                                            ),
+                                            className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
+                                        ),
+                                        html.Div(
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 6",
+                                                id="ai_6",
+                                            ),
+                                            className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
+                                        ),
+                                        html.Div(
+                                            self.analogic_input.render(
+                                                etat="Actif",
+                                                title="Entrée analogique 7",
+                                                id="ai_7",
                                             ),
                                             className="col-md-3 col-xl-3 col-lg-4 col-sm-6",
                                         ),

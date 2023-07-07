@@ -11,6 +11,7 @@ from callbacks.acceuil.acceuil_capteur_callback import AcceuilCapteurCallback
 from callbacks.acceuil.acceuil_accelerometre_callback import AcceuilAccelerometreCallcak
 from callbacks.tracking.tracking import TrackerCallback
 from callbacks.modal.modal_callbacks import ModalCallback
+from callbacks.acceuil.acceuil_analogic_input_callback import AnalogicInputCallback
 
 
 class MainCallback:
@@ -34,6 +35,15 @@ class MainCallback:
         AcceuilCapteurCallback(app).register_modal_capteur_1()
         AcceuilCapteurCallback(app).register_modal_capteur_gps()
         AcceuilCamembergCallback(app).register()
+
+        AnalogicInputCallback(app).register_ai_0()
+        AnalogicInputCallback(app).register_ai_1()
+        AnalogicInputCallback(app).register_ai_2()
+        AnalogicInputCallback(app).register_ai_3()
+        AnalogicInputCallback(app).register_ai_4()
+        AnalogicInputCallback(app).register_ai_5()
+        AnalogicInputCallback(app).register_ai_6()
+        AnalogicInputCallback(app).register_ai_7()
 
         AcceuilStateCallback(app).register()
 

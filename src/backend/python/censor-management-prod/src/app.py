@@ -7,12 +7,14 @@ import json, time
 from accelerometre_rand import Accelerometre1
 from accelerometre2 import Accelerometre2
 from tracking import Tracker
+from analogic_input import AnalogicInput
 
 app = Flask(__name__)
 
 acc1 = Accelerometre1()
 acc2 = Accelerometre2()
 tr = Tracker()
+ai = AnalogicInput()
 
 
 @app.route("/", methods=["GET"])
@@ -65,6 +67,15 @@ def store_position():
 def coordinates():
     nextCapteurValue = tr.get_next()
     return json.dumps(nextCapteurValue)
+
+
+@app.route(
+    "/analogic-input",
+    methods=["GET"],
+)
+def get_ai():
+    result = ai.get_value()
+    return json.dumps(result)
 
 
 if __name__ == "__main__":
