@@ -1,0 +1,32 @@
+# pods.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: censor-influxdb-nodeport-service
+  namespace: censor-management-space
+spec:
+  selector:
+    app: influxdb
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: censor-redis-nodeport-service
+  namespace: censor-management-space
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: NodePort
+

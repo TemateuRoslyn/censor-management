@@ -1,0 +1,30 @@
+# pvc.yml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: censor-influxdb-pvc
+  namespace: censor-management-space
+spec:
+  storageClassName: censor-influxdb-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  volumeMode: Filesystem
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: censor-redis-pvc
+  namespace: censor-management-space
+spec:
+  storageClassName: censor-redis-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  volumeMode: Filesystem
