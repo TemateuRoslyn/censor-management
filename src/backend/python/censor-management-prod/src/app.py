@@ -5,20 +5,13 @@ import json, time
 
 # models
 from accelerometre_rand import Accelerometre1
-<<<<<<< HEAD
 from accelerometre2 import Accelerometre2
-=======
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 from tracking import Tracker
 
 app = Flask(__name__)
 
-<<<<<<< HEAD
 acc1 = Accelerometre1()
 acc2 = Accelerometre2()
-=======
-acc1 =  Accelerometre1()
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 tr = Tracker()
 
 
@@ -26,10 +19,6 @@ tr = Tracker()
 def index():
     return "welcome to our website"
 
-<<<<<<< HEAD
-
-=======
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 @app.route('/tracking/insert', methods=['GET'])
 def store_position():
     city = request.args.get('city')

@@ -39,18 +39,13 @@ class SidebarComponent:
                                 self.item.render(
                                     icon="analytics",
                                     href="datas",
-                                    title="donnees",
+                                    title="Donnees",
                                 ),
-                                # self.item.render(
-                                #     icon="transform",
-                                #     href="transformations",
-                                #     title="Transformations",
-                                # ),
-                                # self.item.render(
-                                #     icon="transform",
-                                #     href="transformations",
-                                #     title="Transformations",
-                                # ),
+                                self.item.render(
+                                    icon="settings",
+                                    href="parametres",
+                                    title="Parametres",
+                                ),
                                 self.item.render(
                                     icon="save",
                                     href="sauvegardes",
