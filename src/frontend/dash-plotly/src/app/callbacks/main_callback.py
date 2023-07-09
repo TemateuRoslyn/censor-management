@@ -45,10 +45,3 @@ class MainCallback:
         AcceuilStateCallback(app).register()
 
         SauvegardesCallback(app).register()
-
-        TrackerCallback(app).loadAllCallbacks()
-        ModalCallback(app).closeModalCallback()
-        FullModalCallback(app).closeFullModalCallback()
-        PaginateCallback(app).paginateCallback()
-        PaginateCallback(app).downloadCallbacks()
-        # ToogleSidebarCallback(app).register_sidebar_callbacks()
