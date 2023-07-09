@@ -1,0 +1,17 @@
+replicaCount: 1
+
+image:
+  repository: influxdb
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8086
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1"
