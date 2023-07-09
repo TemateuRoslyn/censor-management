@@ -23,6 +23,8 @@ class Tracker:
 =======
 
     def set_next(self,city, state, lat, lon):
+        self.iter +=1
+        print(self.iter)
         self.city.append(city)
         self.state.append(state)
         self.lat.append(float(lat) + random.uniform(0.000122,0.000889))

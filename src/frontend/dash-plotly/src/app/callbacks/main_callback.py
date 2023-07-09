@@ -14,10 +14,6 @@ from callbacks.tracking.tracking import TrackerCallback
 from callbacks.modal.modal_callbacks import ModalCallback
 from callbacks.cards.table_card import FullModalCallback
 from callbacks.modal.full_modal_callbacks import PaginateCallback
-=======
-from callbacks.tracking.tracking import TrackerCallback
-from callbacks.modal.modal_callbacks import ModalCallback
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 
 
 class MainCallback:
@@ -32,11 +28,9 @@ class MainCallback:
         # Interval(app).intervalQuantityCallback()
         TrackerCallback(app).loadAllCallbacks()
         ModalCallback(app).closeModalCallback()
-<<<<<<< HEAD
         FullModalCallback(app).closeFullModalCallback()
         PaginateCallback(app).paginateCallback()
         PaginateCallback(app).downloadCallbacks()
-<<<<<<< HEAD
         # ToogleSidebarCallback(app).register_sidebar_callbacks()
 
         AcceuilAccelerometreCallcak(app).register_acc_1()
@@ -52,14 +46,3 @@ class MainCallback:
         AcceuilStateCallback(app).register()
 
         SauvegardesCallback(app).register()
-
-        TrackerCallback(app).loadAllCallbacks()
-        ModalCallback(app).closeModalCallback()
-        FullModalCallback(app).closeFullModalCallback()
-        PaginateCallback(app).paginateCallback()
-        PaginateCallback(app).downloadCallbacks()
-=======
->>>>>>> ad6c424 (parent c88a30575362290d564b94468eef6a5cd76becb1)
-=======
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
-        # ToogleSidebarCallback(app).register_sidebar_callbacks()

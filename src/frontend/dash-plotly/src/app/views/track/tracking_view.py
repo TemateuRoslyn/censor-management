@@ -156,14 +156,6 @@ class TrackingView:
                                 figure=fig,
                                 className="shadow p-3 mb-5 bg-body rounded"
                             ),
-<<<<<<< HEAD
-=======
-                            dcc.Input(id='id-1', className="opacity-0"),
-                            dcc.Input(id='id-2', className="opacity-0"),
-                            dcc.Input(id='id-3', className="opacity-0"),
-                            dcc.Input(id='id-4', className="opacity-0"),
-                            dcc.Input(id='id-5', className="opacity-0")
->>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
                         ],
                         className="container-fluid",
                         )
