@@ -6,6 +6,7 @@ from callbacks.accounts.login_callback import LoginCallback
 from callbacks.accounts.register_control import RegisterControlCallback
 from callbacks.graphs.switching_graphs import Switch
 from callbacks.interval.interval import Interval
+<<<<<<< HEAD
 from callbacks.sauvegardes.sauvegardes_callback import SauvegardesCallback
 from callbacks.acceuil.acceuil_capteur_callback import AcceuilCapteurCallback
 from callbacks.acceuil.acceuil_accelerometre_callback import AcceuilAccelerometreCallcak
@@ -45,10 +46,3 @@ class MainCallback:
         AcceuilStateCallback(app).register()
 
         SauvegardesCallback(app).register()
-
-        TrackerCallback(app).loadAllCallbacks()
-        ModalCallback(app).closeModalCallback()
-        FullModalCallback(app).closeFullModalCallback()
-        PaginateCallback(app).paginateCallback()
-        PaginateCallback(app).downloadCallbacks()
-        # ToogleSidebarCallback(app).register_sidebar_callbacks()

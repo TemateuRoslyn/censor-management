@@ -38,7 +38,7 @@ class RenderCallback:
             # "/statistiques": {"content": self.statistique.render()},
             "/about": {"content": self.about.render()},
             "/notifications": {"content": self.notifications.render()},
-            # "/transformations": {"content": self.transformations.render()},
+            "/parametres": {"content": self.transformations.render()},
             # "/graphes": {"content": self.graphes.render()},
             "/datas": {"content": self.datas.render()},
             "/": {"content": self.login.render()},

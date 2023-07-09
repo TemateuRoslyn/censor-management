@@ -6,6 +6,9 @@ gunicorn
 dash_bootstrap_components
 # redis
 requests
+<<<<<<< HEAD
 dash-mantine-components==0.11
 dash_iconify
+=======
+>>>>>>> fcbd46f (parent c88a30575362290d564b94468eef6a5cd76becb1)
 geopy

@@ -19,7 +19,6 @@ tr = Tracker()
 def index():
     return "welcome to our website"
 
-
 @app.route('/tracking/insert', methods=['GET'])
 def store_position():
     city = request.args.get('city')
