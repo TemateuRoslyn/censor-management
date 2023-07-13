@@ -1,0 +1,249 @@
+# namespace.yml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: censor-management-space
+
+--- 
+
+# storageClass.yml
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: censor-influxdb-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: local
+  path: /home/maestros/dev-maes/data/censor-management/deployment/kubernates/pv/censor-influxdb-pv
+
+
+---
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: censor-redis-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+parameters:
+  type: local
+  path: /home/maestros/dev-maes/data/censor-management/deployment/kubernates/pv/censor-redis-pv
+
+
+---
+
+# pvc.yml
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: censor-influxdb-pvc
+  namespace: censor-management-space
+spec:
+  storageClassName: censor-influxdb-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  volumeMode: Filesystem
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: censor-redis-pvc
+  namespace: censor-management-space
+spec:
+  storageClassName: censor-redis-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  volumeMode: Filesystem
+
+---
+
+# pods.yml
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-influxdb-nodeport-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: influxdb
+#   ports:
+#     - protocol: TCP
+#       port: 8086
+#       targetPort: 8086
+#   type: NodePort
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-redis-nodeport-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: redis
+#   ports:
+#     - protocol: TCP
+#       port: 6379
+#       targetPort: 6379
+#   type: NodePort
+
+# --- 
+
+# loadbalancer.yml
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-influxdb-loadbalancer-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: influxdb
+#   ports:
+#     - protocol: TCP
+#       port: 8086
+#       targetPort: 8086
+#   type: LoadBalancer
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-redis-loadbalancer-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: redis
+#   ports:
+#     - protocol: TCP
+#       port: 6379
+#       targetPort: 6379
+#   type: LoadBalancer
+
+# ---
+
+# clusterIp.yml
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-influxdb-cluster-ip-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: influxdb
+#   ports:
+#     - protocol: TCP
+#       port: 8086
+#       targetPort: 8086
+#   type: ClusterIP
+
+# ---
+
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: censor-redis-cluster-ip-service
+#   namespace: censor-management-space
+# spec:
+#   selector:
+#     app: redis
+#   ports:
+#     - protocol: TCP
+#       port: 6379
+#       targetPort: 6379
+#   type: ClusterIP
+
+# ---
+
+# deployment.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: censor-influxdb-deployment
+  namespace: censor-management-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - name: influxdb
+          image: influxdb:latest
+          ports:
+            - containerPort: 8086
+          resources:
+            requests:
+              cpu: "250m" # demande de CPU de 250 milli CPU
+              memory: "128Mi" # demande de RAM de 128 MB
+            limits:
+              cpu: "500m" # limite de CPU de 500 milli CPU
+              memory: "256Mi" # limite de RAM de 256 MB
+          volumeMounts:
+            - name: influxdb-storage
+              mountPath: /home/maestros/dev-maes/data/censor-management/deployment/kubernates/pv/censor-influxdb-pv
+      volumes:
+        - name: influxdb-storage
+          persistentVolumeClaim:
+            claimName: censor-influxdb-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: censor-redis-deployment
+  namespace: censor-management-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              cpu: "250m" # demande de CPU de 250 milli CPU
+              memory: "128Mi" # demande de RAM de 128 MB
+            limits:
+              cpu: "500m" # limite de CPU de 500 milli CPU
+              memory: "256Mi" # limite de RAM de 256 MB
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /home/maestros/dev-maes/data/censor-management/deployment/kubernates/pv/censor-redis-pv
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: censor-redis-pvc

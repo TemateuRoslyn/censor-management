@@ -1,3 +1,11 @@
-Flask == 2.3.2
+dash
+dash_daq
+plotly
+pandas
+gunicorn
+dash_bootstrap_components
+# redis
+requests
+dash-mantine-components==0.11
+dash_iconify
 geopy
-# redis == 4.5.5

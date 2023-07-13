@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: influxdb-deployment
+  namespace: censor-management-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: influxdb
+  template:
+    metadata:
+      labels:
+        app: influxdb
+    spec:
+      containers:
+        - name: influxdb
+          image: influxdb:latest
+          ports:
+            - containerPort: 8086
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          volumeMounts:
+            - name: influxdb-storage
+              mountPath: /var/lib/influxdb
+      volumes:
+        - name: influxdb-storage
+          persistentVolumeClaim:
+            claimName: influxdb-pvc

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: influxdb-chart
+version: 1.0.0
+description: Un chart Helm pour le déploiement de InfluxDB
+type: application
+dependencies:
+  - name: redis
+    version: 1.0.x
+    repository: https://example.com/charts
+maintainers:
+  - name: Mon nom
+    email: monemail@example.com
