@@ -14,8 +14,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Install kubectl
-      uses: tale/kubectl-action@v1
+    - uses: tale/kubectl-action@v1
+      with:
+        kubectl-version: v1.22.0
     - run: kubectl get pods
     - name: Apply Namespace
       run: kubectl apply -f namespace.yml
