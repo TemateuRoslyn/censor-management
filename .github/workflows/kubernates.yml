@@ -15,7 +15,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
     - name: Install kubectl
-      uses: ghostzero/kubectl@v1
+      uses: imajeetyadav/kubectl@v1
     - name: Apply Namespace
       run: kubectl apply -f namespace.yml
     - name: Apply StorageClass
