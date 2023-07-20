@@ -1,0 +1,25 @@
+# ingress.yml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: censor-management-ingress
+spec:
+  rules:
+    - host: censor-management.example.com
+      http:
+        paths:
+          - path: /influxdb
+            pathType: Prefix
+            backend:
+              service:
+                name: censor-influxdb-svc
+                port:
+                  number: 8086
+          - path: /redis
+            pathType: Prefix
+            backend:
+              service:
+                name: censor-redis-svc
+                port:
+                  number: 6379

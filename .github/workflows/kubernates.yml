@@ -1,7 +1,7 @@
 name: Deploy on Kubernetes
 
 on:
-  push:
+  push: 
     branches:
       - main
 

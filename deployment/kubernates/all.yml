@@ -136,3 +136,24 @@ spec:
       - name: redis-storage
         persistentVolumeClaim:
           claimName: censor-redis-pvc
+
+# ingress.yml
+
+apiVersion: voyager.appscode.com/v1beta1
+kind: Ingress
+metadata:
+  name: censor-management-ingress
+  namespace: censor-management-space
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - backend:
+          serviceName: censor-influxdb-svc
+          servicePort: 8086
+        path: /influxdb
+      - backend:
+          serviceName: censor-redis-svc
+          servicePort: 6379
+        path: /redis
