@@ -1,1 +1,0 @@
-from .sidebar_component import SidebarComponent
