@@ -4,8 +4,6 @@ plotly
 pandas
 gunicorn
 requests
-dash-mantine-components==0.11
-dash_iconify
 geopy
 dash_extensions
 numpy

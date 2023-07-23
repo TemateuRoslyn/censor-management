@@ -1,6 +1,7 @@
 # app.py
 from flask import Flask, jsonify, request
 import json, time
+import json, time
 
 
 # models
@@ -28,6 +29,15 @@ def store_data():
         return "Insert successfully !"
     else:
         return "An error occur !"
+
+
+@app.route(
+    "/analogic-input",
+    methods=["GET"],
+)
+def get_ai():
+    result = ai.get_value()
+    return json.dumps(result)
 
 
 @app.route(
@@ -67,15 +77,6 @@ def store_position():
 def coordinates():
     nextCapteurValue = tr.get_next()
     return json.dumps(nextCapteurValue)
-
-
-@app.route(
-    "/analogic-input",
-    methods=["GET"],
-)
-def get_ai():
-    result = ai.get_value()
-    return json.dumps(result)
 
 
 if __name__ == "__main__":

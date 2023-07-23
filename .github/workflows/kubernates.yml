@@ -1,0 +1,30 @@
+name: Deploy on Kubernetes
+
+on:
+  push: 
+    branches:
+      - main
+
+jobs:
+  deploy_kubernetes:
+    defaults:
+      run:
+        working-directory: ./deployment/kubernates
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - uses: tale/kubectl-action@v1
+      with:
+        kubectl-version: v1.22.0
+    - run: kubectl get pods
+    - name: Apply Namespace
+      run: kubectl apply -f namespace.yml
+    - name: Apply StorageClass
+      run: kubectl apply -f storageClass.yml
+    - name: Apply PVC
+      run: kubectl apply -f pvc.yml
+    - name: Apply Deployment
+      run: kubectl apply -f deployment.yml
+    - name: Print InfluxDb running description
+      run: kubectl describe deployment censor-influxdb-deployment -n censor-management-space

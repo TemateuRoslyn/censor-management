@@ -1,0 +1,32 @@
+# clusterIp.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: censor-influxdb-cluster-ip-service
+  namespace: censor-management-space
+spec:
+  selector:
+    app: influxdb
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+  type: ClusterIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: censor-redis-cluster-ip-service
+  namespace: censor-management-space
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
+

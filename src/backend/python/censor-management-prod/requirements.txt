@@ -1,4 +1,1 @@
 Flask == 2.3.2
-geopy
-numpy
-# redis == 4.5.5

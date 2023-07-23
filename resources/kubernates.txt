@@ -1,0 +1,165 @@
+-----------------------------------------------------------------------------
+                   1- Consulter le contexte:
+-----------------------------------------------------------------------------
+
+
+
+le résultat de la commande microk8s kubectl config current-context est "microk8s", 
+cela signifie que vous êtes actuellement dans le contexte de votre cluster Kubernetes MicroK8s.
+
+est une distribution légère de Kubernetes pour le développement local et les environnements de test. 
+Si vous utilisez MicroK8s, vous devriez pouvoir accéder aux ressources de votre cluster Kubernetes.
+
+cmd: `microk8s kubectl config current-context`
+
+
+
+
+-----------------------------------------------------------------------------
+                            2- Consulter Ressource
+-----------------------------------------------------------------------------
+
+1- Consulter les pvc 
+
+    cmd: `microk8s kubectl get pvc -n censor-management-space`
+
+2- Consulter les PV
+
+    cmd: `microk8s kubectl get pv -n censor-management-space`
+
+3- Consulter les ressource deployees 
+
+    cmd: `microk8s kubectl get deployments -n censor-management-space`
+
+
+
+
+-----------------------------------------------------------------------------
+                            3- Consulter les logs des ressources 
+-----------------------------------------------------------------------------
+
+1- Consulter les logs des deployments 
+
+cmd: `microk8s kubectl logs deployment/censor-redis-deployment -n censor-management-space --follow`
+
+
+
+-----------------------------------------------------------------------------
+                            3- Consulter les message d'erreur des ressources
+-----------------------------------------------------------------------------
+
+
+cmd: `microk8s kubectl describe pods censor-influxdb-deployment-66cf478d9d-pwcjw -n censor-management-space`
+
+
+
+
+-----------------------------------------------------------------------------
+                        5-Supprimer Des ressource d'un namespace
+-----------------------------------------------------------------------------
+
+1- Supprimer tous les PV, PVC et SC
+
+    cmd: `microk8s kubectl delete pv,pvc,sc --all -n censor-management-space`
+
+2- Supprimer tous pods
+
+    cmd: `microk8s kubectl delete pods --all -n censor-management-space`
+
+3- Supprimer tous les deployments
+    cmd:  `microk8s kubectl delete deployments --all -n censor-management-space`
+
+4- Supprimer toutes les ressource sans distinction:
+    cmd: `microk8s kubectl delete all --all -n censor-management-space`
+
+5- Supprimer un namespace
+    cmd: `microk8s kubectl delete namespace censor-management-space`
+
+
+-----------------------------------------------------------------------------
+                        6- Les Mode d'acces pour PV et PVC
+-----------------------------------------------------------------------------
+
+
++ Les modes d'accès aux PersistentVolumes (PV) et PersistentVolumeClaims (PVC) dans Kubernetes 
+  déterminent la manière dont les ressources de stockage persistant peuvent être utilisées par les pods. 
+  Voici les modes d'accès courants :
+
+    - ReadWriteOnce (RWO) : Ce mode permet à un seul nœud de montage de lire et d'écrire sur le PV 
+                            ou PVC à la fois. Il est généralement utilisé avec des volumes locaux 
+                            ou des disques montés en mode bloc.
+
+    - ReadOnlyMany (ROX) :  Ce mode permet à plusieurs nœuds de montage de lire le PV ou PVC simultanément, 
+                            mais il ne permet pas l'écriture. Il est généralement utilisé avec des partages 
+                            de fichiers en lecture seule, comme les systèmes de fichiers NFS.
+
+    - ReadWriteMany (RWX) : Ce mode permet à plusieurs nœuds de montage de lire et d'écrire sur le PV ou PVC 
+                            simultanément. Il est généralement utilisé avec des systèmes de fichiers partagés en 
+                            lecture et écriture, tels que GlusterFS ou CephFS.
+
++ Comparaison des modes d'accès :
+
+    - ReadWriteOnce (RWO) : Ce mode est adapté aux cas d'utilisation où un seul nœud doit pouvoir lire et écrire 
+                            sur le stockage persistant. Par exemple, les bases de données nécessitent souvent un 
+                            accès en lecture et en écriture depuis un seul nœud.
+
+    - ReadOnlyMany (ROX) :  Ce mode est utile pour les cas d'utilisation où vous avez besoin de partager des données 
+                            en lecture seule entre plusieurs nœuds. Par exemple, le partage de fichiers statiques ou 
+                            de référentiels de lecture seule peut utiliser ce mode d'accès.
+
+    - ReadWriteMany (RWX) : Ce mode est recommandé lorsque vous avez besoin de partager des données en lecture et en 
+                            écriture entre plusieurs nœuds. Cependant, il est important de noter que tous les fournisseurs 
+                            de stockage ne prennent pas en charge ce mode d'accès, il est donc important de vérifier les capacités 
+                            de votre système de stockage.
+
+
+
+-----------------------------------------------------------------------------
+                        7- Configuration de HELM dans kubernates
+-----------------------------------------------------------------------------
+
+le dossier `kubernetes` est toujours nécessaire pour le déploiement de votre projet, car il contient les 
+fichiers de configuration Kubernetes pour les ressources que vos charts Helm doivent déployer, tels que 
+les ressources de stockage, les pods, les services, etc.
+
+Pour déployer vos charts Helm sur votre cluster Kubernetes, vous pouvez suivre les étapes suivantes :
+
+1. Installez le binaire `helm` dans votre machine locale si ce n'est pas déjà fait.
+2. Créez les charts pour vos applications InfluxDB et Redis si ce n'est pas déjà fait, en vous plaçant 
+    dans leur répertoire respectif et en exécutant la commande `helm create <nom-du-chart>`.
+3. Modifiez les fichiers `values.yaml` dans chaque chart pour spécifier les variables de configuration requises 
+    pour votre déploiement.
+4. Validez les charts en exécutant la commande `helm lint <chemin-vers-votre-chart>`.
+5. Créez des packages Helm pour chaque chart en exécutant la commande `helm package <chemin-vers-votre-chart>`
+   pour chaque chart.
+6. Installez les packages Helm en utilisant la commande `helm install <nom-de-la-release> <chemin-vers-le-fichier-tar-du-chart>` 
+    pour chaque chart.
+7. Accédez au tableau de bord Kubernetes en exécutant la commande `sudo dashboard-proxy` pour vérifier que vos 
+    applications InfluxDB et Redis sont déployées et que leurs services sont opérationnels.
+
+>Notez que vous pouvez configurer la configuration du cluster Kubernetes cible avec la commande `microk8s kubectl config 
+  use-context <contexte-de-votre-config>`. Le contexte est généralement défini dans le fichier `~/.kube/config`.
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------
+                        8- Enable cmd
+-----------------------------------------------------------------------------
+
+1- Activer  le provisionneur de stockage host-access
+
+  cmd: `microk8s enable host-access`
+
+2- Activer le sprivileges
+
+  cmd: `microk8s microk8s enable rbac:default-allow-privileged`
+
+3- Activer le storage 
+  cmd: `microk8s enable storage`
+
+
