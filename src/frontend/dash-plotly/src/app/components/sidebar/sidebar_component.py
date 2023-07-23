@@ -25,27 +25,12 @@ class SidebarComponent:
                                     href="tracking",
                                     title="Tracker",
                                 ),
-                                # # self.item.render(
-                                # #     icon="insert_chart",
-                                #     href="statistiques",
-                                #     title="Statistiques",
-                                # ),
-                                # self.item.render(
-                                #     icon="auto_graph",
-                                # #     href="graphes",
-                                # #     title="Graphes",
-                                # # ),
                                 self.divider.render(),
                                 self.item.render(
-                                    icon="analytics",
-                                    href="datas",
-                                    title="donnees",
+                                    icon="settings",
+                                    href="parametres",
+                                    title="Paramètres",
                                 ),
-                                # self.item.render(
-                                #     icon="transform",
-                                #     href="transformations",
-                                #     title="Transformations",
-                                # ),
                                 self.item.render(
                                     icon="save",
                                     href="sauvegardes",

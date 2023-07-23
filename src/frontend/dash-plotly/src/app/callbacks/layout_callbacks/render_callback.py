@@ -15,6 +15,7 @@ from views.track.tracking_view import TrackingView
 from views.track.tracking_view import TrackingView
 from components.sidebar import SidebarComponent
 from views.sauvegardes.sauvegardes_view import SauvegardeView
+from views.parametres import ParametreView
 
 
 class RenderCallback:
@@ -32,6 +33,7 @@ class RenderCallback:
         self.sidebar = SidebarComponent()
         self.sauvegardes = SauvegardeView()
         self.track = TrackingView()
+        self.parametre = ParametreView()
 
         self.pages = {
             "/sign-up": {"content": self.sign_up.render()},
@@ -41,7 +43,7 @@ class RenderCallback:
             "/about": {"content": self.about.render()},
             "/notifications": {"content": self.notifications.render()},
             # "/transformations": {"content": self.transformations.render()},
-            # "/graphes": {"content": self.graphes.render()},
+            "/parametres": {"content": self.parametre.render()},
             "/datas": {"content": self.datas.render()},
             "/": {"content": self.login.render()},
             "/sauvegardes": {"content": self.sauvegardes.render()},

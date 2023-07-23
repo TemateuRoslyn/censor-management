@@ -41,24 +41,35 @@ class SauvegardeView:
                             html.Div(
                                 [
                                     html.Div(
-                                        dmc.Select(
-                                            data=["Capteur 1", "Capteur 2"],
-                                            searchable=True,
-                                            style={"width": "100%"},
+                                        # dmc.Select(
+                                        #     data=["Capteur 1", "Capteur 2"],
+                                        #     searchable=True,
+                                        #     style={"width": "100%"},
+                                        #     id="svg_capteur",
+                                        #     label="Choisir un capteur",
+                                        #     value="Capteur 1",
+                                        # ),
+                                        dmc.MultiSelect(
+                                            label="Choisir les capteurs",
+                                            placeholder="Selectionnez un capteur",
                                             id="svg_capteur",
-                                            label="Choisir un capteur",
-                                            value="Capteur 1",
+                                            value=["Capteur 0", "Capteur 1"],
+                                            data=[
+                                                {"value": "c1", "label": "Capteur 1"},
+                                                {"value": "c2", "label": "Capteur 2"},
+                                                {"value": "c0", "label": "Capteur 0"},
+                                            ],
+                                            style={"width": "100%", "marginBottom": 10},
                                         ),
                                         className="col-md-6",
                                     ),
                                     html.Div(
-                                        dmc.Select(
-                                            data=["CSV", "TXT", "JSON"],
-                                            searchable=True,
+                                        dmc.TextInput(
+                                            label="La taille des donnees à téléchager ",
                                             style={"width": "100%"},
-                                            id="svg_format",
-                                            label="Selectionnez le format de données",
-                                            value="CSV",
+                                            # error="Entrez un nombre positif",
+                                            id="svg_size",
+                                            type="number",
                                         ),
                                         className="col-md-6",
                                     ),
@@ -77,7 +88,7 @@ class SauvegardeView:
                                                 style={"width": "100%"},
                                             ),
                                         ],
-                                        className="col-md-4",
+                                        className="col-md-6",
                                     ),
                                     html.Div(
                                         [
@@ -89,17 +100,7 @@ class SauvegardeView:
                                                 style={"width": "100%"},
                                             ),
                                         ],
-                                        className="col-md-4",
-                                    ),
-                                    html.Div(
-                                        dmc.TextInput(
-                                            label="La taille des donnees à téléchager ",
-                                            style={"width": "100%"},
-                                            # error="Entrez un nombre positif",
-                                            id="svg_size",
-                                            type="number",
-                                        ),
-                                        className="col-md-4",
+                                        className="col-md-6",
                                     ),
                                 ],
                                 className="row mt-3",
@@ -107,17 +108,47 @@ class SauvegardeView:
                             html.Div(
                                 [
                                     html.Div(
-                                        dmc.Button(
-                                            "Télécharger",
-                                            leftIcon=DashIconify(
-                                                icon="fluent:database-plug-connected-20-filled",
-                                            ),
-                                            id="svg_download",
-                                            variant="outline",
+                                        html.Div(
+                                            [
+                                                html.Div(
+                                                    dmc.Button(
+                                                        "Télécharger en CSV",
+                                                        leftIcon=DashIconify(
+                                                            icon="fluent:database-plug-connected-20-filled",
+                                                        ),
+                                                        id="svg_download",
+                                                        variant="outline",
+                                                    ),
+                                                    className="col-md-4",
+                                                ),
+                                                html.Div(
+                                                    dmc.Button(
+                                                        "Télécharger en TXT",
+                                                        leftIcon=DashIconify(
+                                                            icon="fluent:database-plug-connected-20-filled",
+                                                        ),
+                                                        id="svg_download",
+                                                        variant="outline",
+                                                    ),
+                                                    className="col-md-4",
+                                                ),
+                                                html.Div(
+                                                    dmc.Button(
+                                                        "Télécharger en JSON",
+                                                        leftIcon=DashIconify(
+                                                            icon="fluent:database-plug-connected-20-filled",
+                                                        ),
+                                                        id="svg_download",
+                                                        variant="outline",
+                                                    ),
+                                                    className="col-md-4",
+                                                ),
+                                                dcc.Download(id="download_data"),
+                                            ],
+                                            className="row",
                                         ),
-                                        className="col-md-4",
+                                        className="col-md-6",
                                     ),
-                                    dcc.Download(id="download_data"),
                                 ],
                                 className="row mt-3",
                             ),
