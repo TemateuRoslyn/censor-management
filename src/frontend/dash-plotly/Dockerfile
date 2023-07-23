@@ -1,16 +1,16 @@
-FROM python:3.10 AS build
+FROM python:3.10 AS dev
+
+WORKDIR /
 
 ENV DASH_DEBUG_MODE True
-WORKDIR /
-# COPY ./requirements.txt /app/
-RUN set -ex && \
-    pip install -r requirements.txt
 
 FROM python:3.10
 
-WORKDIR /
-# COPY ./app /app
+COPY ./requirements.txt /
+RUN pip install -r /requirements.txt
 
-EXPOSE 4000
+COPY ./src /app/
 
-CMD ["python", "src/app/app.py"]
+EXPOSE 8085
+
+CMD ["python", "app/run.py"]

@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:buster
+
+  flask:
+    restart: always
+    build: ./src/backend/python/censor-management-prod
+    ports:
+      - "9000:9000"
+    links:
+      - redis
+
+  web:
+    build:
+      context: ./src/frontend/dash-plotly
+    ports:
+      - "8085:8085"
+    links:
+      - flask
