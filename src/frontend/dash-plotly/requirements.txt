@@ -8,3 +8,5 @@ geopy
 dash_extensions
 numpy
 python-dotenv
+dash-mantine-components
+dash_iconify
