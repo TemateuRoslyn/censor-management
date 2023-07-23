@@ -9,3 +9,4 @@ dash_iconify
 geopy
 dash_extensions
 numpy
+python-dotenv

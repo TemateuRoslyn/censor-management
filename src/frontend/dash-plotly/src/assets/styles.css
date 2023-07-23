@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  font-family: "Poppins";
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+input:invalid {
+  outline: none !important;
+}
+
+#wrapper {
+  padding: 10px;
+  margin-left: 300px;
+  margin-right: 320px;
+}
+
+@media only screen and (max-width: 1500px) {
+  #toc-navbar {
+    display: none;
+  }
+
+  #wrapper {
+    margin-right: 0;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  #components-navbar {
+    display: none;
+  }
+
+  #wrapper {
+    margin-left: 0;
+  }
+}
+
+.demo-container {
+  display: flex;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.demo-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  justify-content: center;
+}
+
+.demo-controls {
+  width: 250px;
+  padding: 20px;
+  gap: 10px;
+}
+
+.demo-control {
+  margin: 10px;
+}
+
+@media only screen and (max-width: 750px) {
+  .demo-container {
+    flex-direction: column;
+  }
+
+  .demo-controls {
+    width: 100%;
+  }
+}
+
+.dmc-bar {
+  background-image: linear-gradient(to right, yellow, orange);
+}
+
+.dmc-thumb {
+  border-color: orange;
+  height: 20px;
+  width: 20px;
+  background-color: white;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+  background-color: red;
+}
+
+.nav-link {
+  color: #262d3f;
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: 0.3s;
+  font-family: "Poppins";
+  /* background-color: red; */
+}
+
+.nav-link i {
+  font-size: 1.15rem;
+}
+
+.nav-item {
+  margin-bottom: 0.6rem;
+  width: 100%;
+}
