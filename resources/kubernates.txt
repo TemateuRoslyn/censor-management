@@ -4,13 +4,13 @@
 
 
 
-le résultat de la commande microk8s kubectl config current-context est "microk8s", 
-cela signifie que vous êtes actuellement dans le contexte de votre cluster Kubernetes MicroK8s.
+le résultat de la commande kubectl config current-context est ", 
+cela signifie que vous êtes actuellement dans le contexte de votre cluster Kubernetes 
 
 est une distribution légère de Kubernetes pour le développement local et les environnements de test. 
-Si vous utilisez MicroK8s, vous devriez pouvoir accéder aux ressources de votre cluster Kubernetes.
+Si vous utilisez  vous devriez pouvoir accéder aux ressources de votre cluster Kubernetes.
 
-cmd: `microk8s kubectl config current-context`
+cmd: `kubectl config current-context`
 
 
 
@@ -21,15 +21,15 @@ cmd: `microk8s kubectl config current-context`
 
 1- Consulter les pvc 
 
-    cmd: `microk8s kubectl get pvc -n censor-management-space`
+    cmd: `kubectl get pvc -n censor`
 
 2- Consulter les PV
 
-    cmd: `microk8s kubectl get pv -n censor-management-space`
+    cmd: `kubectl get pv -n censor`
 
 3- Consulter les ressource deployees 
 
-    cmd: `microk8s kubectl get deployments -n censor-management-space`
+    cmd: `kubectl get deployments -n censor`
 
 
 
@@ -40,7 +40,7 @@ cmd: `microk8s kubectl config current-context`
 
 1- Consulter les logs des deployments 
 
-cmd: `microk8s kubectl logs deployment/censor-redis-deployment -n censor-management-space --follow`
+cmd: `kubectl logs deployment/censor-redis-deployment -n censor --follow`
 
 
 
@@ -49,7 +49,7 @@ cmd: `microk8s kubectl logs deployment/censor-redis-deployment -n censor-managem
 -----------------------------------------------------------------------------
 
 
-cmd: `microk8s kubectl describe pods censor-influxdb-deployment-66cf478d9d-pwcjw -n censor-management-space`
+cmd: `kubectl describe pods censor-influxdb-deployment-66cf478d9d-pwcjw -n censor`
 
 
 
@@ -60,26 +60,31 @@ cmd: `microk8s kubectl describe pods censor-influxdb-deployment-66cf478d9d-pwcjw
 
 1- Supprimer tous les PV, PVC et SC
 
-    cmd: `microk8s kubectl delete pv,pvc,sc --all -n censor-management-space`
+    cmd: `kubectl delete pv,pvc,sc --all -n censor`
+
+    force `kubectl delete pvc data-my-wordpress-mariadb-0  --force --grace-period=0`
 
 2- Supprimer tous pods
 
-    cmd: `microk8s kubectl delete pods --all -n censor-management-space`
+    cmd: `kubectl delete pods --all -n censor`
 
 3- Supprimer tous les deployments
-    cmd:  `microk8s kubectl delete deployments --all -n censor-management-space`
+    cmd:  `kubectl delete deployments --all -n censor`
 
 4- Supprimer toutes les ressource sans distinction:
-    cmd: `microk8s kubectl delete all --all -n censor-management-space`
+    cmd: `kubectl delete all --all -n censor`
 
 5- Supprimer un namespace
-    cmd: `microk8s kubectl delete namespace censor-management-space`
+    cmd: `kubectl delete namespace censor`
+    cmd: `kubectl create namespace censor`
 
+kubectl delete pv,pvc,sc --all -n censor && kubectl delete pods --all -n censor && kubectl delete deployments --all -n censor && kubectl delete all --all -n censor && kubectl delete namespace censor && kubectl create namespace censor
 
 -----------------------------------------------------------------------------
                         6- Les Mode d'acces pour PV et PVC
 -----------------------------------------------------------------------------
 
+cmd `sudo chmod -R 777 /home/maestros/dev-maes/data/censor/deployment/kubernates/pv/censor-influxdb-pv`
 
 + Les modes d'accès aux PersistentVolumes (PV) et PersistentVolumeClaims (PVC) dans Kubernetes 
   déterminent la manière dont les ressources de stockage persistant peuvent être utilisées par les pods. 
@@ -137,7 +142,7 @@ Pour déployer vos charts Helm sur votre cluster Kubernetes, vous pouvez suivre 
 7. Accédez au tableau de bord Kubernetes en exécutant la commande `sudo dashboard-proxy` pour vérifier que vos 
     applications InfluxDB et Redis sont déployées et que leurs services sont opérationnels.
 
->Notez que vous pouvez configurer la configuration du cluster Kubernetes cible avec la commande `microk8s kubectl config 
+>Notez que vous pouvez configurer la configuration du cluster Kubernetes cible avec la commande `kubectl config 
   use-context <contexte-de-votre-config>`. Le contexte est généralement défini dans le fichier `~/.kube/config`.
 
 
@@ -153,13 +158,58 @@ Pour déployer vos charts Helm sur votre cluster Kubernetes, vous pouvez suivre 
 
 1- Activer  le provisionneur de stockage host-access
 
-  cmd: `microk8s enable host-access`
+  cmd: `enable host-access`
 
 2- Activer le sprivileges
 
-  cmd: `microk8s microk8s enable rbac:default-allow-privileged`
+  cmd: `enable rbac:default-allow-privileged`
 
 3- Activer le storage 
-  cmd: `microk8s enable storage`
+  cmd: `enable storage`
 
 
+
+-----------------------------------------------------------------------------
+                        9- Helm Kebernetes 
+-----------------------------------------------------------------------------
+
+
+
+1- Lancer un deployement sur le clsuter kubernetes via helm 
+   cmd: `helm install --namespace uv-projet-in4 uv-projet-in4-angular-deployment .`
+
+
+
+
+
+
+
+premierement create le pvde redis: 
+
+kubectl create -f pv.yaml
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm repo update
+
+//redis 
+helm install censor-redis-deployment -f value.yaml bitnami/redis -n censor
+
+// influxdb 
+helm install censor-influxdb-deployment -f value.yaml bitnami/influxdb -n censor
+
+
+helm uninstall redis-cluster
+
+
+
+
+kubectl apply -f pv.yaml -f pvc.yaml 
+
+
+helm get manifest censor-influxdb-deployment -n censor > influxdb_manifest.yaml
+helm get manifest censor-mongodb-deployment -n censor > mongodb_manifest.yaml
+helm get manifest censor-kafka-deployment -n censor > kafka_manifest.yaml
+
+
+helm install censor-influxdb-deployment . -n toto

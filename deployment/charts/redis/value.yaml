@@ -1,0 +1,22 @@
+# values.yaml
+
+redis:
+  usePassword: true
+  master:
+    persistence:
+      enabled: true
+      existingClaim: redis-data-censor-redis-deployment-master-0
+      accessMode: ReadWriteOnce
+      size: 100Mi
+  replica:
+    enabled: true
+    replicas: 2
+    persistence:
+      enabled: true
+      existingClaim: redis-data-censor-redis-deployment-replicas-0
+      accessMode: ReadWriteOnce
+      size: 150Mi
+    customConfig:
+      masterauth: "TY4ycFbwS0"
+      masterhost: censor-redis-deployment-master-0
+      masterport: 6379
