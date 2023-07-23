@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: censor-flaskapi-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: censor-flaskapi
+  template:
+    metadata:
+      labels:
+        app: censor-flaskapi
+    spec:
+      containers:
+        - name: censor-flaskapi-container
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 8085
+          env:
+            - name: DEBUG
+              value: "{{ .Values.env.DEBUG }}"
+            - name: HOST
+              value: "{{ .Values.env.HOST }}"
+            - name: PORT
+              value: "{{ .Values.env.PORT }}"

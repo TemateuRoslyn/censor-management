@@ -1,0 +1,31 @@
+# redis-pv.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: censor-redis-pv-master
+  namespace: censor
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/maestros/dev-maes/data/censor/deployment/kubernates/pv/censor-redis-pv/master
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: censor-redis-pv-replicas
+  namespace: censor
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 150Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/maestros/dev-maes/data/censor/deployment/kubernates/pv/censor-redis-pv/replicas

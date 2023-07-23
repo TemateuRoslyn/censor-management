@@ -1,0 +1,10 @@
+replicaCount: 1
+
+image:
+  repository: softmaes/censor-backend
+  tag: latest
+
+env:
+  DEBUG: "false"
+  HOST: "127.0.0.1"
+  PORT: "8085"
