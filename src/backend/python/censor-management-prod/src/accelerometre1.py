@@ -20,8 +20,8 @@ class Accelerometre1:
         self.temperature = random.uniform(-5,100)
         self.humidity = random.uniform(-5,100)
         redis_cli.rpush('temperatures',self.temperature)
-        # redis_cli.rpush('humidity',self.humidity)
-        # redis_cli.rpush('time',self.time)
+        redis_cli.rpush('humidity',self.humidity)
+        redis_cli.rpush('time',self.time)
         return True
 
     def get_next(self,cycle):

@@ -12,7 +12,7 @@ services:
     build: ./src/backend/python/censor-management-prod
     ports:
       - "9000:9000"
-    links:
+    depends_on:
       - redis
 
   web:
