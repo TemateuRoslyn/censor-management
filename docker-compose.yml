@@ -8,6 +8,7 @@ services:
       - "6379:6379"
 
   flask:
+    container_name: flask
     restart: always
     build: ./src/backend/python/censor-management-prod
     ports:
@@ -16,9 +17,10 @@ services:
       - redis
 
   web:
+    container_name: web
     build:
       context: ./src/frontend/dash-plotly
     ports:
       - "8085:8085"
-    links:
+    depends_on:
       - flask
