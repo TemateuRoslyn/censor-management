@@ -3,6 +3,9 @@ version: "3"
 services:
   redis:
     image: redis:buster
+    container_name: redis
+    ports:
+      - "6379:6379"
 
   flask:
     restart: always

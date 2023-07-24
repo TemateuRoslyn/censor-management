@@ -4,7 +4,7 @@ import redis,json,random
 
 liste = [94016, 80014, 60659, 10011]
 
-redis_cli = redis.Redis(host='0.0.0.0',port=6379)
+redis_cli = redis.Redis(host='redis',port=6379)
 
 
 class Accelerometre1:
@@ -20,8 +20,8 @@ class Accelerometre1:
         self.temperature = random.uniform(-5,100)
         self.humidity = random.uniform(-5,100)
         redis_cli.rpush('temperatures',self.temperature)
-        redis_cli.rpush('humidity',self.humidity)
-        redis_cli.rpush('time',self.time)
+        # redis_cli.rpush('humidity',self.humidity)
+        # redis_cli.rpush('time',self.time)
         return True
 
     def get_next(self,cycle):
