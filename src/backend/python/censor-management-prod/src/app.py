@@ -5,7 +5,7 @@ import json, time
 
 
 # models
-from accelerometre_rand import Accelerometre1
+from accelerometre1 import Accelerometre1
 from accelerometre2 import Accelerometre2
 from tracking import Tracker
 from analogic_input import AnalogicInput
