@@ -176,7 +176,7 @@ Pour déployer vos charts Helm sur votre cluster Kubernetes, vous pouvez suivre 
 
 
 1- Lancer un deployement sur le clsuter kubernetes via helm 
-   cmd: `helm install --namespace uv-projet-in4 uv-projet-in4-angular-deployment .`
+   cmd: `helm install -n censor censor-flask-deployment .`
 
 
 
@@ -197,6 +197,8 @@ helm install censor-redis-deployment -f value.yaml bitnami/redis -n censor
 
 // influxdb 
 helm install censor-influxdb-deployment -f value.yaml bitnami/influxdb -n censor
+
+helm install censor-flask-deployment -n censor .
 
 
 helm uninstall redis-cluster
