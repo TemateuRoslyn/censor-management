@@ -1,14 +1,11 @@
-FROM python:3.10 as dev
+FROM python:3.10 AS build
 
-WORKDIR /work
-
-FROM dev as runtime
 WORKDIR /app
-
 COPY ./requirements.txt /app/
-RUN pip install -r /app/requirements.txt
+RUN pip install -r requirements.txt
 
-COPY ./src/ /app/
-ENV FLASK_APP=app.py
+FROM build
 
-CMD flask run -h 0.0.0 -p 5004
+COPY ./src/ /app
+EXPOSE 8000
+CMD ["python", "app.py"]
