@@ -5,18 +5,20 @@ redis:
   master:
     persistence:
       enabled: true
-      existingClaim: redis-data-censor-redis-deployment-master-0
+      storageClass: censor-redis-sc
+      # existingClaim: redis-data-censor-redis-deployment-master-0
       accessMode: ReadWriteOnce
-      size: 100Mi
+      size: 8Gi #100Mi
   replica:
     enabled: true
     replicas: 2
     persistence:
       enabled: true
-      existingClaim: redis-data-censor-redis-deployment-replicas-0
+      # existingClaim: redis-data-censor-redis-deployment-replicas-0
+      storageClass: censor-redis-sc
       accessMode: ReadWriteOnce
-      size: 150Mi
+      size: 8Gi #100Mi
     customConfig:
-      masterauth: "TY4ycFbwS0"
+      # masterauth: "TY4ycFbwS0"
       masterhost: censor-redis-deployment-master-0
       masterport: 6379
