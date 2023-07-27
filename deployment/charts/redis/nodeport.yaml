@@ -9,5 +9,5 @@ spec:
   ports:
     - name: redis
       port: 6379
-      targetPort: 6379
+      targetPort: 33500
   type: NodePort
