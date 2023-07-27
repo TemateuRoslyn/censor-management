@@ -1,0 +1,16 @@
+# mongodb-pv.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: censor-kafka-pv
+  namespace: censor
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 8Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/maestros/dev-maes/data/censor/deployment/kubernates/pv/censor-kafka-pv
+

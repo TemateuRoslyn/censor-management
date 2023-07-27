@@ -1,7 +1,24 @@
 # app.py
+import os
+import json, time
 from flask import Flask, jsonify, request
-import json, time
-import json, time
+
+# Lire la valeur des variables d'environnement
+debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
+host_val = os.getenv("host")    # La variable "host" contiendra l'adresse (str)
+port_val = os.getenv("port")    # La variable "port" contiendra le port (str)
+
+
+# Convertir le port en nombre (integer)
+try:
+    port_val = int(port_val)
+except ValueError:
+    print("Erreur : le port n'est pas un entier valide.")
+    
+if debug_val == "true":
+    debug_val = True
+else:
+    debug_val = False
 
 
 # models
@@ -80,4 +97,8 @@ def coordinates():
 
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    app.run(
+        debug=debug_val, true
+        host=host_val,
+        port=port_val, 
+        )

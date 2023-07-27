@@ -1,8 +1,7 @@
 import os
 import requests
 
-API_ADDR = os.getenv("API_ADDR")
-
+API_ADDR = os.getenv("api_addr")
 
 def get_request(route: str):
     """Fonction qui doit lancer les requêtes en GET a l'API"""

@@ -1,0 +1,20 @@
+# values.yaml
+influxdb:
+  auth:
+    enabled: true
+    user: admin
+    password: admin
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+
+pvc:
+  enabled: true
+  existingClaim: censor-influxdb-deployment
+  annotations:
+    meta.helm.sh/release-name: censor-influxdb-deployment
+    meta.helm.sh/release-namespace: censor
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  size: 8Gi
+
