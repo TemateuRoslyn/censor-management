@@ -227,6 +227,7 @@ helm upgrade censor-redis-deployment -f values.yaml bitnami/redis -n censor
 
 3- tester l'accessiond e redis hors du cluster.
 
+
 redis-cli -h 10.0.1.1 -p 6079
 
 https://microk8s.io/docs/registry-built-in
