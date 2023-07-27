@@ -10,7 +10,7 @@ FROM build
 
 # env variables
 ENV debug false
-ENV host 127.0.0.1
+ENV host 0.0.0.0
 ENV port 8000
 
 # app source code copiying

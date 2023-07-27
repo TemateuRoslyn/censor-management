@@ -215,3 +215,6 @@ helm get manifest censor-kafka-deployment -n censor > kafka_manifest.yaml
 
 
 helm install censor-influxdb-deployment . -n toto
+
+
+https://microk8s.io/docs/registry-built-in
