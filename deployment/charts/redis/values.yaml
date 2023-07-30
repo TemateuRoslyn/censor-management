@@ -10,6 +10,11 @@ redis:
       accessModes:
         - ReadWriteOnce
       size: 8Gi
+    service:
+      externalIPs
+        - 192.168.1.199
+        - 0.0.0.0
+  
   replica:
     enabled: true
     replicas: 2
@@ -23,3 +28,4 @@ redis:
     customConfig:
       masterhost: censor-redis-deployment-master-0
       masterport: 6379
+

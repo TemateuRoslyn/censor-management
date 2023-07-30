@@ -99,6 +99,15 @@ class ChannelDI:
         self.grouping = LineGrouping.CHAN_PER_LINE
         self.task = None
 
+    def __init__(self, lines, device, num_di, sample_size):
+
+        self.lines = lines
+        self.device = device
+        self.num_di = num_di
+        self.sample_size = sample_size
+        self.grouping = LineGrouping.CHAN_PER_LINE
+        self.task = None
+
     
     def init_task(self):
 
@@ -123,6 +132,10 @@ class ChannelDI:
 
         return samples
     
+    def close_task(self):
+
+        self.task.close()
+    
 
 
 class ChannelDO:
@@ -133,6 +146,15 @@ class ChannelDO:
         self.device = "Dev1"
         self.num_do = "0-7"
         self.grouping = LineGrouping.CHAN_FOR_ALL_LINES
+        self.task = None
+
+    def __init__(self, lines, device, num_do):
+
+        self.lines = lines
+        self.device = device
+        self.num_di = num_do
+        self.grouping = LineGrouping.CHAN_FOR_ALL_LINES
+        self.task = None
 
     
     def init_task(self):
@@ -153,23 +175,137 @@ class ChannelDO:
 
         return t
     
+    def close_task(self):
+
+        self.task.close()
+    
 
 
 class ChannelCI:
 
     def __init__(self) -> None:
 
-        self.channels = ["ctr0"]
+        self.channel = "ctr0"
         self.device = "Dev1"
         self.sample_size = 1
         self.task = None
 
+    def __init__(self, channel, device, sample_size):
 
-    def init_task(self):
+        self.channel = channel
+        self.device = device
+        self.sample_size = sample_size
+        self.task = None
+
+
+    def init_task_pulse_freq(self):
 
         task = nidaqmx.Task()
         
-        task.ci_channels.add_ci_pulse_chan_freq(counter=f"{self.device}/{self.channels[0]}")
+        task.ci_channels.add_ci_pulse_chan_freq(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+    def init_task_pulse_ticks(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_pulse_chan_ticks(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+    def init_task_pulse_time(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_pulse_chan_time(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+
+    def init_task_period(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_period_chan(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+    def init_task_freq(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_freq_chan(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+    def init_task_two_edge(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_two_edge_sep_chan(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+
+    def init_task_gps_timestamp(self):
+
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_gps_timestamp_chan(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+    def init_task_pulse(self):
+    
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_pulse_width_chan(counter=f"{self.device}/{self.channel}")
+
+        self.task = task
+
+        self.task.start()
+
+        return task
+    
+    def init_task_semi_period(self):
+    
+        task = nidaqmx.Task()
+        
+        task.ci_channels.add_ci_semi_period_chan(counter=f"{self.device}/{self.channel}")
 
         self.task = task
 
@@ -188,6 +324,10 @@ class ChannelCI:
 
         return samples
     
+    def close_task(self):
+
+        self.task.close()
+    
 
 
 
@@ -203,7 +343,7 @@ class ChannelCO:
         self.sample_mode = AcquisitionType.CONTINUOUS
         self.task = None
 
-    def init_task_time(self):
+    def init_task_pulse_time(self):
 
         task = nidaqmx.Task()
         
@@ -217,7 +357,7 @@ class ChannelCO:
 
         return task
     
-    def init_task_freq(self):
+    def init_task_pulse_freq(self):
 
         task = nidaqmx.Task()
         
@@ -229,7 +369,7 @@ class ChannelCO:
 
         return task
     
-    def init_task_tick(self):
+    def init_task_pulse_tick(self):
 
         task = nidaqmx.Task()
         
@@ -241,23 +381,33 @@ class ChannelCO:
 
         return task
 
-    def write_data_CtrTime(self):
+    def write_data_CtrTime(self, high_time, low_time):
 
-        sample = CtrTime(high_time=0.001, low_time=0.002)
-
-        self.task.write(sample)
-
-    def write_data_CtrFreq(self):
-
-        sample = CtrFreq(freq=0.1)
+        sample = CtrTime(high_time=high_time, low_time=low_time)
 
         self.task.write(sample)
 
-    def write_data_CtrTick(self):
+        return sample
 
-        sample = CtrTick(high_tick=0.01, low_tick=0.02)
+    def write_data_CtrFreq(self, freq):
+
+        sample = CtrFreq(freq=freq)
 
         self.task.write(sample)
+
+        return sample
+
+    def write_data_CtrTick(self, high_tick, low_tick):
+
+        sample = CtrTick(high_tick=high_tick, low_tick=low_tick)
+
+        self.task.write(sample)
+
+        return sample
+
+    def close_task(self):
+
+        self.task.close()
 
 
 

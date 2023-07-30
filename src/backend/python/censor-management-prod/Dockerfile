@@ -8,10 +8,15 @@ RUN /app/venv/bin/pip install -r requirements.txt
 
 FROM build
 
+# arguments
+ARG DEBUG
+ARG HOST
+ARG PORT
+
 # env variables
-ENV debug false
-ENV host 0.0.0.0
-ENV port 8000
+ENV debug $DEBUG
+ENV host $HOST
+ENV port $PORT
 
 # app source code copiying
 COPY ./src/ /app

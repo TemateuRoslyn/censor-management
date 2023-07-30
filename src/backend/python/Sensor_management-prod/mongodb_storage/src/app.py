@@ -1,11 +1,30 @@
 import threading
 import numpy as np
 import pandas as pd
+import os
 
 from flask import Flask, jsonify, request
 from datetime import datetime as Date
 from redis import Redis
 from mongodb import MongoDBHandler
+
+# Lire la valeur des variables d'environnement
+debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
+host_val = os.getenv("host")    # La variable "host" contiendra l'adresse (str)
+port_val = os.getenv("port")    # La variable "port" contiendra le port (str)
+
+
+# Convertir le port en nombre (integer)
+try:
+    port_val = int(port_val)
+except ValueError:
+    print("Erreur : le port n'est pas un entier valide.")
+    
+if debug_val == "true":
+    debug_val = True
+else:
+    debug_val = False
+
 
 app = Flask(__name__)
 
@@ -101,7 +120,7 @@ def insert_data_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, co
 
                 data = process_messages(item=item, sample_size=int(config['sample']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
 
-                mongo.insert_one(collection_name=config['collection'], data=data)
+                mongo.insert_one(collection_name=config['collection_name'], data=data)
                
 
             lastid = items[0][1][-1][0]
@@ -120,7 +139,7 @@ def api_write_to_mongodb():
 
         redis_conn = Redis(host=data.get('host'), port=int(data.get('port')), decode_responses=True)
 
-        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), port=data.get('port'))
+        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
 
         if len(redis_conn.xinfo_groups(data.get('stream'))==0):
 
@@ -137,7 +156,7 @@ def api_write_to_mongodb():
         config['sample'] = data.get('sample')
         config['group'] = data.get('group')
         config['stream'] = data.get('stream')
-        config['collection'] = data.get('collection')
+        config['collection_name'] = data.get('collection_name')
 
         # Créez un thread pour la tâche en arrière-plan
         background_thread = threading.Thread(target=insert_data_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
@@ -146,6 +165,9 @@ def api_write_to_mongodb():
 
 
         background_thread.join()
+
+        redis_conn.close()
+        mongo.close()
 
     except Exception as ex:
         print(f"Error : {ex}")
@@ -161,42 +183,6 @@ def api_stop_write_to_mongodb():
     return jsonify({'return': "Stop de la sauvegarde"}), 200 
 
 
-
-
-
-
-
-
-# Configuration de la base de données MongoDB
-MONGODB_URL = "mongodb://localhost:27017"
-MONGODB_DB_NAME = "mydatabase"
-
-# Créer une instance de la classe MongoDBHandler
-mongo_handler = MongoDBHandler(db_name=MONGODB_DB_NAME, url=MONGODB_URL)
-
-
-# Route pour insérer des données dans MongoDB
-@app.route('/api/insert', methods=['POST'])
-def insert_data():
-    try:
-        data = request.get_json()
-        collection_name = data.get('collection_name')
-        data_to_insert = data.get('data')
-
-        if collection_name and data_to_insert:
-            inserted_id = mongo_handler.insert_one(collection_name=collection_name, data=data_to_insert)
-            if inserted_id:
-                return jsonify({'message': 'Données insérées avec succès dans MongoDB.', 'inserted_id': str(inserted_id)}), 201
-            else:
-                return jsonify({'error': 'Erreur lors de l\'insertion des données dans MongoDB.'}), 500
-        else:
-            return jsonify({'error': 'La collection et les données doivent être spécifiées dans le corps de la requête JSON.'}), 400
-
-    except Exception as e:
-        return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
-    
-
-
 # Route pour rechercher des données dans MongoDB
 @app.route('/api/find', methods=['POST'])
 def find_data():
@@ -205,10 +191,14 @@ def find_data():
         collection_name = data.get('collection_name')
         query = data.get('query')
 
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+
         if collection_name:
             results = mongo_handler.find(collection_name=collection_name, query=query)
+            mongo_handler.close()
             return jsonify({'results': [result for result in results]}), 200
         else:
+            mongo_handler.close()
             return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
 
     except Exception as e:
@@ -225,10 +215,15 @@ def update_data():
         query = data.get('query')
         update_data = data.get('update_data')
 
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+
+
         if collection_name and query and update_data:
             updated_count = mongo_handler.update_one(collection_name=collection_name, query=query, update_data=update_data)
+            mongo_handler.close()
             return jsonify({'message': f'{updated_count} documents mis à jour dans MongoDB.'}), 200
         else:
+            mongo_handler.close()
             return jsonify({'error': 'La collection, la requête (query) et les données de mise à jour (update_data) doivent être spécifiées dans le corps de la requête JSON.'}), 400
 
     except Exception as e:
@@ -244,10 +239,15 @@ def delete_data():
         collection_name = data.get('collection_name')
         query = data.get('query')
 
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+
+
         if collection_name and query:
             deleted_count = mongo_handler.delete_one(collection_name=collection_name, query=query)
+            mongo_handler.close()
             return jsonify({'message': f'{deleted_count} documents supprimés de MongoDB.'}), 200
         else:
+            mongo_handler.close()
             return jsonify({'error': 'La collection et la requête (query) doivent être spécifiées dans le corps de la requête JSON.'}), 400
 
     except Exception as e:
@@ -255,5 +255,112 @@ def delete_data():
 
 
 
+
+
+
+
+
+
+# # Configuration de la base de données MongoDB
+# MONGODB_URL = "mongodb://localhost:27017"
+# MONGODB_DB_NAME = "mydatabase"
+
+# # Créer une instance de la classe MongoDBHandler
+# mongo_handler = MongoDBHandler(db_name=MONGODB_DB_NAME, url=MONGODB_URL)
+
+
+# # Route pour insérer des données dans MongoDB
+# @app.route('/api/insert', methods=['POST'])
+# def insert_data():
+#     try:
+#         data = request.get_json()
+#         collection_name = data.get('collection_name')
+#         data_to_insert = data.get('data')
+
+#         if collection_name and data_to_insert:
+#             inserted_id = mongo_handler.insert_one(collection_name=collection_name, data=data_to_insert)
+#             if inserted_id:
+#                 return jsonify({'message': 'Données insérées avec succès dans MongoDB.', 'inserted_id': str(inserted_id)}), 201
+#             else:
+#                 return jsonify({'error': 'Erreur lors de l\'insertion des données dans MongoDB.'}), 500
+#         else:
+#             return jsonify({'error': 'La collection et les données doivent être spécifiées dans le corps de la requête JSON.'}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+    
+
+
+# # Route pour rechercher des données dans MongoDB
+# @app.route('/api/find', methods=['POST'])
+# def find_data():
+#     try:
+#         data = request.get_json()
+#         collection_name = data.get('collection_name')
+#         query = data.get('query')
+
+#         if collection_name:
+#             results = mongo_handler.find(collection_name=collection_name, query=query)
+#             return jsonify({'results': [result for result in results]}), 200
+#         else:
+#             return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+    
+
+
+# # Route pour mettre à jour des données dans MongoDB
+# @app.route('/api/update', methods=['POST'])
+# def update_data():
+#     try:
+#         data = request.get_json()
+#         collection_name = data.get('collection_name')
+#         query = data.get('query')
+#         update_data = data.get('update_data')
+
+#         if collection_name and query and update_data:
+#             updated_count = mongo_handler.update_one(collection_name=collection_name, query=query, update_data=update_data)
+#             return jsonify({'message': f'{updated_count} documents mis à jour dans MongoDB.'}), 200
+#         else:
+#             return jsonify({'error': 'La collection, la requête (query) et les données de mise à jour (update_data) doivent être spécifiées dans le corps de la requête JSON.'}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+    
+
+
+# # Route pour supprimer des données dans MongoDB
+# @app.route('/api/delete', methods=['POST'])
+# def delete_data():
+#     try:
+#         data = request.get_json()
+#         collection_name = data.get('collection_name')
+#         query = data.get('query')
+
+#         if collection_name and query:
+#             deleted_count = mongo_handler.delete_one(collection_name=collection_name, query=query)
+#             return jsonify({'message': f'{deleted_count} documents supprimés de MongoDB.'}), 200
+#         else:
+#             return jsonify({'error': 'La collection et la requête (query) doivent être spécifiées dans le corps de la requête JSON.'}), 400
+
+#     except Exception as e:
+#         return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    from waitress import serve
+    
+    if debug_val :
+        app.run(
+        debug=debug_val, 
+        host=host_val,
+        port=port_val, 
+        )
+    else :
+        serve(
+            app, 
+            host=host_val, 
+            port=port_val
+            )

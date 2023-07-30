@@ -1,0 +1,10 @@
+pyyaml
+coloredlogs
+confluent-kafka
+kafka-python
+Flask
+redis
+pymongo
+numpy
+pandas
+waitress
