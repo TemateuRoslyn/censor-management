@@ -98,7 +98,7 @@ def coordinates():
 
 if __name__ == "__main__":
     app.run(
-        debug=debug_val, true
+        debug=debug_val, 
         host=host_val,
         port=port_val, 
         )
