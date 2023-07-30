@@ -1,0 +1,4 @@
+pyudev
+psutil
+pytest-shutil
+flask

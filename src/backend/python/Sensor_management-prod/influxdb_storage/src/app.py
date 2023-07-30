@@ -12,19 +12,19 @@ from redis import Redis
 app = Flask(__name__)
 
 
-# Configuration de la base de données InfluxDB
-INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN = "YOUR_AUTH_TOKEN"
-INFLUXDB_ORG = "YOUR_ORG"
-INFLUXDB_BUCKET = "YOUR_BUCKET"
+# # Configuration de la base de données InfluxDB
+# INFLUXDB_URL = "http://localhost:8086"
+# INFLUXDB_TOKEN = "YOUR_AUTH_TOKEN"
+# INFLUXDB_ORG = "YOUR_ORG"
+# INFLUXDB_BUCKET = "YOUR_BUCKET"
 
-# Créer une instance de la classe InfluxDBHandler
-influx_handler = InfluxDBHandler(
-    url=INFLUXDB_URL,
-    token=INFLUXDB_TOKEN,
-    org=INFLUXDB_ORG,
-    bucket=INFLUXDB_BUCKET
-)
+# # Créer une instance de la classe InfluxDBHandler
+# influx_handler = InfluxDBHandler(
+#     url=INFLUXDB_URL,
+#     token=INFLUXDB_TOKEN,
+#     org=INFLUXDB_ORG,
+#     bucket=INFLUXDB_BUCKET
+# )
 
 STOP_INSERT_DATA =[False]
 
@@ -179,7 +179,29 @@ def api_stop_write_to_influxdb():
 
     STOP_INSERT_DATA[0] = True 
 
-    return jsonify({'return': "Stop de la sauvegarde"}), 200         
+    return jsonify({'return': "Stop de la sauvegarde"}), 200      
+
+
+# Route pour effectuer une requête sur InfluxDB
+@app.route('/api/query', methods=['POST'])
+def query_influxdb():
+    try:
+        data = request.get_json()
+        query = data.get('query')
+        influx_handler = InfluxDBHandler(url=data.get('url'), token=data.get('token'), org=data.get('org'))
+
+        if query:
+            result = influx_handler.query_data(query=query)
+            influx_handler.close()
+            return jsonify(result), 200
+        else:
+            influx_handler.close()
+            return jsonify({'error': 'La requête doit être spécifiée dans le corps de la requête JSON.'}), 400
+
+    except Exception as e:
+        return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+    
+
 
 
 

@@ -1,0 +1,9 @@
+pyyaml
+coloredlogs
+confluent-kafka
+kafka-python
+Flask
+influxdb-client[async]
+redis
+numpy
+pandas
