@@ -3,22 +3,23 @@
 redis:
   usePassword: true
   master:
+  # master volume
     persistence:
       enabled: true
-      storageClass: censor-redis-sc
-      # existingClaim: redis-data-censor-redis-deployment-master-0
-      accessMode: ReadWriteOnce
-      size: 8Gi #100Mi
+      storageClass: k8s.io/minikube-hostpath
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
   replica:
     enabled: true
     replicas: 2
+    # replica volume
     persistence:
       enabled: true
-      # existingClaim: redis-data-censor-redis-deployment-replicas-0
-      storageClass: censor-redis-sc
-      accessMode: ReadWriteOnce
-      size: 8Gi #100Mi
+      storageClass: k8s.io/minikube-hostpath
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi
     customConfig:
-      # masterauth: "TY4ycFbwS0"
       masterhost: censor-redis-deployment-master-0
       masterport: 6379

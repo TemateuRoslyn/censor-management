@@ -1,0 +1,9 @@
+# values.yaml
+
+mongodb:
+    persistence:
+      enabled: true
+      storageClass: k8s.io/minikube-hostpath
+      accessModes:
+        - ReadWriteOnce
+      size: 8Gi

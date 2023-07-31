@@ -231,3 +231,9 @@ helm upgrade censor-redis-deployment -f values.yaml bitnami/redis -n censor
 redis-cli -h 10.0.1.1 -p 6079
 
 https://microk8s.io/docs/registry-built-in
+ncuec  cbwiubc bbbcweiuc  cbbc  cbbcjdsb  cdjbbc  cdbjbbc  cniucs 
+
+cncndcn  cndsinuc  ninucds  inucdsiuc  inucd  insdnc  incinudc  icdnucnsdcni c dincds ncinc 
+
+ csdcbdsc  bdsicbc cdibdsbsdc  csbcs  csd 
+ ncidsbcbsd cnsidnucs cbidsbcbc bibc  dcbbc cd cibcb nnduuey yyrttejnnbb hhettrn piudndj hostpath
