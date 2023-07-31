@@ -6,7 +6,7 @@ redis:
   # master volume
     persistence:
       enabled: true
-      storageClass: k8s.io/minikube-hostpath
+      storageClass: censor-redis-sc
       accessModes:
         - ReadWriteOnce
       size: 8Gi
@@ -16,7 +16,7 @@ redis:
     # replica volume
     persistence:
       enabled: true
-      storageClass: k8s.io/minikube-hostpath
+      storageClass: censor-redis-sc
       accessModes:
         - ReadWriteOnce
       size: 8Gi
