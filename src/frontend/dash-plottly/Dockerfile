@@ -8,11 +8,17 @@ RUN /app/venv/bin/pip install -r requirements.txt
 
 FROM build
 
+# arguments
+ARG DEBUG
+ARG HOST
+ARG PORT
+ARG API_ADDR
+
 # env variables
-ENV debug false
-ENV host 0.0.0.0
-ENV port 8085
-ENV api_addr 127.0.0.1:8000
+ENV debug $DEBUG
+ENV host $HOST
+ENV port $PORT
+ENV api_addr $API_ADDR
 
 # copiying app sources
 COPY ./src/ /app

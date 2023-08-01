@@ -1,0 +1,7 @@
+pyyaml
+coloredlogs
+confluent-kafka
+kafka-python
+redis
+Flask
+waitress

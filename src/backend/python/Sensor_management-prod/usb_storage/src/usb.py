@@ -1,14 +1,17 @@
 import shutil
+import psutil
 import os
+import re
 from pyudev import Context, Monitor
 
 
 class USBHandler:
-    def __init__(self, mount_dir='/mnt/usb'):
+    def __init__(self, mount_dir='/mnt/usb', expression=r"^/dev/sd[c-z]{1,2}[0-9]+$"):
         self.context = Context()
         self.monitor = Monitor.from_netlink(self.context)
         self.monitor.filter_by(subsystem='block', device_type='partition')
         self.mount_dir = mount_dir
+        self.expression = expression
 
     def mount_usb(self, device_path):
         try:
@@ -24,6 +27,21 @@ class USBHandler:
             print(f"Clé USB démontée")
         except Exception as e:
             print(f"Erreur lors du démontage de la clé USB : {e}")
+
+    def find_usb(self):
+
+        cle_usb_trouvee = False
+        chemin_cle_usb = ''
+        
+        partitions = psutil.disk_partitions()
+        for partition in partitions :
+            print(f"Partition : {partition}")
+            # if 'removable' in partition.opts and 'noauto' not in partition.opts :
+            if re.match(self.expression,partition.device):
+                cle_usb_trouvee = True
+                chemin_cle_usb = partition.mountpoint
+                break
+        return cle_usb_trouvee, chemin_cle_usb
 
     def start_monitoring(self):
         for device in self.monitor:
@@ -45,12 +63,12 @@ class USBFileCopier:
         # Vérifier si le chemin du répertoire source existe
         if not os.path.exists(self.source_dir):
             print(f"Le répertoire source '{self.source_dir}' n'existe pas.")
-            return
+            return False
 
         # Vérifier si le chemin du point de montage de la clé USB existe
         if not os.path.exists(self.usb_mount_path):
             print(f"Le point de montage USB '{self.usb_mount_path}' n'existe pas.")
-            return
+            return False
 
         # Copier les fichiers du répertoire source vers la clé USB
         try:
@@ -59,5 +77,6 @@ class USBFileCopier:
                 if os.path.isfile(file_path):
                     shutil.copy(file_path, self.usb_mount_path)
                     print(f"Copié '{file_name}' vers la clé USB.")
+            return True
         except Exception as e:
             print(f"Une erreur s'est produite lors de la copie des fichiers : {e}")
