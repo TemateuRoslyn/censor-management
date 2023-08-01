@@ -12,6 +12,8 @@ app = Flask(__name__)
 
 STOP_EVENT_COLLECT_CHAN_AI = [False]
 
+QUEUE_AI = []
+
 
 class NumpyArrayEncoder(JSONEncoder):
     def default(self, obj):
@@ -21,6 +23,7 @@ class NumpyArrayEncoder(JSONEncoder):
     
 def collect_data_from_chan_ai(stop_event,channel_ai:ChannelsAI, collect_time: float = 10.0):
 
+    global QUEUE_AI
    
     if collect_time > 0 :
 
@@ -28,13 +31,13 @@ def collect_data_from_chan_ai(stop_event,channel_ai:ChannelsAI, collect_time: fl
 
         while (time.process_time() - start) <= collect_time :
 
-            channel_ai.read_datas()
+            QUEUE_AI.append(channel_ai.read_datas())
 
     elif collect_time < 0 :
 
         while not stop_event[0]:
 
-            channel_ai.read_datas()
+            QUEUE_AI.append(channel_ai.read_datas())
 
     else:
         raise(f"Le temps de collect est null {collect_time}")
@@ -98,19 +101,20 @@ def api_read_data_chan_ai_to_redis_get():
 @app.route('/api/read_ai_loop_to_redis', methods=['POST'])
 def api_read_ai_loop_to_redis():
     # Assurez-vous d'avoir correctement configuré la connexion à Redis dans cette route
+    global QUEUE_AI
 
     try:
 
         data = request.get_json()
 
-        stream_chan_ai = str(data.get('stream'))
-        redis_host = str(data.get('host'))
+        stream_chan_ai = data.get('stream')
+        redis_host = data.get('host')
         redis_port = int(data.get('port'))
         collect_time = float(data.get('period'))
         rate = int(data.get('rate'))
         buffer_size = int(data.get('buffer_size'))
         sample_per_chan = int(data.get('sample_size'))
-        device=str(data.get('device'))
+        device= data.get('device')
         channels =data.get('channels')
 
         obj_chan = ChannelsAI(rate=rate, buffer_size=buffer_size, sample_per_chan=sample_per_chan, device=device, channels=channels)
@@ -127,11 +131,16 @@ def api_read_ai_loop_to_redis():
 
         last_id = 0
 
-        while len(obj_chan.queue) > 0 :
+        # time.sleep(2)
 
-            data = {}
+        print(f"Len : {len(QUEUE_AI)}")
 
-            samples = obj_chan.queue.pop(0)
+
+        while len(QUEUE_AI) > 0 :
+
+            data = {}  
+            
+            samples = QUEUE_AI.pop(0)          
 
             tab = np.array(samples['values'])
 
@@ -146,23 +155,26 @@ def api_read_ai_loop_to_redis():
             data['channels'] = ' '.join(samples['channels'])
 
             last_id = obj_redis.xadd(name=stream_chan_ai, fields=data)
-
-        obj_chan.close_task()
-        
+            
         background_thread.join()
 
-        return jsonify({'id': last_id}), 200
+        return jsonify({'id': f"{last_id}"}), 200
     
     except Exception as e:
+        obj_chan.close_task()
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
 
 
 
 
-@app.route('/api/stop_read_ai_loop_to_redis', methods=['GET'])
+@app.route('/api/stop_read_ai_loop_to_redis', methods=['POST'])
 def api_stop_read_ai_loop_to_redis():
 
+    global STOP_EVENT_COLLECT_CHAN_AI
+    
     STOP_EVENT_COLLECT_CHAN_AI[0]=True
+
+    return jsonify({'message': f"Arrêt de la collecte des AI en boucle"}), 200
 
 
 @app.route('/api/read_ai_to_redis', methods=['POST'])
@@ -173,13 +185,13 @@ def api_read_ai_to_redis():
 
         data = request.get_json()
 
-        stream_chan_ai = str(data.get('stream'))
-        redis_host = str(data.get('host'))
+        stream_chan_ai = data.get('stream')
+        redis_host = data.get('host')
         redis_port = int(data.get('port'))
         rate = int(data.get('rate'))
         buffer_size = int(data.get('buffer_size'))
         sample_per_chan = int(data.get('sample_size'))
-        device=str(data.get('device'))
+        device = data.get('device')
         channels =data.get('channels')
 
         obj_chan = ChannelsAI(rate=rate, buffer_size=buffer_size, sample_per_chan=sample_per_chan, device=device, channels=channels)
@@ -214,9 +226,10 @@ def api_read_ai_to_redis():
 
         obj_chan.close_task()
 
-        return jsonify({'id': last_id}), 200
+        return jsonify({"id": f"{last_id}"}), 200
     
     except Exception as e:
+        obj_chan.close_task()
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
 
 
@@ -246,7 +259,7 @@ def api_read_ai():
         obj_chan.close_task()
         
 
-        return jsonify({'data': samples}), 200
+        return jsonify({'data': f"{samples}"}), 200
     
     except Exception as e:
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
@@ -260,7 +273,7 @@ def api_read_di():
 
         data = request.get_json()
 
-        obj_chan = ChannelDI(lines=data.get('lines'), device=data.get('device'), num_di=data.get('num_di'), sample_size=int(data.get('sample')))
+        obj_chan = ChannelDI(lines=data.get('lines'), device=data.get('device'), num_di=data.get('num_di'), sample_size=int(data.get('sample_size')))
 
         obj_chan.init_task()
 
@@ -289,7 +302,7 @@ def api_write_do():
 
         obj_chan.close_task()
 
-        return jsonify({'write': t}) , 200
+        return jsonify({'write': f"{t}"}) , 200
     
     except Exception as e:
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
@@ -301,7 +314,7 @@ def api_read_ci():
 
         data = request.get_json()
 
-        obj_chan = ChannelCI(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample'))
+        obj_chan = ChannelCI(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample_size'))
 
         if data.get('type') == "pulse_freq" :
 
@@ -347,7 +360,7 @@ def api_read_ci():
 
         obj_chan.close_task()
 
-        return jsonify({'data': data}), 200
+        return jsonify({'data': f"{data}"}), 200
 
     except Exception as e:
 
@@ -413,7 +426,7 @@ def api_read_ci_to_redis():
 
         data = request.get_json()
 
-        obj_chan = ChannelCI(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample'))
+        obj_chan = ChannelCI(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample_size'))
 
         obj_redis = Redis(host=data.get('host'), port=int(data.get('port')))
 
@@ -463,7 +476,7 @@ def api_read_ci_to_redis():
 
         obj_chan.close_task()
 
-        return jsonify({'id': last_id, 'data': data}), 200
+        return jsonify({'id': f"{last_id}", 'data': f"{data}"}), 200
 
     except Exception as e:
 
@@ -476,7 +489,7 @@ def api_write_co():
 
         data = request.get_json()
 
-        obj_chan = ChannelCO(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample'))
+        obj_chan = ChannelCO(channel=data.get('channel'), device=data.get('device'), sample_size=data.get('sample_size'))
 
         if data.get('type') == "pulse_freq" :
 
@@ -500,7 +513,7 @@ def api_write_co():
        
         obj_chan.close_task()
 
-        return jsonify({'data': data}), 200
+        return jsonify({'data': f"{data}"}), 200
 
     except Exception as e:
 
