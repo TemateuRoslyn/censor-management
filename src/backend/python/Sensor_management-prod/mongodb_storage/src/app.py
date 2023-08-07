@@ -176,7 +176,9 @@ def api_write_to_mongodb():
 
 # Route pour écrire des données dans InfluxDB
 @app.route('/api/stopwriteloop', methods=['GET'])
-def api_stop_write_to_mongodb(): 
+def api_stop_write_to_mongodb():
+
+    global STOP_INSERT_DATA 
 
     STOP_INSERT_DATA[0] = True 
 

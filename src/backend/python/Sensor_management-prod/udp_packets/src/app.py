@@ -1,5 +1,6 @@
 import threading
 import os 
+import requests
 
 from flask import request,jsonify, Flask
 from redis import Redis, RedisError
@@ -24,11 +25,45 @@ if debug_val == "true":
 else:
     debug_val = False
 
+config_parser = ConfigParser()
+
+config_parser.read(os.environ["CONFIG_PATH"])
+
+config = dict(config_parser['Config'])
+
+config_redis = dict(config_parser['Redis'])
+
+config_mongodb = dict(config_parser['Mongodb'])
+
+config_influxdb = dict(config_parser['Influxdb'])
+
+config_usb = dict(config_parser['Usb'])
+
+config_api_mongodb = dict(config_parser['Api_mongodb'])
+
+config_api_ni = dict(config_parser['Api_ni'])
+
+config_api_usb = dict(config_parser['Api_usb'])
+
+config_api_udp = dict(config_parser['Api_udp'])
+
 
 app = Flask(__name__)
 
 
 STOP_EVENT_COLLECT_UDP = [False]
+
+def request_post(api_url, data):
+
+    try:
+        response = request.post(api_url, json=data)
+
+        if response.status_code == 200:
+            return jsonify({"Données reçues" : response.json()})
+
+    except requests.exceptions.RequestException as e:
+        return f"Erreur lors de la requête : {e}"
+
 
 
     
@@ -40,7 +75,31 @@ def collect_data_from_udp(stop_event,udp:UDPHandler):
 
         if 'START' in data_udp.split(';'):
 
-            request.post()
+            try:
+
+                data_to_ni_ai = {
+                    'stream': "stream_chan_ai",#str(config_redis.get('stream')),
+                    'host': str(config_redis.get('host')),
+                    'port': int(config_redis.get('port')),
+                    'period': float(config.get('period')),
+                    'rate': int(config.get('rate')),
+                    'buffer_size': int(config.get('buffer_size')),
+                    'sample_size': int(config.get('sample_size')),
+                    'device': str(config.get('device')),
+                    'channels': ["ai0", "ai1", "ai2", "ai3", "ai4", "ai5", "ai6", "ai7"]
+                    }
+                
+                api_url_ni_ai = f"{config_api_ni.get('endpoint')}/api/read_ai_loop_to_redis"
+
+                # Créez un thread pour la tâche en arrière-plan
+                ni_thread_ai = threading.Thread(target=request_post, args=(api_url_ni_ai, data_to_ni_ai))
+                # Démarrez le thread en arrière-plan
+                ni_thread_ai.start()
+
+
+            except requests.exceptions.RequestException as e:
+                print(f"Erreur lors de la requête : {e}")
+            
 
         elif 'STOP' in data_udp.split(';'):
 

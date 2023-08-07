@@ -9,7 +9,7 @@ class ChannelsAI:
 
     def __init__(self):
         self.rate = 10000
-        self.buffer_size = 1000000
+        self.buffer_size = 268435455
         self.sample_per_chan = 1000
         self.sample_mode = AcquisitionType.CONTINUOUS
         self.active_edge = Edge.RISING
@@ -335,7 +335,7 @@ class ChannelCO:
 
     def __init__(self) -> None:
 
-        self.channels = ["ctr1", "ctr2"]
+        self.channel = "ctr1"
         self.device = "Dev1"
         self.sample_size = 1
         self.low_time = 0.01
@@ -347,7 +347,7 @@ class ChannelCO:
 
         task = nidaqmx.Task()
         
-        task.co_channels.add_co_pulse_chan_time(counter=f"{self.device}/{self.channels[0]}", low_time=self.low_time, high_time=self.high_time)
+        task.co_channels.add_co_pulse_chan_time(counter=f"{self.device}/{self.channel}", low_time=self.low_time, high_time=self.high_time)
 
         task.timing.cfg_implicit_timing(sample_mode=self.sample_mode)
 
@@ -361,7 +361,7 @@ class ChannelCO:
 
         task = nidaqmx.Task()
         
-        task.co_channels.add_co_pulse_chan_freq(counter=f"{self.device}/{self.channels[0]}")
+        task.co_channels.add_co_pulse_chan_freq(counter=f"{self.device}/{self.channel}")
 
         self.task = task
 
@@ -373,7 +373,7 @@ class ChannelCO:
 
         task = nidaqmx.Task()
         
-        task.co_channels.add_co_pulse_chan_ticks(counter=f"{self.device}/{self.channels[0]}")
+        task.co_channels.add_co_pulse_chan_ticks(counter=f"{self.device}/{self.channel}")
 
         self.task = task
 
