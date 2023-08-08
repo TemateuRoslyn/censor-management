@@ -4,6 +4,7 @@ import json
 import os 
 import requests
 
+from datetime import datetime as Date
 from flask import request,jsonify, Flask
 from redis import Redis, RedisError
 from argparse import ArgumentParser, FileType
@@ -35,8 +36,8 @@ if __name__ == '__main__':
 
     # Lire la valeur des variables d'environnement
     debug_val = os.getenv("debug", "true")  # La variable "debug" sera soit True ou False (str)
-    host_val = os.getenv("host", "0.0.0.0")    # La variable "host" contiendra l'adresse (str)
-    port_val = os.getenv("port", 5006)    # La variable "port" contiendra le port (str)
+    host_val = os.getenv("host", "127.0.0.1")    # La variable "host" contiendra l'adresse (str)
+    port_val = os.getenv("port", 5000)    # La variable "port" contiendra le port (str)
 
 
     # Convertir le port en nombre (integer)
@@ -72,8 +73,6 @@ if __name__ == '__main__':
 
     config_usb = dict(config_parser['Usb'])
 
-    config_file = dict(config_parser['File'])
-
     config_api_mongodb = dict(config_parser['Api_mongodb'])
 
     config_api_ni = dict(config_parser['Api_ni'])
@@ -81,8 +80,6 @@ if __name__ == '__main__':
     config_api_usb = dict(config_parser['Api_usb'])
 
     config_api_udp = dict(config_parser['Api_udp'])
-
-    config_api_file = dict(config_parser['Api_file'])
 
 
 
@@ -127,8 +124,8 @@ if __name__ == '__main__':
                     'buffer_size': config_do.get('buffer_size'),
                     'sample_size': config_do.get('sample_size'),
                     'device': config_do.get('device'),
-                    'lines': "port0/line",#config_do.get('lines'),
-                    'num_do': "1:4"
+                    'lines': config_do.get('lines'),
+                    'num_di': "0"
                     }
         
         data_ci = {
@@ -157,14 +154,13 @@ if __name__ == '__main__':
         
         data_mongo_ai = {
                     'stream': config_ai.get('stream'),
-                    'host': 'redis', #config_redis.get('host'),
+                    'host': config_redis.get('host'),
                     'port': config_redis.get('port'),
                     'period': config_ai.get('period'),
                     'rate': config_ai.get('rate'),
                     'buffer_size': config_ai.get('buffer_size'),
                     'sample_size': config_ai.get('sample_size'),
                     'device': config_ai.get('device'),
-                    'day': config_ai.get('day'),
                     'month': config_ai.get('month'),
                     'year': config_ai.get('year'),
                     'hour': config_ai.get('hour'),
@@ -173,8 +169,8 @@ if __name__ == '__main__':
                     'milliseconds': config_ai.get('milliseconds'),
                     'group': config_ai.get('group'),
                     'collection_name': config_ai.get('collection_name'),
-                    'url':'mongo', #config_mongodb.get('url'),
-                    'db': config_mongodb.get('db'),
+                    'url':config_mongodb.get('url'),
+                    'db':config_mongodb.get('db'),
                     'username':config_mongodb.get('username'),
                     'password':config_mongodb.get('password'),
                     'channels': ["ai0", "ai1", "ai2", "ai3", "ai4", "ai5", "ai6", "ai7"]
@@ -186,10 +182,9 @@ if __name__ == '__main__':
                     'period': config_di.get('period'),
                     'rate': config_di.get('rate'),
                     'buffer_size': config_di.get('buffer_size'),
-                    'sample_size': config_di.get('sample_size'),
+                    'sample': config_di.get('sample_size'),
                     'device': config_di.get('device'),
                     'lines': config_di.get('lines'),
-                    'day': config_ai.get('day'),
                     'month': config_di.get('month'),
                     'year': config_di.get('year'),
                     'hour': config_di.get('hour'),
@@ -198,10 +193,8 @@ if __name__ == '__main__':
                     'milliseconds': config_di.get('milliseconds'),
                     'group': config_ai.get('group'),
                     'collection_name': config_di.get('collection_name'),
-                    'url': config_mongodb.get('url'),
+                    'url':config_mongodb.get('url'),
                     'db':config_mongodb.get('db'),
-                    'username':config_mongodb.get('username'),
-                    'password':config_mongodb.get('password'),
                     'num_di': 0
                     }
         data_mongo_ci = {
@@ -211,9 +204,8 @@ if __name__ == '__main__':
                     'period': config_ci.get('period'),
                     'rate': config_ci.get('rate'),
                     'buffer_size': config_ci.get('buffer_size'),
-                    'sample_size': config_ci.get('sample_size'),
+                    'sample': config_ci.get('sample_size'),
                     'device': config_ci.get('device'),
-                    'day': config_ai.get('day'),
                     'month': config_ci.get('month'),
                     'year': config_ci.get('year'),
                     'hour': config_ci.get('hour'),
@@ -224,37 +216,38 @@ if __name__ == '__main__':
                     'collection_name': config_ci.get('collection_name'),
                     'url':config_mongodb.get('url'),
                     'db':config_mongodb.get('db'),
-                    'username':config_mongodb.get('username'),
-                    'password':config_mongodb.get('password'),
                     'channel': "ctr1"
                     }
         
-        data_usb = {
-                    'source_dir': config_usb.get('source_dir')
-                    # 'usb_mount_path': config_usb.get('usb_mount_path')
-                    }
+        # query = {
+        #     'time_start': "2023-08-02 21:23:47.453"
+        #     # 'time_stop': "2023-08-02 21:23:48.124"
+        #     }
         
-        data_file = {
-                    'stream': config_ai.get('stream'),#str(config_redis.get('stream')),
+        # data_mongo_find_ai = {
+        #             'collection_name': config_ai.get('collection_name'),
+        #             'url':config_mongodb.get('url'),
+        #             'db':config_mongodb.get('db'),
+        #             'username':config_mongodb.get('username'),
+        #             'password':config_mongodb.get('password'),
+        #             'query':query
+        #             }
+        
+        data_usb = {
+                    'stream': config_ci.get('stream'),#str(config_redis.get('stream')),
                     'host': config_redis.get('host'),
                     'port': config_redis.get('port'),
-                    'day': config_ai.get('day'),
-                    'month': config_ci.get('month'),
-                    'year': config_ci.get('year'),
-                    'hour': config_ci.get('hour'),
-                    'minute': config_ci.get('minute'),
-                    'seconds': config_ci.get('seconds'),
-                    'milliseconds': config_ci.get('milliseconds'),
-                    'sample_size': config_ai.get('sample_size'),
-                    'folder_path': config_file.get('folder_path'),
-                    'max_file': config_file.get('max_file'),
-                    'group': config_file.get('group')
+                    'mount_dir': config_usb.get('mount_dir'),
+                    'source_dir': config_usb.get('source_dir'),
+                    'usb_mount_path': config_usb.get('usb_mount_path')
                     }
 
 
         # Liste des endpoint
         api_url_ni_ai = f"{config_api_ni.get('endpoint')}/api/read_ai_to_redis"
         
+        # api_url_ai = f"{config_api_ni.get('endpoint')}/api/read_ai_to_redis"
+
         api_url_ai_stop = f"{config_api_ni.get('endpoint')}/api/stop_read_ai_to_redis"
 
         api_url_ai_loop = f"{config_api_ni.get('endpoint')}/api/read_ai_loop_to_redis"
@@ -265,66 +258,26 @@ if __name__ == '__main__':
 
         api_url_ci = f"{config_api_ni.get('endpoint')}/api/read_ci"
 
-        api_url_do_flashes = f"{config_api_ni.get('endpoint')}/api/write_do_flashes"
+        api_url_mongo_ai = f"http://127.0.0.1:5005/api/write_loop"
 
-        api_url_do_stop_flashes = f"{config_api_ni.get('endpoint')}/api/stop_flashes"
+        api_url_mongo_ai_stop = f"http://127.0.0.1:5005/api/stop_write_loop"
 
-        api_url_mongo_write = f"{config_api_mongodb.get('endpoint')}/api/write_loop"
-
-        api_url_mongo_stop_write = f"{config_api_mongodb.get('endpoint')}/api/stop_write_loop"
-
-        api_url_mongo_find = f"{config_api_mongodb.get('endpoint')}/api/find"
-
-        api_url_file_write = f"{config_api_file.get('endpoint')}/api/write_folder"
-
-        api_url_file_stop_write = f"{config_api_file.get('endpoint')}/api/stop_write_folder"
-
-        api_url_usb_find = f"{config_api_usb.get('endpoint')}/api/usb/find"
-        
-        api_url_usb_copy = f"{config_api_usb.get('endpoint')}/api/usb/copy_files"
+        api_url_mongo_find = f"http://127.0.0.1:5005/api/find"
             
+        # response = requests.post(api_url_ai, json=data_to_ni_ai)
 
 
         try:
 
-            data_do['state'] = "start"
+            # stop_event = threading.Event()
 
-            response = requests.post(api_url_do_flashes, json=data_do)
+            # tr1 = threading.Thread(target=send_requests_post, args=(stop_event, api_url_ai_loop, data_ai,))
 
-                # Vérifier si la requête a réussi
-            if response.status_code == 200:
-                data = response.json()  # Si la réponse de l'API est au format JSON
-                print("Données reçues :", data)
-            else:
-                print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-            time.sleep(1) 
-
-            #Usb  
-            response = requests.get(api_url_usb_find)
-
-            # Vérifier si la requête a réussi
-            if response.status_code == 200:
-
-                data_do['state'] = "USB"
-
-                response = requests.post(api_url_do_flashes, json=data_do)
-
-                    # Vérifier si la requête a réussi
-                if response.status_code == 200:
-                    data = response.json()  # Si la réponse de l'API est au format JSON
-                    print("Données reçues :", data)
-                else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-            else:
-                print(f"Échec de la requête : {response.status_code} - {response.text}")
-      
-
-            time.sleep(1)
-
+            # tr2 = threading.Thread(target=send_requests_post, args=(stop_event, api_url_mongo_ai, data_mongo_ai,))
+           
             if get_pression(url=api_url_di, data=data_di):
 
-                
+                """ 
                 response = requests.post(api_url_ai_loop, json=data_ai)
 
                 # Vérifier si la requête a réussi
@@ -334,40 +287,26 @@ if __name__ == '__main__':
                 else:
                     print(f"Échec de la requête : {response.status_code} - {response.text}")
 
-                time.sleep(1)                 
-                
+                time.sleep(1)         """        
 
-                response = requests.post(api_url_mongo_write, json=data_mongo_ai)
-
-                # Vérifier si la requête a réussi
-                if response.status_code == 200:
-                    data = response.json()  # Si la réponse de l'API est au format JSON
-                    print("Données reçues :", data)
-                else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-                
-                response = requests.post(api_url_file_write, json=data_file)
+                response = requests.post(api_url_mongo_find, json=data_mongo_find_ai)
 
                 # Vérifier si la requête a réussi
                 if response.status_code == 200:
                     data = response.json()  # Si la réponse de l'API est au format JSON
                     print("Données reçues :", data)
                 else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-
+                    print(f"Échec de la requête : {response.status_code} - {response.text}") 
                 
-                data_do['state'] = "record"
 
-                response = requests.post(api_url_do_flashes, json=data_do)
+                """ response = requests.post(api_url_mongo_ai, json=data_mongo_ai)
 
-                    # Vérifier si la requête a réussi
+                # Vérifier si la requête a réussi
                 if response.status_code == 200:
                     data = response.json()  # Si la réponse de l'API est au format JSON
                     print("Données reçues :", data)
                 else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-
+                    print(f"Échec de la requête : {response.status_code} - {response.text}") """
                 
             
             time.sleep(10)
@@ -375,7 +314,7 @@ if __name__ == '__main__':
 
             if get_pression(url=api_url_di, data=data_di):
 
-                #AI
+                """ #AI
                 response = requests.get(api_url_ai_stop_loop)
 
                 # Vérifier si la requête a réussi
@@ -388,102 +327,19 @@ if __name__ == '__main__':
                 time.sleep(2)
 
                 #MongoDB
-                response = requests.get(api_url_mongo_stop_write)
+                response = requests.get(api_url_mongo_ai_stop)
 
                 # Vérifier si la requête a réussi
                 if response.status_code == 200:
                     data = response.json()  # Si la réponse de l'API est au format JSON
                     print("Données reçues :", data)
                 else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-                #File
-                response = requests.get(api_url_file_stop_write)
-
-                # Vérifier si la requête a réussi
-                if response.status_code == 200:
-                    data = response.json()  # Si la réponse de l'API est au format JSON
-                    print("Données reçues :", data)
-                else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}") 
+                    print(f"Échec de la requête : {response.status_code} - {response.text}") """
                 
-                #Stop flashes
-                response = requests.get(api_url_do_stop_flashes)
-
-                # Vérifier si la requête a réussi
-                if response.status_code == 200:
-                    data = response.json()  # Si la réponse de l'API est au format JSON
-                    print("Données reçues :", data)
-                else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}") 
+            
 
 
-                #Usb  
-                response = requests.get(api_url_usb_find)
-
-                # Vérifier si la requête a réussi
-                if response.status_code == 200:
-
-                    data = response.json()  # Si la réponse de l'API est au format JSON
-
-                    print("Données reçues :", data)
-
-                    data_usb['usb_mount_path'] = data['usb_mount_path']
-
-                    #flashes
-                    data_do['state'] = "wait_usb"
-
-                    response = requests.post(api_url_do_flashes, json=data_do)
-
-                        # Vérifier si la requête a réussi
-                    if response.status_code == 200:
-                        data = response.json()  # Si la réponse de l'API est au format JSON
-                        print("Données reçues :", data)
-                    else:
-                        print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-
-                    #Usb copy
-
-                    response = requests.post(api_url_usb_copy, json=data_usb)
-
-                    # Vérifier si la requête a réussi
-                    if response.status_code == 200:
-
-                        data = response.json()  # Si la réponse de l'API est au format JSON
-                        print("Données reçues :", data)
-                        
-                    else:
-                        print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-                    
-                    #Stop flashes
-                    response = requests.get(api_url_do_stop_flashes)
-
-                    # Vérifier si la requête a réussi
-                    if response.status_code == 200:
-                        data = response.json()  # Si la réponse de l'API est au format JSON
-                        print("Données reçues :", data)
-                    else:
-                        print(f"Échec de la requête : {response.status_code} - {response.text}") 
-
-                    #Mode USB
-                    data_do['state'] = "USB"
-
-                    response = requests.post(api_url_do_flashes, json=data_do)
-
-                        # Vérifier si la requête a réussi
-                    if response.status_code == 200:
-                        data = response.json()  # Si la réponse de l'API est au format JSON
-                        print("Données reçues :", data)
-                    else:
-                        print(f"Échec de la requête : {response.status_code} - {response.text}")
-
-
-                else:
-                    print(f"Échec de la requête : {response.status_code} - {response.text}")
-      
-           
+            
 
         except requests.exceptions.RequestException as e:
             print(f"Erreur lors de la requête : {e}")

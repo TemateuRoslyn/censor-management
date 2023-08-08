@@ -1,10 +1,11 @@
 import socket
 
 class UDPHandler:
-    def __init__(self, target_ip, target_port):
+    def __init__(self, target_ip='0.0.0.0', target_port=55000):
         self.target_ip = target_ip
         self.target_port = target_port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.socket.bind((target_ip,target_port))
 
     def send_packet(self, data):
         try:
@@ -15,7 +16,8 @@ class UDPHandler:
 
     def receive_packet(self, buffer_size=1024):
         try:
-            self.socket.bind((self.target_ip, self.target_port))
+            #self.socket.bind((self.target_ip, self.target_port))
+            print(f"{self.socket}")
             data, address = self.socket.recvfrom(buffer_size)
             print(f"Packet received from {address[0]}:{address[1]}")
             return data.decode()

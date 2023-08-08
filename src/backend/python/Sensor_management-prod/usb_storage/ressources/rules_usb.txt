@@ -1,0 +1,4 @@
+# for /etc/fstab
+UUID=9EE7-9230  /media/sl_admin/9EE7-9230 auto defaults 0 0
+UUID=5419-CCE7  /media/sl_admin/5419-CCE7 auto defaults 0 0
+      

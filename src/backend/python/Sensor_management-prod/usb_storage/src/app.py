@@ -4,9 +4,9 @@ from flask import Flask, jsonify, request
 from usb import USBHandler, USBFileCopier
 
 # Lire la valeur des variables d'environnement
-debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
-host_val = os.getenv("host")    # La variable "host" contiendra l'adresse (str)
-port_val = os.getenv("port")    # La variable "port" contiendra le port (str)
+debug_val = os.getenv("debug", "true")  # La variable "debug" sera soit True ou False (str)
+host_val = os.getenv("host", "0.0.0.0")    # La variable "host" contiendra l'adresse (str)
+port_val = os.getenv("port", 5003)    # La variable "port" contiendra le port (str)
 
 
 # Convertir le port en nombre (integer)
@@ -28,7 +28,7 @@ app = Flask(__name__)
 @app.route('/api/usb/start_monitoring', methods=['POST'])
 def start_usb_monitoring():
     data = request.get_json()
-    usb_handler = USBHandler(mount_dir=data.get('mount_dir'), expression=data.get('expression'))
+    usb_handler = USBHandler(mount_dir=data.get('mount_dir'))
     try:
         usb_handler.start_monitoring()
         return jsonify({'message': 'Démarrage de la détection et du montage des clés USB.'}), 200
@@ -37,13 +37,19 @@ def start_usb_monitoring():
 
 
 # Route pour démarrer la détection et le montage d'une clé USB
-@app.route('/api/usb/find', methods=['POST'])
+@app.route('/api/usb/find', methods=['GET'])
 def find_usb():
-    data = request.get_json()
-    usb_handler = USBHandler(mount_dir=data.get('mount_dir'), expression=data.get('expression'))
+    # data = request.get_json()
+    usb_handler = USBHandler()
     try:
         present, mount = usb_handler.find_usb()
-        return jsonify({'usb_present':present, 'mount_dir':mount, 'message': 'Démarrage de la détection et du montage des clés USB.'}), 200
+        
+        if present and mount :
+            return jsonify({'usb_present':present, 'usb_mount_path':mount, 'message': 'Démarrage de la détection et du montage des clés USB.'}), 200
+        
+        return jsonify({'usb_present':present, 'usb_mount_path':mount, 'message': 'Démarrage de la détection et du montage des clés USB.'}), 200
+
+        
     except Exception as e:
         return jsonify({'error': 'Une erreur s\'est produite lors du démarrage de la détection des clés USB.'}), 500
 
@@ -52,7 +58,7 @@ def find_usb():
 @app.route('/api/usb/unmount', methods=['POST'])
 def unmount_usb():
     data = request.get_json()
-    usb_handler = USBHandler(mount_dir=data.get('mount_dir'), expression=data.get('expression'))
+    usb_handler = USBHandler(mount_dir=data.get('mount_dir'))
     try:
         usb_handler.unmount_usb()
         return jsonify({'message': 'Clé USB démontée avec succès.'}), 200
@@ -63,7 +69,7 @@ def unmount_usb():
 @app.route('/api/usb/copy_files', methods=['POST'])
 def copy_files_to_usb():
     data = request.get_json()
-    usb_file_copier = USBFileCopier(source_dir=data.get('mount_dir'), usb_mount_path=data.get('usb_mount_path'))
+    usb_file_copier = USBFileCopier(source_dir=data.get('source_dir'), usb_mount_path=data.get('usb_mount_path'))
     try:
         success = usb_file_copier.copy_files_to_usb()
         if success:

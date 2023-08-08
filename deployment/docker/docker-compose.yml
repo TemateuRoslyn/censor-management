@@ -12,8 +12,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
-      - /home/sl_admin/dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db 
-      - /home/sl_admin/dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
+      - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db 
+      - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
 
   mongo-express:
     image: mongo-express
@@ -47,7 +47,7 @@ services:
     ports:
       - 8086:8086
     volumes:
-       - /home/sl_admin/dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
+       - ../../../dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
       # - ./influxdb2:/var/lib/influxdb2 
       # - ./influxdb2-config:/etc/influxdb2
       # - $PWD/influxdb.conf:/root/influxdb/influxdb.conf
@@ -59,19 +59,19 @@ services:
     ports:
       - 6379:6379/tcp
     volumes: 
-      - /home/sl_admin/dscdatasmart/deployment/docker/volumes/redis/data:/data
+      - ../../../dscdatasmart/deployment/docker/volumes/redis/data:/data
 
-  api_monbodb:
-    image: dscdatasmart/api_monbodb:latest
-    container_name: sensor-api-monbodb
+  api_mongodb:
+    image: dscdatasmart/api_mongodb:latest
+    container_name: sensor-api-mongodb
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/backend/python/Sensor_management-prod/mongodb_storage
+      context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
         - PORT=5002
-      # network: dscdatasmart
     ports:
       - 5002:5002
     environment:
@@ -80,14 +80,14 @@ services:
   api_influxdb:
     image: dscdatasmart/api_influxdb:latest
     container_name: sensor-api-influxdb
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/backend/python/Sensor_management-prod/influxdb_storage
+      context: ../../src/backend/python/Sensor_management-prod/influxdb_storage
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
         - PORT=5004
-      # network: dscdatasmart
     ports:
       - 5004:5004
     environment:
@@ -96,14 +96,14 @@ services:
   api_udp:
     image: dscdatasmart/api_udp:latest
     container_name: sensor-api-udp
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/backend/python/Sensor_management-prod/udp_packets
+      context: ../../src/backend/python/Sensor_management-prod/udp_packets
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
         - PORT=5001
-      # network: dscdatasmart
     ports:
       - 5001:5001
     environment:
@@ -112,45 +112,49 @@ services:
   api_usb:
     image: dscdatasmart/api_usb:latest
     container_name: sensor-api-usb
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/backend/python/Sensor_management-prod/usb_storage
+      context: ../../src/backend/python/Sensor_management-prod/usb_storage
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
-        - PORT=5003
-      # network: dscdatasmartT="5003"
+        - PORT=50010
     ports:
-      - 5003:5003
+      - 50010:50010
     environment:
-      - CONFIG_PATH=./ressources/configs.ini
+      - CONFIG_PATH=./ressources/configs.ini    
+    volumes: 
+      - ../../../dscdatasmart/datas:/home/sl_admin/dscdatasmart/datas
+      - /media/sl_admin/5419-CCE7:/media/sl_admin/5419-CCE7
+      - /media/sl_admin/9EE7-9230:/media/sl_admin/9EE7-9230
 
   frontend_plottly:
     image: dscdatasmart/censor-frontend:latest
     container_name: sensor-frontend-plottly
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/frontend/dash-plottly
+      context: ../../src/frontend/dash-plottly
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
         - PORT=8085
         - API_ADDR=127.0.0.1:8000
-      # network: dscdatasmartT="5003"
     ports:
       - 8085:8085
 
   backend:
     image: dscdatasmart/censor-backend:latest
     container_name: sensor-backend-flask
+    restart: always
     build:
-      context: /home/sl_admin/censor-management/src/backend/python/censor-management-prod
+      context: ../../src/backend/python/censor-management-prod
       dockerfile: ./Dockerfile
       args:
         - DEBUG=false
         - HOST=0.0.0.0
         - PORT=8000
-      # network: dscdatasmartT="5003"
     ports:
       - 8000:8000
 
