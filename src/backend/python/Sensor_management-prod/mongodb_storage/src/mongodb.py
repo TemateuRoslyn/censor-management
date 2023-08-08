@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 
 class MongoDBHandler:
-    def __init__(self, db_name, host='localhost', port=27017):
-        self.client = MongoClient(host, port)
+    def __init__(self, db_name, usename='root', password='admin', host='localhost', port=27017):
+        uri = f"mongodb://{usename}:{password}@{host}:{port}"
+        self.client = MongoClient(uri)
         self.db = self.client[db_name]
 
     def insert_one(self, collection_name, data):

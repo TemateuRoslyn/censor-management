@@ -1,6 +1,6 @@
 import threading
-import os 
-import requests
+import os
+import requests 
 
 from flask import request,jsonify, Flask
 from redis import Redis, RedisError
@@ -79,13 +79,13 @@ def collect_data_from_udp(stop_event,udp:UDPHandler):
 
                 data_to_ni_ai = {
                     'stream': "stream_chan_ai",#str(config_redis.get('stream')),
-                    'host': str(config_redis.get('host')),
-                    'port': int(config_redis.get('port')),
-                    'period': float(config.get('period')),
-                    'rate': int(config.get('rate')),
-                    'buffer_size': int(config.get('buffer_size')),
-                    'sample_size': int(config.get('sample_size')),
-                    'device': str(config.get('device')),
+                    'host': config_redis.get('host'),
+                    'port': config_redis.get('port'),
+                    'period': config.get('period'),
+                    'rate': config.get('rate'),
+                    'buffer_size': config.get('buffer_size'),
+                    'sample_size': config.get('sample_size'),
+                    'device': config.get('device'),
                     'channels': ["ai0", "ai1", "ai2", "ai3", "ai4", "ai5", "ai6", "ai7"]
                     }
                 
@@ -129,7 +129,7 @@ def api_read_udp():
         if 'host' not in data or 'port' not in data:
             return jsonify({'error': f"Les données doivent contenir l'adresse ip du serveur et le port."}), 400
 
-        udp = UDPHandler(target_ip = data['host_udp'], target_port= int(data['port_udp']))
+        udp = UDPHandler(target_ip = data['host'], target_port= int(data['port']))
 
 
         # Créez un thread pour la tâche en arrière-plan

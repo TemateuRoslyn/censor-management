@@ -52,7 +52,7 @@ class ChannelsAI:
     
 
     def close_task(self):
-
+        self.queue = []
         self.task.close()
 
     def get_data(self):
@@ -142,26 +142,30 @@ class ChannelDO:
 
     def __init__(self) -> None:
 
-        self.lines = "/port0/line"
+        self.lines = "port0/line"
         self.device = "Dev1"
-        self.num_do = "0-7"
-        self.grouping = LineGrouping.CHAN_FOR_ALL_LINES
+        self.num_do = "0:7"
+        self.grouping = LineGrouping.CHAN_PER_LINE
         self.task = None
 
     def __init__(self, lines, device, num_do):
 
         self.lines = lines
         self.device = device
-        self.num_di = num_do
-        self.grouping = LineGrouping.CHAN_FOR_ALL_LINES
+        self.num_do = num_do
+        self.grouping = LineGrouping.CHAN_PER_LINE
         self.task = None
 
     
     def init_task(self):
 
         task = nidaqmx.Task()
+
+        lines=f"{self.device}/{self.lines}{self.num_do}"
+
+        print(lines)
         
-        task.do_channels.add_do_chan(lines=f"{self.device}{self.lines}{self.num_do}", line_grouping=self.grouping)
+        task.do_channels.add_do_chan(lines=f"{self.device}/{self.lines}{self.num_do}", line_grouping=self.grouping)
 
         self.task = task
 

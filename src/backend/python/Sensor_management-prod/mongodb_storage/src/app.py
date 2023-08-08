@@ -32,6 +32,15 @@ app = Flask(__name__)
 
 
 STOP_INSERT_DATA =[False]
+BACKGROUND_THREAD = None
+
+def quering(data):
+
+    query = {}
+    query['time_start'] = {'$gte':Date.fromisoformat(data['time_start'])}
+    # query['time_stop'] = {'$lte':Date.fromisoformat(data['time_start'])}
+
+    return query
 
 def process_messages(item: dict, sample_size : int = 1000, format_time : str = "%d-%m-%y %H:%M:%S.%f"):
     """
@@ -55,7 +64,6 @@ def process_messages(item: dict, sample_size : int = 1000, format_time : str = "
     delta = (t2-t1)/sample_size
 
     data ={}
-   
     t = [ val for val in np.arange(t1,t2+delta, delta).tolist()]
     
     if len(t) > sample_size:
@@ -90,48 +98,64 @@ def process_messages(item: dict, sample_size : int = 1000, format_time : str = "
 
 def insert_data_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, config):
 
-    lastid = '0'
-    check_backlog = False 
+    global STOP_INSERT_DATA
 
-    while not stop_event[0]:
+    try:
+        
+        lastid = '0-0'
+        check_backlog = True
 
-        items = []
+        lis = redis.xinfo_groups(config['stream'])
 
-        if check_backlog : 
+        if len(lis)!=0:
+            for elt in lis:
+                if elt['name']==config['group']:
+                    lastid = elt['last-delivered-id']
 
-            items = redis.xreadgroup(groupname=config['group'], consumername='C_mongodb',block=10, count=100, streams={config['stream']:lastid} )
+        while not STOP_INSERT_DATA[0]:
 
-        else :
-                    
-            items = redis.xreadgroup(groupname=config['group'], consumername='C_mongodb',block=10, count=100, streams={config['stream']:'>'} )
+            items = []
+
+            if check_backlog : 
+
+                items = redis.xreadgroup(groupname=config['group'], consumername='C_mongodb',block=10, count=10, streams={config['stream']:lastid} )
+
+            else :
+                        
+                items = redis.xreadgroup(groupname=config['group'], consumername='C_mongodb',block=10, count=10, streams={config['stream']:'>'} )
 
 
-        if items == None :
+            if (items == None) or (len(items[0][1])==0) :
 
-            pass
+                check_backlog = False if (len(items[0][1]) == 0) else True
 
-        else :
+            else :
+                                
+                for elt in items[0][1] :
 
-            check_backlog = True if len(items[0][1]) > 0 else False
+                    id, item = elt
 
-            for elt in items[0][1] :
+                    data = process_messages(item=item, sample_size=int(config['sample_size']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
 
-                _, item = elt
+                    mongo.insert_one(collection_name=config['collection_name'], data=data)
 
-                data = process_messages(item=item, sample_size=int(config['sample']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
+                    redis.xack(config['stream'],config['group'],id)
+             
+                lastid = items[0][1][-1][0]
 
-                mongo.insert_one(collection_name=config['collection_name'], data=data)
-               
-
-            lastid = items[0][1][-1][0]
+        redis.close()
+        mongo.close()
+    except Exception as ex:
+        print(f"Erreur {ex}")
        
 
         
 
 
 # Route pour écrire des données dans InfluxDB
-@app.route('/api/writeloop', methods=['POST'])
+@app.route('/api/write_loop', methods=['POST'])
 def api_write_to_mongodb():
+    global BACKGROUND_THREAD
 
     try:
 
@@ -139,9 +163,28 @@ def api_write_to_mongodb():
 
         redis_conn = Redis(host=data.get('host'), port=int(data.get('port')), decode_responses=True)
 
-        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
 
-        if len(redis_conn.xinfo_groups(data.get('stream'))==0):
+        # if len(redis_conn.xinfo_groups(data.get('stream')))==0:
+
+        #         redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+
+        list_group = redis_conn.xinfo_groups(data.get('stream'))
+
+        if len(list_group)==0:
+
+                redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+        else:
+
+            create = True
+
+            for elt in list_group:
+
+                if data.get('group') == elt['name'] :
+
+                    create=False
+                    
+            if create :
 
                 redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
 
@@ -153,36 +196,43 @@ def api_write_to_mongodb():
         config['minute'] = data.get('minute')
         config['seconds'] = data.get('seconds')
         config['milliseconds'] = data.get('milliseconds')
-        config['sample'] = data.get('sample')
+        config['sample_size'] = data.get('sample_size')
         config['group'] = data.get('group')
         config['stream'] = data.get('stream')
         config['collection_name'] = data.get('collection_name')
 
         # Créez un thread pour la tâche en arrière-plan
-        background_thread = threading.Thread(target=insert_data_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
+        BACKGROUND_THREAD = threading.Thread(target=insert_data_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
         # Démarrez le thread en arrière-plan
-        background_thread.start()
+        BACKGROUND_THREAD.start()
 
-
-        background_thread.join()
-
+        return jsonify({'Message': f"Début de la sauvegarde dans MongoDB"}), 200
+    
+    except Exception as e:
         redis_conn.close()
         mongo.close()
+        return jsonify({'Message': f"Une erreur sur la sauvegarde dans MongoDB :  {e}."}), 500
 
-    except Exception as ex:
-        print(f"Error : {ex}")
 
 
 
 # Route pour écrire des données dans InfluxDB
-@app.route('/api/stopwriteloop', methods=['GET'])
+@app.route('/api/stop_write_loop', methods=['GET'])
 def api_stop_write_to_mongodb():
 
     global STOP_INSERT_DATA 
+    global BACKGROUND_THREAD
 
-    STOP_INSERT_DATA[0] = True 
+    try:
 
-    return jsonify({'return': "Stop de la sauvegarde"}), 200 
+        STOP_INSERT_DATA[0] = True 
+
+        BACKGROUND_THREAD.join()
+
+        return jsonify({'Message': "Stop de la sauvegarde dans MongoDB"}), 200
+    
+    except Exception as ex:
+        return jsonify({'Message': f"Un problème à l'arret : {ex}"}), 500 
 
 
 # Route pour rechercher des données dans MongoDB
@@ -190,21 +240,23 @@ def api_stop_write_to_mongodb():
 def find_data():
     try:
         data = request.get_json()
-        collection_name = data.get('collection_name')
-        query = data.get('query')
+        # collection_name = data.get('collection_name')
+        # query = data.get('query')
 
-        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+        #mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
 
-        if collection_name:
-            results = mongo_handler.find(collection_name=collection_name, query=query)
-            mongo_handler.close()
+        if data.get('collection_name') is not None:
+            
+            results = mongo_handler.find(collection_name=data.get('collection_name'), query=quering(data.get('query')))
+            # mongo_handler.close()
             return jsonify({'results': [result for result in results]}), 200
         else:
             mongo_handler.close()
             return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
 
     except Exception as e:
-        return jsonify({'error': 'Une erreur s\'est produite lors du traitement de la requête.'}), 500
+        return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête. {e}"}), 500
     
 
 

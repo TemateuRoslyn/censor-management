@@ -35,7 +35,7 @@ class USBHandler:
         
         partitions = psutil.disk_partitions()
         for partition in partitions :
-            print(f"Partition : {partition}")
+            # print(f"Partition : {partition}")
             # if 'removable' in partition.opts and 'noauto' not in partition.opts :
             if re.match(self.expression,partition.device):
                 cle_usb_trouvee = True
@@ -75,7 +75,7 @@ class USBFileCopier:
             for file_name in os.listdir(self.source_dir):
                 file_path = os.path.join(self.source_dir, file_name)
                 if os.path.isfile(file_path):
-                    shutil.copy(file_path, self.usb_mount_path)
+                    shutil.copy2(file_path, self.usb_mount_path)
                     print(f"Copié '{file_name}' vers la clé USB.")
             return True
         except Exception as e:
