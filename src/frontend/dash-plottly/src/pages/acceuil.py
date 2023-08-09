@@ -14,7 +14,7 @@ from components.modal import create_modal
 dash.register_page(
     __name__,
     "/",
-    title="Acceuil | Sensor Managemant",
+    title="Acceuil | Data Logger",
     description="Application de suppervision et de contrôle de production.",
 )
 

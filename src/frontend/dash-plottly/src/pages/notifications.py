@@ -5,9 +5,7 @@ import dash_mantine_components as dmc
 from libs.shell import create_breadcrumbs
 from libs.utils import title
 
-dash.register_page(
-    __name__, path="/notifications", title="Notifications | Censor Management"
-)
+dash.register_page(__name__, path="/notifications", title="Notifications | Data Logger")
 
 layout = html.Div(
     [

@@ -9,7 +9,7 @@ from libs.utils import title, render_parametre_form
 dash.register_page(
     __name__,
     path="/parametres",
-    title="Paramètres | Sencor Management.",
+    title="Paramètres | Data Logger.",
 )
 
 layout = html.Div(

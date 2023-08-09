@@ -5,15 +5,15 @@ from libs.shell import mount_app
 
 # Lire la valeur des variables d'environnement
 debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
-host_val = os.getenv("host")    # La variable "host" contiendra l'adresse (str)
-port_val = os.getenv("port")    # La variable "port" contiendra le port (str)
+host_val = os.getenv("host")  # La variable "host" contiendra l'adresse (str)
+port_val = os.getenv("port")  # La variable "port" contiendra le port (str)
 
 # Convertir le port en nombre (integer)
 try:
     port_val = int(port_val)
 except ValueError:
     print("Erreur : le port n'est pas un entier valide.")
-    
+
 if debug_val == "true":
     debug_val = True
 else:
@@ -32,7 +32,8 @@ app = Dash(
     suppress_callback_exceptions=True,
     use_pages=True,
     external_scripts=scripts,
-    title="Sencor Management.",
+    title="Data Logger.",
+    update_title="Logger...",
 )
 
 app.layout = mount_app(

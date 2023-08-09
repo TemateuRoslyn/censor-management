@@ -60,12 +60,12 @@ def create_header(nav_data):
                         dmc.Col(
                             [
                                 dmc.MediaQuery(
-                                    create_home_link("SOFTMAES Dashboard."),
+                                    create_home_link("Data Logger."),
                                     smallerThan="lg",
                                     styles={"display": "none"},
                                 ),
                                 dmc.MediaQuery(
-                                    create_home_link("SOFTMAES."),
+                                    create_home_link("Data Logger."),
                                     largerThan="lg",
                                     styles={"display": "none"},
                                 ),

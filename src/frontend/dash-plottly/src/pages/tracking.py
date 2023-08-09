@@ -7,7 +7,7 @@ from libs.shell import create_breadcrumbs
 dash.register_page(
     __name__,
     path="/tracking",
-    title="Tracking | Sencor Management",
+    title="Tracking | Data Logger",
 )
 
 layout = html.Div(
