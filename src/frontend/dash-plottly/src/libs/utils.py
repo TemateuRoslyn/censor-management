@@ -176,7 +176,7 @@ def render_sauvegarde_form():
     )
 
 
-def render_parametre_form():
+def render_sensor_settings_form():
     return dmc.Container(
         children=[
             dmc.SimpleGrid(
@@ -258,6 +258,116 @@ def render_parametre_form():
                         id="",
                         label="Unité :",
                         value=list_unite[0],
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=4,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 1, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.Button(
+                        "Valider",
+                        variant="outline",
+                        leftIcon=DashIconify(icon="fluent:settings-32-regular"),
+                    ),
+                ],
+            ),
+        ]
+    )
+
+
+def render_ai_settings_form():
+    return dmc.Container(
+        children=[
+            dmc.SimpleGrid(
+                cols=2,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.Select(
+                        data=list_entree_analogiques,
+                        searchable=False,
+                        style={"width": "100%"},
+                        id="",
+                        label="Selectionnez l'entrée analigique :",
+                        value=list_entree_analogiques[0],
+                    ),
+                    dmc.TextInput(
+                        label="Nouveau nom de la voie :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        type="text",
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=2,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.NumberInput(
+                        label="Frequence d'échantillonage :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        min=0,
+                        precision=2,
+                    ),
+                    dmc.Select(
+                        data=list_unite,
+                        searchable=False,
+                        style={"width": "100%"},
+                        id="",
+                        label="Selectionnez une unité :",
+                        value=list_unite[0],
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=3,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.NumberInput(
+                        label="Offset :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        min=0,
+                        precision=2,
+                    ),
+                    dmc.TextInput(
+                        style={"width": "100%"},
+                        id="",
+                        label="Gain :",
+                    ),
+                    dmc.TextInput(
+                        label="Numéro de série :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
                     ),
                 ],
             ),

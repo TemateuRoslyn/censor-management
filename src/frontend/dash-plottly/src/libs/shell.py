@@ -3,6 +3,45 @@ from dash_iconify import DashIconify
 
 import dash_mantine_components as dmc
 
+from libs.utils import title, render_sensor_settings_form, render_ai_settings_form
+
+
+def render_settings_tabs():
+    return dmc.Tabs(
+        [
+            dmc.TabsList(
+                grow=True,
+                children=[
+                    dmc.Tab(
+                        "Paramétrer les capteurs",
+                        value="1",
+                    ),
+                    dmc.Tab(
+                        "Paramétrer les AI",
+                        value="2",
+                    ),
+                ],
+            ),
+            dmc.TabsPanel(
+                [
+                    title("Paramétrer des capteurs"),
+                    render_sensor_settings_form(),
+                ],
+                value="1",
+                mt=20,
+            ),
+            dmc.TabsPanel(
+                [
+                    title("Paramétrer les entrées analogiques"),
+                    render_ai_settings_form(),
+                ],
+                value="2",
+                mt=20,
+            ),
+        ],
+        value="1",
+    )
+
 
 def create_breadcrumbs(
     steep_1: str, link_steep_1: None, steep_2: str, link_steep_2: None
