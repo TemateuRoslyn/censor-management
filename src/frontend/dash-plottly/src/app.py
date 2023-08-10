@@ -43,7 +43,7 @@ app.layout = mount_app(
 server = app.server
 if __name__ == "__main__":
     app.run_server(
-        debug=debug_val,
+        debug=True,
         host=host_val,
         port=port_val,
     )
