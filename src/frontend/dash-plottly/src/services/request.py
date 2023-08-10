@@ -2,7 +2,7 @@ import os
 import requests
 from requests.exceptions import HTTPError
 
-API_ADDR = os.getenv("api_addr")
+API_ADDR = str(os.getenv("api_addr"))
 
 HOST = "http://backend:8000"
 
