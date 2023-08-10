@@ -1,56 +1,56 @@
 # Use root/admin as user/password credentials
-version: '3.8'
+version: "3.8"
 
 services:
-  mongo:
-    image: mongo
-    container_name: sensor-mongo
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: admin
-    volumes:
-      - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db 
-      - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
+  # mongo:
+  #   image: mongo
+  #   container_name: sensor-mongo
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: admin
+  #   volumes:
+  #     - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db
+  #     - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
 
-  mongo-express:
-    image: mongo-express
-    container_name: sensor-ui-mongodb
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-      ME_CONFIG_MONGODB_URL: mongodb://root:admin@mongo:27017/
+  # mongo-express:
+  #   image: mongo-express
+  #   container_name: sensor-ui-mongodb
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:admin@mongo:27017/
 
-  influxdb:
-    image: influxdb:latest
-    container_name: sensor-influxdb
-    restart: always
-    # hostname: influxdb
-    # environment:
-    #   # INFLUX_DB: $INFLUX_DB  # nom de la base de données créée à l'initialisation d'InfluxDB
-    #   # INFLUXDB_USER: $INFLUXDB_USER  # nom de l'utilisateur pour gérer cette base de données
-    #   # INFLUXDB_USER_PASSWORD: $INFLUXDB_USER_PASSWORD  # mot de passe de l'utilisateur pour gérer cette base de données
-    #   DOCKER_INFLUXDB_INIT_MODE: upgrade
-    #   DOCKER_INFLUXDB_INIT_USERNAME: admin
-    #   DOCKER_INFLUXDB_INIT_PASSWORD: admin
-    #   DOCKER_INFLUXDB_INIT_ORG: my-org
-    #   DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
-    #   DOCKER_INFLUXDB_INIT_UPGRADE_V1_CONFIG: /root/influxdb/influxdb.conf 
-    #   DOCKER_INFLUXDB_CONFIG_PATH: /root/influxdb2/config.toml 
-    #   DOCKER_INFLUXDB_BOLT_PATH: /root/influxdb2/influxdb.bolt 
-    #   DOCKER_INFLUXDB_ENGINE_PATH: /root/influxdb2/engine 
-    ports:
-      - 8086:8086
-    volumes:
-       - ../../../dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
-      # - ./influxdb2:/var/lib/influxdb2 
-      # - ./influxdb2-config:/etc/influxdb2
-      # - $PWD/influxdb.conf:/root/influxdb/influxdb.conf
+  # influxdb:
+  #   image: influxdb:latest
+  #   container_name: sensor-influxdb
+  #   restart: always
+  # hostname: influxdb
+  # environment:
+  #   # INFLUX_DB: $INFLUX_DB  # nom de la base de données créée à l'initialisation d'InfluxDB
+  #   # INFLUXDB_USER: $INFLUXDB_USER  # nom de l'utilisateur pour gérer cette base de données
+  #   # INFLUXDB_USER_PASSWORD: $INFLUXDB_USER_PASSWORD  # mot de passe de l'utilisateur pour gérer cette base de données
+  #   DOCKER_INFLUXDB_INIT_MODE: upgrade
+  #   DOCKER_INFLUXDB_INIT_USERNAME: admin
+  #   DOCKER_INFLUXDB_INIT_PASSWORD: admin
+  #   DOCKER_INFLUXDB_INIT_ORG: my-org
+  #   DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
+  #   DOCKER_INFLUXDB_INIT_UPGRADE_V1_CONFIG: /root/influxdb/influxdb.conf
+  #   DOCKER_INFLUXDB_CONFIG_PATH: /root/influxdb2/config.toml
+  #   DOCKER_INFLUXDB_BOLT_PATH: /root/influxdb2/influxdb.bolt
+  #   DOCKER_INFLUXDB_ENGINE_PATH: /root/influxdb2/engine
+  # ports:
+  #   - 8086:8086
+  # volumes:
+  #    - ../../../dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
+  # - ./influxdb2:/var/lib/influxdb2
+  # - ./influxdb2-config:/etc/influxdb2
+  # - $PWD/influxdb.conf:/root/influxdb/influxdb.conf
 
   redis:
     image: redis/redis-stack:latest
@@ -58,76 +58,76 @@ services:
     restart: always
     ports:
       - 6379:6379/tcp
-    volumes: 
+    volumes:
       - ../../../dscdatasmart/deployment/docker/volumes/redis/data:/data
 
-  api_mongodb:
-    image: dscdatasmart/api_mongodb:latest
-    container_name: sensor-api-mongodb
-    restart: always
-    build:
-      context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
-      dockerfile: ./Dockerfile
-      args:
-        - DEBUG=false
-        - HOST=0.0.0.0
-        - PORT=5002
-    ports:
-      - 5002:5002
-    environment:
-      - CONFIG_PATH=./ressources/configs.ini
+  # api_mongodb:
+  #   image: dscdatasmart/api_mongodb:latest
+  #   container_name: sensor-api-mongodb
+  #   restart: always
+  #   build:
+  #     context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - DEBUG=false
+  #       - HOST=0.0.0.0
+  #       - PORT=5002
+  #   ports:
+  #     - 5002:5002
+  #   environment:
+  #     - CONFIG_PATH=./ressources/configs.ini
 
-  api_influxdb:
-    image: dscdatasmart/api_influxdb:latest
-    container_name: sensor-api-influxdb
-    restart: always
-    build:
-      context: ../../src/backend/python/Sensor_management-prod/influxdb_storage
-      dockerfile: ./Dockerfile
-      args:
-        - DEBUG=false
-        - HOST=0.0.0.0
-        - PORT=5004
-    ports:
-      - 5004:5004
-    environment:
-      - CONFIG_PATH=./ressources/configs.ini
+  # api_influxdb:
+  #   image: dscdatasmart/api_influxdb:latest
+  #   container_name: sensor-api-influxdb
+  #   restart: always
+  #   build:
+  #     context: ../../src/backend/python/Sensor_management-prod/influxdb_storage
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - DEBUG=false
+  #       - HOST=0.0.0.0
+  #       - PORT=5004
+  #   ports:
+  #     - 5004:5004
+  #   environment:
+  #     - CONFIG_PATH=./ressources/configs.ini
 
-  api_udp:
-    image: dscdatasmart/api_udp:latest
-    container_name: sensor-api-udp
-    restart: always
-    build:
-      context: ../../src/backend/python/Sensor_management-prod/udp_packets
-      dockerfile: ./Dockerfile
-      args:
-        - DEBUG=false
-        - HOST=0.0.0.0
-        - PORT=5001
-    ports:
-      - 5001:5001
-    environment:
-      - CONFIG_PATH=./ressources/configs.ini
+  # api_udp:
+  #   image: dscdatasmart/api_udp:latest
+  #   container_name: sensor-api-udp
+  #   restart: always
+  #   build:
+  #     context: ../../src/backend/python/Sensor_management-prod/udp_packets
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - DEBUG=false
+  #       - HOST=0.0.0.0
+  #       - PORT=5001
+  #   ports:
+  #     - 5001:5001
+  #   environment:
+  #     - CONFIG_PATH=./ressources/configs.ini
 
-  api_usb:
-    image: dscdatasmart/api_usb:latest
-    container_name: sensor-api-usb
-    restart: always
-    build:
-      context: ../../src/backend/python/Sensor_management-prod/usb_storage
-      dockerfile: ./Dockerfile
-      args:
-        - DEBUG=false
-        - HOST=0.0.0.0
-        - PORT=50010
-    ports:
-      - 50010:50010
-    environment:
-      - CONFIG_PATH=./ressources/configs.ini    
-    volumes: 
-      - ../../../dscdatasmart/datas:/home/sl_admin/dscdatasmart/datas
-      - /media/sl_admin/5419-CCE7:/media/sl_admin/5419-CCE7
-      - /media/sl_admin/9EE7-9230:/media/sl_admin/9EE7-9230
+  # api_usb:
+  #   image: dscdatasmart/api_usb:latest
+  #   container_name: sensor-api-usb
+  #   restart: always
+  #   build:
+  #     context: ../../src/backend/python/Sensor_management-prod/usb_storage
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - DEBUG=false
+  #       - HOST=0.0.0.0
+  #       - PORT=50010
+  #   ports:
+  #     - 50010:50010
+  #   environment:
+  #     - CONFIG_PATH=./ressources/configs.ini
+  #   volumes:
+  #     - ../../../dscdatasmart/datas:/home/sl_admin/dscdatasmart/datas
+  #     - /media/sl_admin/5419-CCE7:/media/sl_admin/5419-CCE7
+  #     - /media/sl_admin/9EE7-9230:/media/sl_admin/9EE7-9230
 
   frontend_plottly:
     image: dscdatasmart/censor-frontend:latest
@@ -157,9 +157,6 @@ services:
         - PORT=8000
     ports:
       - 8000:8000
-
-
-
 # networks:
 #   dscdatasmart:
-#     driver: bridge     
+#     driver: bridge
