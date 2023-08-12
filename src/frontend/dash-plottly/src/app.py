@@ -1,6 +1,8 @@
 import os
 import dash
 from dash import Dash
+import dash_auth
+
 from libs.shell import mount_app
 
 # Lire la valeur des variables d'environnement
@@ -34,6 +36,13 @@ app = Dash(
     external_scripts=scripts,
     title="Data Logger.",
     update_title="Logger...",
+)
+
+VALID_USERNAME_PASSWORD_PAIRS = {"demo": "demo"}
+
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS,
 )
 
 app.layout = mount_app(
