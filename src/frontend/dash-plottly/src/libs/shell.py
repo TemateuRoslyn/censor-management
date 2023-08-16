@@ -315,6 +315,25 @@ def create_navbar_drawer(nav_data):
     )
 
 
+def create_aside(description):
+    return dmc.Aside(
+        position={"top": 140, "right": 0},
+        fixed=True,
+        id="toc-navbar",
+        width={"base": 300},
+        zIndex=10,
+        children=[
+            dmc.Text(
+                description,
+                align="center",
+                my=10,
+                mx=0,
+            )
+        ],
+        withBorder=True,
+    )
+
+
 def mount_app(nav_data):
     return dmc.MantineProvider(
         dmc.MantineProvider(
