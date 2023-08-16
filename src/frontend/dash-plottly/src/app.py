@@ -52,7 +52,7 @@ app.layout = mount_app(
 server = app.server
 if __name__ == "__main__":
     app.run_server(
-        debug=True,
+        debug=debug_val,
         host=host_val,
         port=port_val,
     )
