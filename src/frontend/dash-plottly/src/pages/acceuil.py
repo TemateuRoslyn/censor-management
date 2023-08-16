@@ -2,14 +2,13 @@ import dash
 from dash import html
 import dash_mantine_components as dmc
 
-from libs.shell import create_breadcrumbs
+from libs.shell import create_breadcrumbs, create_aside
 from libs.utils import (
     render_analogic_inputs,
     render_camemberg_graph,
     render_capteurs_graph,
     render_accelerometre_graph,
 )
-from components.modal import create_modal
 
 dash.register_page(
     __name__,
@@ -41,6 +40,9 @@ layout = html.Div(
                 render_capteurs_graph(),
                 render_accelerometre_graph(),
             ],
+        ),
+        create_aside(
+            "Ici, vous trouverez les graphes essentiels pour l'application, \n Notament les: "
         ),
     ],
 )
