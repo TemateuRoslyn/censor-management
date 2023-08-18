@@ -252,7 +252,7 @@ if __name__ == '__main__':
                     }
 
 
-        # Liste des endpoint
+        # Liste des endpoints
         api_url_ni_ai = f"{config_api_ni.get('endpoint')}/api/read_ai_to_redis"
         
         api_url_ai_stop = f"{config_api_ni.get('endpoint')}/api/stop_read_ai_to_redis"
