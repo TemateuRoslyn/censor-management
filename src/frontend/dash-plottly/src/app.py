@@ -2,6 +2,7 @@ import os
 import dash
 from dash import Dash
 import dash_auth
+import dash
 
 from libs.shell import mount_app
 
@@ -50,6 +51,7 @@ app.layout = mount_app(
 )
 
 server = app.server
+
 if __name__ == "__main__":
     app.run_server(
         debug=debug_val,

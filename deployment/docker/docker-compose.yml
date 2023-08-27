@@ -137,7 +137,7 @@ services:
       context: ../../src/frontend/dash-plottly
       dockerfile: ./Dockerfile
       args:
-        - DEBUG=false
+        - DEBUG=true
         - HOST=0.0.0.0
         - PORT=8085
         - API_ADDR=127.0.0.1:8000

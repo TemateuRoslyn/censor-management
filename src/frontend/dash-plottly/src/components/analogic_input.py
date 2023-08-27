@@ -1,6 +1,7 @@
 from dash import callback, Input, Output, dcc
 import dash_mantine_components as dmc
 import dash_daq as daq
+from dash_iconify import DashIconify
 
 from services.request import get_request
 
@@ -39,7 +40,17 @@ def create_analogic_input_card(titre: str, id: str):
         children=[
             dmc.CardSection(
                 dmc.Group(
-                    children=[dmc.Text(titre, weight=500)],
+                    children=[
+                        dmc.Text(titre, weight=500),
+                        dmc.ActionIcon(
+                            DashIconify(icon="clarity:settings-line", width=15),
+                            size="md",
+                            variant="outline",
+                            id=id + "_modal_btn",
+                            n_clicks=0,
+                            mb=1,
+                        ),
+                    ],
                     position="apart",
                 ),
                 withBorder=True,
