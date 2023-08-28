@@ -1,7 +1,9 @@
 import os
+import json
 import threading
 import pandas as pd
 import numpy as np
+import pprint
 
 from flask import Flask, request, jsonify
 from datetime import datetime as Date
@@ -99,17 +101,58 @@ def last_delivery_id(redis, stream, group):
 
     return lastid
 
+def calibration(x,offset,sensibilite):
 
-def save_data_to_mongo_and_folder(stop_event, redisReader:RedisStreamReader, config):
+    return (x+offset)/sensibilite
+
+def read_items_from_redis(redis, stream, group, consumer='consumer_i', block=1, count=1):
+
+      
+    items = []
+
+                           
+    items = redis.xreadgroup(groupname=group, consumername=consumer,block=block, count=count, streams={stream:'>'} )
+
+    
+    # pprint.pprint(items)
+
+
+    if (len(items)== 0)or (items == None):
+
+        return None
+    
+    elif (len(items[0][1])==0):
+
+        return None
+
+    else :            
+
+        data = []
+
+                
+        for elt in items[0][1] :
+
+            id, item = elt
+
+            data.append(item)
+
+            redis.xack(stream, group, id)
+
+        return data
+
+
+def write_to_redis(stop_event, redisReader:RedisStreamReader, config):
 
     global STOP_INSERT_DATA
 
     try:
         i = 0
+        df = None
         df_ai = None
         df_udp = None
-        df_ci = None
-        df_di = None
+        df_dir = None
+        df_vit = None
+        df_syn = None
         time_start = None
         time_stop = None
         rate = None
@@ -118,140 +161,120 @@ def save_data_to_mongo_and_folder(stop_event, redisReader:RedisStreamReader, con
         
         while not STOP_INSERT_DATA[0] or (df != None):
 
-            items = redisReader.read_one_streams()
+            # AI 0-7
+            l = read_items_from_redis(redis=redisReader.redis_conn, stream=config['stream_ai'], group=config['group'], consumer='consumer_ai')
 
-            if (items == None) or (len(items[0][1])==0) :
+            
 
-                check_backlog = False if (len(items[0][1]) == 0) else True
+            if l==None:
 
-            else :
+                df_ai = pd.DataFrame(columns=['timestamp','ai0', 'ai1', 'ai2', 'ai3', 'ai4', 'ai5', 'ai6', 'ai7'])
+
+            else:
+
+                data = process_messages_stream_ai(item=l[0], sample_size=int(config['sample_size']), format_time=f"%Y-%m-%d %H:%M:%S.%f")
                 
-                for stream, mesg_list in items:
+                time_stop = data['time_stop']
+                time_start = data['time_start']
+                rate = data['sample_rate']                
+                df_ai = pd.DataFrame(data['value'])
 
-                    if stream == config['stream_ai']:
+                df_ai['ai0'] = df_ai['ai0'].apply(lambda x : calibration(x,offset=0,sensibilite=0.079863))
+                df_ai['ai1'] = df_ai['ai1'].apply(lambda x : calibration(x,offset=-0.001,sensibilite=0.080607))
+                df_ai['ai2'] = df_ai['ai2'].apply(lambda x : calibration(x,offset=-0.007,sensibilite=0.080243))
+                df_ai['ai3'] = df_ai['ai3'].apply(lambda x : calibration(x,offset=-0.004,sensibilite=0.080366))
+                df_ai['ai4'] = df_ai['ai4'].apply(lambda x : calibration(x,offset=-0.003,sensibilite=0.080154))
+                df_ai['ai5'] = df_ai['ai5'].apply(lambda x : calibration(x,offset=-0.002,sensibilite=0.080917))
 
-                        id, item = mesg_list
+            print(f"ai") 
 
-                        if len(item)>0:
+            # Synchro
+            l = read_items_from_redis(redis=redisReader.redis_conn, stream=config['stream_syn'], group=config['group'], consumer='consumer_syn')
 
-                            data = process_messages_stream_ai(item=item, sample_size=int(config['sample_size']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
+            if l==None:
 
-                            if df_ai is not None:
+                df_syn = pd.DataFrame(columns=['timestamp','Synchron'])
 
-                                time_stop = data['time_stop']
-                                df_ai= pd.concat([df_ai, pd.DataFrame(data['value'])], ignore_index=True)
+            else:
+                              
+                df_syn = pd.DataFrame([l[0]],columns=['timestamp','Synchron'])
 
-                            else:
+            print(f"syn")
 
-                                time_start = data['time_start']
-                                time_stop = data['time_stop']
-                                rate = data['sample_rate']
-                                df_ai = pd.DataFrame(data['value'])
+            # Direction
+            l = read_items_from_redis(redis=redisReader.redis_conn, stream=config['stream_dir'], group=config['group'], consumer='consumer_dir')
 
+            if l==None:
 
-                    elif(stream == config['stream_ci']):
+                df_dir = pd.DataFrame(columns=['timestamp','Direction'])
 
-                        id, item = mesg_list
+            else:
+                              
+                df_dir = pd.DataFrame([l[0]],columns=['timestamp','Direction'])
 
-                        if len(item)>0:
+            print(f"dir")
 
-                            if df_ci is not None:
+            # Vitesse
+            l = read_items_from_redis(redis=redisReader.redis_conn, stream=config['stream_vit'], group=config['group'], consumer='consumer_vit')
 
-                                df_ci= pd.concat([df_ci, pd.DataFrame(item)], ignore_index=True)
+            if l==None:
 
-                            else:
+                df_vit = pd.DataFrame(columns=['timestamp','Vitesse'])
 
-                                df_ci = pd.DataFrame(item)
-                    
-                    elif(stream == config['stream_di']):
+            else:
+                              
+                df_vit = pd.DataFrame([l[0]],columns=['timestamp','Vitesse'])
 
-                        id, item = mesg_list
+            print(f"Vit")
+            
 
-                        if len(item)>0:
+            # UDP
+            l = read_items_from_redis(redis=redisReader.redis_conn, stream=config['stream_udp'], group=config['group'], consumer='consumer_udp')
 
-                            if df_di is not None:
+            if l==None:
 
-                                df_di= pd.concat([df_di, pd.DataFrame(item)], ignore_index=True)
+                df_udp = pd.DataFrame(columns=['timestamp','udp'])
 
-                            else:
+            else:
 
-                                df_di = pd.DataFrame(item)
+                df_udp = pd.DataFrame([l[0]], columns=['timestamp','udp'])
 
-                    elif(stream == config['stream_udp']):
+            print(f"udp")
+                
+            
 
-                        id, item = mesg_list
-
-                        if len(item)>0:
-
-                            if df_udp is not None:
-
-                                df_udp= pd.concat([df_udp, pd.DataFrame(item)], ignore_index=True)
-
-                            else:
-
-                                df_udp = pd.DataFrame(item)
-
-                    elif(stream == config['stream_sync1']):
-
-                        id, item = mesg_list
-
-                        if len(item)>0:
-
-                            if df_sync1 is not None:
-
-                                df_sync1 = pd.concat([df_sync1, pd.DataFrame(item)], ignore_index=True)
-
-                            else:
-
-                                df_sync1 = pd.DataFrame(item)
-
-                    elif(stream == config['stream_sync2']):
-
-                        id, item = mesg_list
-
-                        if len(item)>0:
-
-                            if df_sync2 is not None:
-
-                                df_sync2 = pd.concat([df_sync2, pd.DataFrame(item)], ignore_index=True)
-
-                            else:
-
-                                df_sync2 = pd.DataFrame(item)
-
-                    elif(stream == config['stream_sync3']):
-
-                        id, item = mesg_list
-
-                        if len(item)>0:
-
-                            if df_sync3 is not None:
-
-                                df_sync3 = pd.concat([df_sync3, pd.DataFrame(item)], ignore_index=True)
-
-                            else:
-
-                                df_sync3 = pd.DataFrame(item)
-
-                    else:
-
-                        pass
-
-            df = df_ai.merge(df_ci, on=['timestamp'], how='outer')
-            df = df.merge(df_di, on=['timestamp'], how='outer')
+            df = df_ai.merge(df_syn, on=['timestamp'], how='outer')
+            df = df.merge(df_dir, on=['timestamp'], how='outer')
+            df = df.merge(df_vit, on=['timestamp'], how='outer')
             df = df.merge(df_udp, on=['timestamp'], how='outer')
-            df = df.merge(df_sync1, on=['timestamp'], how='outer')
-            df = df.merge(df_sync2, on=['timestamp'], how='outer')
-            df = df.merge(df_sync3, on=['timestamp'], how='outer')
+
+            # df.replace('nan', None, inplace=True) 
+
+            print(f"df")
+
+            print(df) 
 
             message = {}
 
-            message['values'] = df
-            message['rate'] = rate
-            message['timestart'] = time_start
-            message['timestop'] = time_stop
+            for cols in df.columns.to_list():
+
+                message[cols] = df[cols].to_list().__str__()          
+                    
+            message['rate'] = rate.__str__()
+            message['timestart'] = time_start.__str__()
+            message['timestop'] = time_stop.__str__()
+            message['columns'] = df.columns.to_list().__str__()
+
+            # pprint.pprint(message)
 
             redisReader.write(stream=config['stream'], data=message)
+
+            df = None
+            df_ai = None
+            df_udp = None
+            df_dir = None
+            df_vit = None
+            df_syn = None
         
         redisReader.close()                   
                  
@@ -269,7 +292,7 @@ def api_write_to_redis_loop():
 
         data = request.get_json()
 
-        stream = [data.get('stream_ai'),data.get('stream_ci'),data.get('stream_di'),data.get('stream_udp')]
+        stream = [data.get('stream_ai'),data.get('stream_dir'),data.get('stream_vit'),data.get('stream_syn'),data.get('stream_udp'), data.get('stream')]
 
         redis_reader = RedisStreamReader(redis_host=data.get('host'), redis_port=int(data.get('port')), consumer_group=data.get('group'),stream_name=stream)
 
@@ -286,25 +309,22 @@ def api_write_to_redis_loop():
         config['sample_size'] = data.get('sample_size')
         config['group'] = data.get('group')
         config['stream'] = data.get('stream')
-        config['stream_ci'] = data.get('stream_ci')
         config['stream_ai'] = data.get('stream_ai')
-        config['stream_di'] = data.get('stream_di')
+        config['stream_dir'] = data.get('stream_dir')
+        config['stream_vit'] = data.get('stream_vit')
+        config['stream_syn'] = data.get('stream_syn')
         config['stream_udp'] = data.get('stream_udp')
-        config['stream_sync1'] = data.get('stream_sync1')
-        config['stream_sync2'] = data.get('stream_sync2')
-        config['stream_sync3'] = data.get('stream_sync3')
-        # config['max_file'] = data.get('max_file')
 
         # Créez un thread pour la tâche en arrière-plan
-        BACKGROUND_THREAD = threading.Thread(target=save_data_to_mongo_and_folder, args=(STOP_INSERT_DATA, redis_reader,config))
+        BACKGROUND_THREAD = threading.Thread(target=write_to_redis, args=(STOP_INSERT_DATA, redis_reader,config))
         # Démarrez le thread en arrière-plan
         BACKGROUND_THREAD.start()
 
-        return jsonify({'Message': f"Début de la sauvegarde dans fichier"}), 200
+        return jsonify({'Message': f"écriture dans dans stream_all"}), 200
     
     except Exception as e:
         redis_reader.close()
-        return jsonify({'Message': f"Une erreur sur la sauvegarde dans fichier :  {e}."}), 500
+        return jsonify({'Message': f"Une erreur au niveau de l'ecriture dans stream_all :  {e}."}), 500
 
 
 
@@ -321,10 +341,25 @@ def api_stop_write_to_redis_loop():
 
         BACKGROUND_THREAD.join()
 
-        return jsonify({'Message': "Stop de la sauvegarde"}), 200
+        return jsonify({'Message': "Stop écriture dans stream_all"}), 200
     
     except Exception as ex:
-        return jsonify({'Message': f"Un problème à l'arret : {ex}"}), 500 
+        return jsonify({'Message': f"Un problème à stopper l'écriture dans stream_all : {ex}"}), 500 
 
 
 
+if __name__ == '__main__':
+    from waitress import serve
+    
+    if debug_val :
+        app.run(
+        debug=debug_val, 
+        host=host_val,
+        port=port_val, 
+        )
+    else :
+        serve(
+            app, 
+            host=host_val, 
+            port=port_val
+            )

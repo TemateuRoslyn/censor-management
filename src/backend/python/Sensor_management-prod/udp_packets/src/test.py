@@ -60,3 +60,12 @@ if __name__=='__main__':
 	print(f"{ac_pd}\n")
 
 	print(f"{ac_pd.fillna(method='ffill')}\n")
+
+	ac_pd = ac_pd.fillna(method='ffill')
+	ac_pd = ac_pd.fillna(method='bfill')
+
+	print(f"Dict {ac_pd.to_dict('list').__str__()}")
+
+	udp = UDPHandler(target_port=55000)
+
+	print(f"data : {udp.receive_packet()}")

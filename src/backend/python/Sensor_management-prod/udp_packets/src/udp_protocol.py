@@ -16,7 +16,7 @@ class UDPHandler:
 
     def receive_packet(self, buffer_size=1024):
         try:
-            #self.socket.bind((self.target_ip, self.target_port))
+            # self.socket.bind((self.target_ip, self.target_port))
             print(f"{self.socket}")
             data, address = self.socket.recvfrom(buffer_size)
             print(f"Packet received from {address[0]}:{address[1]}")
