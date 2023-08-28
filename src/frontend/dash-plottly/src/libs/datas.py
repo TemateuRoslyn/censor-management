@@ -9,3 +9,39 @@ datas = {
 }
 
 data_frame = pd.DataFrame(datas)
+
+""" Un petit DataFrame pour la liste des enregistrements"""
+
+datas_enregistrement = {
+    "ID": [000, 1, 2, 3, 4, 5, 6],
+    "Capteur": [
+        "Capteur 1",
+        "Entrée analogique 0",
+        "Entrée analogique 1",
+        "Entrée analogique 2",
+        "Entrée analogique 0",
+        "Entrée analogique 1",
+        "Entrée analogique 2",
+    ],
+    "Début": [
+        "06/06/2021",
+        "07/07/2021",
+        "06/06/2021",
+        "07/07/2021",
+        "07/07/2021",
+        "06/06/2021",
+        "07/07/2021",
+    ],
+    "Fin": [
+        "06/06/2021",
+        "07/07/2021",
+        "06/06/2021",
+        "07/07/2021",
+        "07/07/2021",
+        "06/06/2021",
+        "07/07/2021",
+    ],
+    "Durée": [1, 2, 3, 4, 9, 5, 6],
+}
+
+data_frame_enregistrement = pd.DataFrame(datas_enregistrement)

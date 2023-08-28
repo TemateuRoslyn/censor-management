@@ -8,8 +8,9 @@ from components.analogic_input import create_analogic_input_card
 from components.camemberg import create_camemberg
 from components.capteur import create_capteur
 from components.accelerometre import create_accelerometre
-from components.modal import create_modal
+from components.modal import create_modal, create_modal_ai
 from components.sauvegarde_form import create_sauvegarde_form
+from components.disque import create_disque
 
 """Je crée ici un petit DataFrame que je vais afficher dans le tableau"""
 datas = {
@@ -48,6 +49,10 @@ def title(title):
     return dmc.Text(title, align="center", style={"fontSize": 30})
 
 
+def subTitle(subtile):
+    return dmc.Text(subtile, style={"fontSize": 20}, my=10)
+
+
 """Le header du tableau de previsualisation."""
 
 
@@ -83,30 +88,15 @@ def render_analogic_inputs():
             {"maxWidth": 600, "cols": 1, "spacing": "sm"},
         ],
         children=[
-            html.Div(
-                create_analogic_input_card(id="ai_0", titre="Analogic input 0"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_1", titre="Analogic input 1"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_2", titre="Analogic input 2"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_3", titre="Analogic input 3"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_4", titre="Analogic input 4"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_5", titre="Analogic input 5"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_6", titre="Analogic input 6"),
-            ),
-            html.Div(
-                create_analogic_input_card(id="ai_7", titre="Analogic input 7"),
-            ),
+            html.Div(create_analogic_input_card(id="ai_0", titre="Analogic input 0")),
+            html.Div(create_analogic_input_card(id="ai_1", titre="Analogic input 1")),
+            html.Div(create_analogic_input_card(id="ai_2", titre="Analogic input 2")),
+            html.Div(create_analogic_input_card(id="ai_3", titre="Analogic input 3")),
+            html.Div(create_analogic_input_card(id="ai_4", titre="Analogic input 4")),
+            html.Div(create_analogic_input_card(id="ai_5", titre="Analogic input 5")),
+            html.Div(create_analogic_input_card(id="ai_6", titre="Analogic input 6")),
+            html.Div(create_analogic_input_card(id="ai_7", titre="Analogic input 7")),
+            create_modal_ai(title="Paramétrer l'entrée analogique", id="ai_0_modal"),
         ],
     )
 
@@ -176,7 +166,7 @@ def render_sauvegarde_form():
     )
 
 
-def render_parametre_form():
+def render_sensor_settings_form():
     return dmc.Container(
         children=[
             dmc.SimpleGrid(
@@ -279,4 +269,148 @@ def render_parametre_form():
                 ],
             ),
         ]
+    )
+
+
+def render_ai_settings_form():
+    return dmc.Container(
+        children=[
+            dmc.SimpleGrid(
+                cols=2,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.Select(
+                        data=list_entree_analogiques,
+                        searchable=False,
+                        style={"width": "100%"},
+                        id="",
+                        label="Selectionnez l'entrée analigique :",
+                        value=list_entree_analogiques[0],
+                    ),
+                    dmc.TextInput(
+                        label="Nouveau nom de la voie :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        type="text",
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=2,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.NumberInput(
+                        label="Frequence d'échantillonage :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        min=0,
+                        precision=2,
+                    ),
+                    dmc.Select(
+                        data=list_unite,
+                        searchable=False,
+                        style={"width": "100%"},
+                        id="",
+                        label="Selectionnez une unité :",
+                        value=list_unite[0],
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=3,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.NumberInput(
+                        label="Offset :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                        min=0,
+                        precision=2,
+                    ),
+                    dmc.TextInput(
+                        style={"width": "100%"},
+                        id="",
+                        label="Gain :",
+                    ),
+                    dmc.TextInput(
+                        label="Numéro de série :",
+                        style={"width": "100%"},
+                        # error="Valeur invalide",
+                        id="",
+                    ),
+                ],
+            ),
+            dmc.SimpleGrid(
+                cols=4,
+                spacing="lg",
+                mt=20,
+                breakpoints=[
+                    {"maxWidth": 980, "cols": 1, "spacing": "md"},
+                    {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                    {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+                ],
+                children=[
+                    dmc.Button(
+                        "Valider",
+                        variant="outline",
+                        leftIcon=DashIconify(icon="fluent:settings-32-regular"),
+                    ),
+                ],
+            ),
+        ]
+    )
+
+
+"""Les elements de la vue systemes"""
+
+
+def render_disk():
+    return dmc.SimpleGrid(
+        cols=2,
+        spacing="lg",
+        mt=10,
+        breakpoints=[
+            {"maxWidth": 980, "cols": 2, "spacing": "md"},
+            {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+            {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+        ],
+        children=[
+            html.Div(
+                create_disque(
+                    id="disque_1",
+                    labels=["Espace libre", "Espace occupé"],
+                    title="Espace sur le disque",
+                    values=[10, 12],
+                )
+            ),
+            html.Div(
+                create_disque(
+                    id="disque_1",
+                    labels=["Espace libre", "Espace occupé"],
+                    title="Espace sur la clef USB",
+                    values=[10, 2],
+                )
+            ),
+        ],
     )

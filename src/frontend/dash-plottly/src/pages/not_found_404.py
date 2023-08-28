@@ -6,7 +6,7 @@ from dash_extensions import Lottie
 dash.register_page(
     __name__,
     path="/404",
-    title="404 | Sencor Management",
+    title="404 | Data Logger",
 )
 
 layout = dmc.Stack(

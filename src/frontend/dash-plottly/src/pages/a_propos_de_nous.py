@@ -4,9 +4,7 @@ import dash_mantine_components as dmc
 
 from libs.shell import create_breadcrumbs
 
-dash.register_page(
-    __name__, path="/about", title="A propos de nous | Censor Management"
-)
+dash.register_page(__name__, path="/about", title="A propos de nous | Data Logger")
 
 
 def title(title):
@@ -30,7 +28,7 @@ layout = html.Div(
                     link_steep_2="/about",
                 ),
                 title(
-                    "SOFTMAES Dashboard.",
+                    "Data Logger.",
                 ),
                 head(
                     "Nous conçevons des dashboards specifiques à votre demande. Des Dashboards pour la production. "

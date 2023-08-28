@@ -3,6 +3,45 @@ from dash_iconify import DashIconify
 
 import dash_mantine_components as dmc
 
+from libs.utils import title, render_sensor_settings_form, render_ai_settings_form
+
+
+def render_settings_tabs():
+    return dmc.Tabs(
+        [
+            dmc.TabsList(
+                grow=True,
+                children=[
+                    dmc.Tab(
+                        "Paramétrer les capteurs",
+                        value="1",
+                    ),
+                    dmc.Tab(
+                        "Paramétrer les AI",
+                        value="2",
+                    ),
+                ],
+            ),
+            dmc.TabsPanel(
+                [
+                    title("Paramétrer des capteurs"),
+                    render_sensor_settings_form(),
+                ],
+                value="1",
+                mt=20,
+            ),
+            dmc.TabsPanel(
+                [
+                    title("Paramétrer les entrées analogiques"),
+                    render_ai_settings_form(),
+                ],
+                value="2",
+                mt=20,
+            ),
+        ],
+        value="1",
+    )
+
 
 def create_breadcrumbs(
     steep_1: str, link_steep_1: None, steep_2: str, link_steep_2: None
@@ -60,12 +99,12 @@ def create_header(nav_data):
                         dmc.Col(
                             [
                                 dmc.MediaQuery(
-                                    create_home_link("SOFTMAES Dashboard."),
+                                    create_home_link("Data Logger."),
                                     smallerThan="lg",
                                     styles={"display": "none"},
                                 ),
                                 dmc.MediaQuery(
-                                    create_home_link("SOFTMAES."),
+                                    create_home_link("Data Logger."),
                                     largerThan="lg",
                                     styles={"display": "none"},
                                 ),
@@ -204,6 +243,13 @@ def create_side_nav_content(nav_data):
                             path="/sauvegardes", title="Sauvegardes", icon="save"
                         ),
                         className="nav-item",
+                        style={"marginBottom": 20},
+                    ),
+                    html.Li(
+                        create_nav_item(
+                            path="/systeme", title="Système", icon="sensor_door"
+                        ),
+                        className="nav-item",
                     ),
                 ]
             ),
@@ -273,6 +319,31 @@ def create_navbar_drawer(nav_data):
                 children=create_side_nav_content(nav_data),
             )
         ],
+    )
+
+
+def create_aside(description: str, title="Une description de la section"):
+    return dmc.Aside(
+        position={"top": 140, "right": 0},
+        fixed=True,
+        id="toc-navbar",
+        width={"base": 300},
+        zIndex=10,
+        children=[
+            dmc.Text(
+                title,
+                align="center",
+                my=10,
+                weight="bold",
+            ),
+            dmc.Text(
+                description,
+                align="center",
+                my=10,
+                mx=0,
+            ),
+        ],
+        withBorder=True,
     )
 
 

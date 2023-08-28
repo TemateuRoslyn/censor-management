@@ -3,13 +3,12 @@ from dash import html
 
 import dash_mantine_components as dmc
 
-from libs.shell import create_breadcrumbs
-from libs.utils import title, render_parametre_form
+from libs.shell import create_breadcrumbs, render_settings_tabs
 
 dash.register_page(
     __name__,
     path="/parametres",
-    title="Paramètres | Sencor Management.",
+    title="Paramètres | Data Logger.",
 )
 
 layout = html.Div(
@@ -24,8 +23,7 @@ layout = html.Div(
                     link_steep_1="/",
                     link_steep_2="/parametres",
                 ),
-                title("Paramètres des capteurs"),
-                render_parametre_form(),
+                render_settings_tabs(),
             ],
         )
     ]
