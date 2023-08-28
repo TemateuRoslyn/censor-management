@@ -243,6 +243,13 @@ def create_side_nav_content(nav_data):
                             path="/sauvegardes", title="Sauvegardes", icon="save"
                         ),
                         className="nav-item",
+                        style={"marginBottom": 20},
+                    ),
+                    html.Li(
+                        create_nav_item(
+                            path="/systeme", title="Système", icon="sensor_door"
+                        ),
+                        className="nav-item",
                     ),
                 ]
             ),
@@ -315,7 +322,7 @@ def create_navbar_drawer(nav_data):
     )
 
 
-def create_aside(description):
+def create_aside(description: str, title="Une description de la section"):
     return dmc.Aside(
         position={"top": 140, "right": 0},
         fixed=True,
@@ -324,11 +331,17 @@ def create_aside(description):
         zIndex=10,
         children=[
             dmc.Text(
+                title,
+                align="center",
+                my=10,
+                weight="bold",
+            ),
+            dmc.Text(
                 description,
                 align="center",
                 my=10,
                 mx=0,
-            )
+            ),
         ],
         withBorder=True,
     )

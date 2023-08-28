@@ -2,10 +2,14 @@ import dash
 from dash import html
 import dash_mantine_components as dmc
 
-from libs.shell import create_breadcrumbs
+from libs.shell import create_breadcrumbs, create_aside
 from libs.utils import render_sauvegarde_form, title
 
-dash.register_page(__name__, path="/sauvegardes", title="Sauvegardes | Data Logger")
+dash.register_page(
+    __name__,
+    path="/sauvegardes",
+    title="Sauvegardes | Data Logger",
+)
 
 layout = html.Div(
     [
@@ -22,6 +26,10 @@ layout = html.Div(
                 title("Sauvegardes des données"),
                 render_sauvegarde_form(),
             ],
-        )
+        ),
+        create_aside(
+            "",
+            title="Sauvegardes.",
+        ),
     ]
 )

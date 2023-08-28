@@ -10,6 +10,7 @@ from components.capteur import create_capteur
 from components.accelerometre import create_accelerometre
 from components.modal import create_modal, create_modal_ai
 from components.sauvegarde_form import create_sauvegarde_form
+from components.disque import create_disque
 
 """Je crée ici un petit DataFrame que je vais afficher dans le tableau"""
 datas = {
@@ -46,6 +47,10 @@ list_unite = [
 
 def title(title):
     return dmc.Text(title, align="center", style={"fontSize": 30})
+
+
+def subTitle(subtile):
+    return dmc.Text(subtile, style={"fontSize": 20}, my=10)
 
 
 """Le header du tableau de previsualisation."""
@@ -374,4 +379,38 @@ def render_ai_settings_form():
                 ],
             ),
         ]
+    )
+
+
+"""Les elements de la vue systemes"""
+
+
+def render_disk():
+    return dmc.SimpleGrid(
+        cols=2,
+        spacing="lg",
+        mt=10,
+        breakpoints=[
+            {"maxWidth": 980, "cols": 2, "spacing": "md"},
+            {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+            {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+        ],
+        children=[
+            html.Div(
+                create_disque(
+                    id="disque_1",
+                    labels=["Espace libre", "Espace occupé"],
+                    title="Espace sur le disque",
+                    values=[10, 12],
+                )
+            ),
+            html.Div(
+                create_disque(
+                    id="disque_1",
+                    labels=["Espace libre", "Espace occupé"],
+                    title="Espace sur la clef USB",
+                    values=[10, 2],
+                )
+            ),
+        ],
     )
