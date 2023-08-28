@@ -603,6 +603,39 @@ def api_write_co():
     except Exception as e:
 
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
+    
+#################################IHM###################
+
+@app.route('/api/read_ai_to_IHM', methods=['POST'])
+def api_read_ai_to_ihm():
+
+    try:
+
+        data = request.get_json()
+        rate = int(data.get('rate'))
+        buffer_size = int(data.get('buffer_size'))
+        sample_per_chan = int(data.get('sample_size'))
+        device = data.get('device')
+        channels =data.get('channels')
+
+        obj_chan = ChannelsAI(rate=rate, buffer_size=buffer_size, sample_per_chan=sample_per_chan, device=device, channels=channels)
+
+        obj_chan.init_task()
+
+        mesg = obj_chan.read_datas()
+
+        ### Mieux dfinir les sortie
+
+        return jsonify({"etat": "on", "message": mesg['values']}), 200
+    
+    except Exception as e:
+        obj_chan.close_task()
+        return jsonify({"etat":"off", 'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
+
+
+
+#######################################################
+
 
 
 if __name__ == '__main__':

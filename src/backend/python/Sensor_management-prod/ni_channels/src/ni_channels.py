@@ -124,11 +124,11 @@ class ChannelDI:
 
     def read_data(self):        
 
-        samples = {}
-        
-        samples['time'] = Date.now().isoformat()            
+        samples = {}           
 
         samples['values'] = self.task.read(number_of_samples_per_channel=self.sample_size)
+        
+        samples['time'] = Date.now().isoformat() 
 
         return samples
     
@@ -320,11 +320,11 @@ class ChannelCI:
 
     def read_data(self):        
 
-        samples = {}
-        
-        samples['time'] = Date.now().isoformat()            
+        samples = {}          
 
         samples['values'] = self.task.read(number_of_samples_per_channel=self.sample_size)
+        
+        samples['time'] = Date.now().isoformat()  
 
         return samples
     
