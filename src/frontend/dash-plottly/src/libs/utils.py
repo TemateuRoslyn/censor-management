@@ -395,22 +395,6 @@ def render_disk():
             {"maxWidth": 755, "cols": 1, "spacing": "sm"},
             {"maxWidth": 600, "cols": 1, "spacing": "sm"},
         ],
-        children=[
-            html.Div(
-                create_disque(
-                    id="disque_1",
-                    labels=["Espace libre", "Espace occupé"],
-                    title="Espace sur le disque",
-                    values=[10, 12],
-                )
-            ),
-            html.Div(
-                create_disque(
-                    id="disque_1",
-                    labels=["Espace libre", "Espace occupé"],
-                    title="Espace sur la clef USB",
-                    values=[10, 2],
-                )
-            ),
-        ],
+        id="liste_disque",
+        children=[],
     )

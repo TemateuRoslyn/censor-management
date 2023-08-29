@@ -22,7 +22,8 @@ def run_analogic_callback(
         prevent_initial_call=True,
     )
     def update_analogique_input(n):
-        result_ai_7 = get_request("/analogic-input")
+        result_ai_7 = get_request("http://127.0.0.1:5000/")
+        # result_ai_7 = get_request("/analogic-input")
         etat = result_ai_7["etat"]
         valeur = result_ai_7["valeur"]
 
