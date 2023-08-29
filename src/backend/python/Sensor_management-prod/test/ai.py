@@ -7,7 +7,7 @@ import nidaqmx
 pp = pprint.PrettyPrinter(indent=4)
 
 with nidaqmx.Task() as task:
-    task.ai_channels.add_ai_voltage_chan("Dev1/ai7")
+    task.ai_channels.add_ai_voltage_chan("Dev1/ai6:7")
 
     task.start()
 
@@ -17,7 +17,7 @@ with nidaqmx.Task() as task:
 
         data = task.read(number_of_samples_per_channel=1)
         pp.pprint(data)
-        time.sleep(10)
+        time.sleep(1)
 
     # in_stream = task.in_stream
 

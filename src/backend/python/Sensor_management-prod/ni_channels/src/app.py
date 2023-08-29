@@ -3,7 +3,7 @@ import time
 import threading
 import os
 
-from json import JSONEncoder
+from datetime import datetime as Date
 from flask import Flask, jsonify, request
 from redis import Redis, RedisError
 from ni_channels import ChannelsAI, ChannelCI, ChannelCO, ChannelDI, ChannelDO
@@ -33,15 +33,191 @@ CHANGE_STATE_CHAN_DO = [False]
 BACKGROUND_THREAD_AI = None
 BACKGROUND_THREAD_DO = None
 BACKGROUND_THREAD_REDIS = None
+
+BACKGROUND_THREAD_DI_DIR = None
+BACKGROUND_THREAD_DI_VIT = None
+BACKGROUND_THREAD_DI_SYN = None
+STOP_EVENT_COLLECT_DI_DIR = [False]
+STOP_EVENT_COLLECT_DI_VIT = [False]
+STOP_EVENT_COLLECT_DI_SYN = [False]
+
 QUEUE_AI = []
 
-
-class NumpyArrayEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return JSONEncoder.default(self, obj)
+def collect_data_from_chan_di_dir(stop_event,channel_di:ChannelDI, redis:Redis, config):
     
+    global STOP_EVENT_COLLECT_DI_DIR
+   
+    if config['collect_time'] > 0 :
+
+        start = time.process_time()
+
+        while (time.process_time() - start) <= config['collect_time'] :
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Direction'] = 1  
+            
+            else:
+
+                 data['Direction'] = 0
+                
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    elif config['collect_time'] < 0 :
+
+        while not STOP_EVENT_COLLECT_DI_DIR[0]:
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Direction'] = 1  
+            
+            else:
+
+                 data['Direction'] = 0
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    else:
+        raise(f"Le temps de collect est null {config['collect_time']}")
+    
+
+def collect_data_from_chan_di_vit(stop_event,channel_di:ChannelDI, redis:Redis, config):
+    
+    global STOP_EVENT_COLLECT_DI_VIT
+   
+    if config['collect_time'] > 0 :
+
+        start = time.process_time()
+
+        while (time.process_time() - start) <= config['collect_time'] :
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Vitesse'] = 1  
+            
+            else:
+
+                 data['Vitesse'] = 0
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    elif config['collect_time'] < 0 :
+
+        while not STOP_EVENT_COLLECT_DI_VIT[0]:
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Vitesse'] = 1  
+            
+            else:
+
+                 data['Vitesse'] = 0
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    else:
+        raise(f"Le temps de collect est null {config['collect_time']}")
+    
+
+def collect_data_from_chan_di_syn(stop_event,channel_di:ChannelDI, redis:Redis, config):
+    
+    global STOP_EVENT_COLLECT_DI_SYN
+   
+    if config['collect_time'] > 0 :
+
+        start = time.process_time()
+
+        while (time.process_time() - start) <= config['collect_time'] :
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Synchro'] = 1  
+            
+            else:
+
+                 data['Synchro'] = 0
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    elif config['collect_time'] < 0 :
+
+        while not STOP_EVENT_COLLECT_DI_SYN[0]:
+
+            item = channel_di.read_data()
+
+            data = {}
+
+            if item['values']:
+
+                data['Synchro'] = 1  
+            
+            else:
+
+                 data['Synchro'] = 0
+
+            data['timestamp'] = item['time']
+
+            redis.xadd(config['stream'], fields=data)
+
+            time.sleep(config['period'])
+        
+        channel_di.close_task()
+
+    else:
+        raise(f"Le temps de collect est null {config['collect_time']}")
+
+   
 def collect_data_from_chan_ai(stop_event,channel_ai:ChannelsAI, collect_time: float = 10.0):
 
     global QUEUE_AI
@@ -179,6 +355,193 @@ def api_stop_read_ai_loop_to_redis():
         return jsonify({'message': f"Arrêt de la collecte des AI en boucle"}), 200
     except Exception as ex:
         return jsonify({'message': f"Un problème à l'arret : {ex}"}), 500
+    
+
+
+###########################################DIR, VIT and SYN##################################################################
+
+#### * Direction
+
+@app.route('/api/read_di_dir_loop_to_redis', methods=['POST'])
+def api_read_di_dir_loop_to_redis():
+    # Assurez-vous d'avoir correctement configuré la connexion à Redis dans cette route    
+    global BACKGROUND_THREAD_DI_DIR
+
+    try:
+
+        data = request.get_json()
+
+        config={}
+
+        config['stream'] = data.get('stream')
+        config['collect_time'] = float(data.get('period'))
+        config['period'] = float(data.get('sleep'))
+
+        obj_chan = ChannelDI(lines=data.get('lines'), device=data.get('device'),num_di=data.get('num_di'),sample_size=int(data.get('sample_size')))
+
+        obj_chan.init_task()
+
+        obj_redis = Redis(host=data.get('host'), port=int(data.get('port')))
+
+
+        # Créez un thread pour la tâche en arrière-plan
+        BACKGROUND_THREAD_DI_DIR = threading.Thread(target=collect_data_from_chan_di_dir, args=(STOP_EVENT_COLLECT_DI_DIR, obj_chan, obj_redis, config))
+        # Démarrez le thread en arrière-plan
+        BACKGROUND_THREAD_DI_DIR.start()
+           
+
+        return jsonify({'Message': f"Début de la collecte direction"}), 200
+    
+    except Exception as e:
+        obj_redis.close()
+        obj_chan.close_task()
+        return jsonify({'Message': f"Une erreur s\'est produite lors du traitement de la requete au niveau de la direction :  {e} ."}), 500
+    
+
+@app.route('/api/stop_read_di_dir_loop_to_redis', methods=['GET'])
+def api_stop_read_di_dir_loop_to_redis():
+
+    global STOP_EVENT_COLLECT_DI_DIR
+    global BACKGROUND_THREAD_DI_DIR
+
+    try:
+
+        STOP_EVENT_COLLECT_DI_DIR[0]=True
+        BACKGROUND_THREAD_DI_DIR.join()
+
+        return jsonify({'message': f"Arrêt de la collecte des données de direction en boucle"}), 200
+    except Exception as ex:
+        return jsonify({'message': f"Un problème à l'arret de la collecte des données de direction : {ex}"}), 500
+    
+
+
+
+#### * Vitesse
+
+@app.route('/api/read_di_vit_loop_to_redis', methods=['POST'])
+def api_read_di_vit_loop_to_redis():
+    # Assurez-vous d'avoir correctement configuré la connexion à Redis dans cette route    
+    global BACKGROUND_THREAD_DI_VIT
+
+    try:
+
+        data = request.get_json()
+
+        config={}
+
+        config['stream'] = data.get('stream')
+        config['collect_time'] = float(data.get('period'))
+        config['period'] = float(data.get('sleep'))
+
+        obj_chan = ChannelDI(lines=data.get('lines'), device=data.get('device'),num_di=data.get('num_di'),sample_size=int(data.get('sample_size')))
+
+        obj_chan.init_task()
+
+        obj_redis = Redis(host=data.get('host'), port=int(data.get('port')))
+
+
+        # Créez un thread pour la tâche en arrière-plan
+        BACKGROUND_THREAD_DI_VIT = threading.Thread(target=collect_data_from_chan_di_vit, args=(STOP_EVENT_COLLECT_DI_VIT, obj_chan, obj_redis, config))
+        # Démarrez le thread en arrière-plan
+        BACKGROUND_THREAD_DI_VIT.start()
+           
+
+        return jsonify({'Message': f"Début de la collecte des données vitesse"}), 200
+    
+    except Exception as e:
+        obj_redis.close()
+        obj_chan.close_task()
+        return jsonify({'Message': f"Une erreur s\'est produite dans le lancement de la collecte des vitesses :  {e} ."}), 500
+    
+
+@app.route('/api/stop_read_di_vit_loop_to_redis', methods=['GET'])
+def api_stop_read_di_vit_loop_to_redis():
+
+    global STOP_EVENT_COLLECT_DI_VIT
+    global BACKGROUND_THREAD_DI_VIT
+
+    try:
+
+        STOP_EVENT_COLLECT_DI_VIT[0]=True
+        BACKGROUND_THREAD_DI_VIT.join()
+
+        return jsonify({'message': f"Arrêt de la collecte des données de vitesse en boucle"}), 200
+    except Exception as ex:
+        return jsonify({'message': f"Un problème à l'arret de la collecte des données de vitesse : {ex}"}), 500
+    
+
+
+#### * Synchronisation
+
+@app.route('/api/read_di_syn_loop_to_redis', methods=['POST'])
+def api_read_di_syn_loop_to_redis():
+    # Assurez-vous d'avoir correctement configuré la connexion à Redis dans cette route    
+    global BACKGROUND_THREAD_DI_SYN
+
+    try:
+
+        data = request.get_json()
+
+        config={}
+
+        config['stream'] = data.get('stream')
+        config['collect_time'] = float(data.get('period'))
+        config['period'] = float(data.get('sleep'))
+
+        obj_chan = ChannelDI(lines=data.get('lines'), device=data.get('device'),num_di=data.get('num_di'),sample_size=int(data.get('sample_size')))
+
+        obj_chan.init_task()
+
+        obj_redis = Redis(host=data.get('host'), port=int(data.get('port')))
+
+
+        # Créez un thread pour la tâche en arrière-plan
+        BACKGROUND_THREAD_DI_SYN = threading.Thread(target=collect_data_from_chan_di_syn, args=(STOP_EVENT_COLLECT_DI_SYN, obj_chan, obj_redis, config))
+        # Démarrez le thread en arrière-plan
+        BACKGROUND_THREAD_DI_SYN.start()
+           
+
+        return jsonify({'Message': f"Début de la collecte des données de synchronisation"}), 200
+    
+    except Exception as e:
+        obj_redis.close()
+        obj_chan.close_task()
+        return jsonify({'Message': f"Une erreur s\'est produite dans le lancement de la collecte des données de synchronisation :  {e} ."}), 500
+    
+
+@app.route('/api/stop_read_di_syn_loop_to_redis', methods=['GET'])
+def api_stop_read_di_syn_loop_to_redis():
+
+    global STOP_EVENT_COLLECT_DI_SYN
+    global BACKGROUND_THREAD_DI_SYN
+
+    try:
+
+        STOP_EVENT_COLLECT_DI_SYN[0]=True
+        BACKGROUND_THREAD_DI_SYN.join()
+
+        return jsonify({'message': f"Arrêt de la collecte des données de synchronisation en boucle"}), 200
+    except Exception as ex:
+        return jsonify({'message': f"Un problème à l'arret de la collecte des données de synchronisation : {ex}"}), 500
+
+
+
+
+
+##############################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @app.route('/api/read_ai_to_redis', methods=['POST'])
@@ -311,6 +674,8 @@ def api_write_do():
     except Exception as e:
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête : \n {e} ."}), 500
 
+
+#Flashes
 
 @app.route('/api/write_do_flashes', methods=['POST'])
 def api_write_do_flashes():

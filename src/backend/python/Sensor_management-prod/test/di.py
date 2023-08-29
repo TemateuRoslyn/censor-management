@@ -8,7 +8,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 with nidaqmx.Task() as task:
-    task.di_channels.add_di_chan("Dev1/port0/line1", line_grouping=LineGrouping.CHAN_PER_LINE)
+    task.di_channels.add_di_chan("Dev1/port0/line5", line_grouping=LineGrouping.CHAN_PER_LINE)
 
     while True:
         print("1 Channel 1 Sample Read: ")

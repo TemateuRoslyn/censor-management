@@ -71,11 +71,11 @@ class ChannelsAI:
 
         message = {}
 
-        message ['time_start'] = Date.now().isoformat()               
+        message ['time_start'] = Date.utcnow().isoformat(sep=" ")               
 
         message ['values'] = self.task.read(number_of_samples_per_channel=self.sample_per_chan)
 
-        message ['time_stop'] = Date.now().isoformat()
+        message ['time_stop'] = Date.utcnow().isoformat(sep=" ")
 
         message ['sample_rate'] = self.rate
 
@@ -84,6 +84,53 @@ class ChannelsAI:
         self.queue.append(message)
 
         return message
+    
+class ChannelsAO:
+
+    def __init__(self):
+        self.rate = 10000
+        self.device = "Dev1"
+        self.channels = ["ao0", "ao1"]
+        self.collect_time = 10.0
+
+    def __init__(self, rate=10000, device="Dev1", channels=["ao0", "ao1"]):
+        self.rate = rate
+        self.device = device
+        self.channels = channels
+        self.task = None
+
+    
+    def init_task (self):
+
+        task = nidaqmx.Task()
+
+        for ch in self.channels : 
+            task.ai_channels.add_ai_voltage_chan(f"{self.device}/{ch}")
+
+        task.timing.cfg_samp_clk_timing(self.rate)
+
+        self.task = task
+
+        return self.task
+    
+
+    def write_voltage(self, voltage):
+
+        try:
+
+            self.task.write(voltage)
+
+            print(f"Voltage {voltage} V written to channel {self.channels}")
+
+        except Exception as e:
+
+            print(f"Error writing voltage: {e}")
+    
+
+    def close_task(self):
+
+        self.task.close()
+
     
 
     
@@ -128,7 +175,7 @@ class ChannelDI:
 
         samples['values'] = self.task.read(number_of_samples_per_channel=self.sample_size)
         
-        samples['time'] = Date.now().isoformat() 
+        samples['time'] = Date.utcnow().isoformat(sep=" ") 
 
         return samples
     
@@ -324,7 +371,7 @@ class ChannelCI:
 
         samples['values'] = self.task.read(number_of_samples_per_channel=self.sample_size)
         
-        samples['time'] = Date.now().isoformat()  
+        samples['time'] = Date.utcnow().isoformat()  
 
         return samples
     

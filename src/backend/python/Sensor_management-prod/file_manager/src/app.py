@@ -1,8 +1,10 @@
 import os
 import threading
+import pprint
 import pandas as pd
 import numpy as np
 
+from numpy import nan
 from flask import Flask, request, jsonify
 from datetime import datetime as Date
 from file_manager import PandasFileManager, FolderManager
@@ -32,6 +34,9 @@ app = Flask(__name__)
 
 STOP_INSERT_DATA = [False]
 BACKGROUND_THREAD = None
+
+STOP_INSERT_DATA_ALL = [False]
+BACKGROUND_THREAD_ALL = None
 
 def process_messages(item: dict, sample_size : int = 1000, format_time : str = "%d-%m-%y %H:%M:%S.%f"):
     """
@@ -170,6 +175,146 @@ def insert_data_into_folder(stop_event, redis:Redis, folder : FolderManager, con
         print(f"Erreur {ex}")
 
 
+def read_items_from_redis(redis, stream, group, consumer='consumer_i', block=1, count=1):
+
+      
+    items = []
+
+                           
+    items = redis.xreadgroup(groupname=group, consumername=consumer,block=block, count=count, streams={stream:'>'} )
+
+    
+    # pprint.pprint(items)
+
+
+    if (len(items)== 0)or (items == None):
+
+        return None
+    
+    elif (len(items[0][1])==0):
+
+        return None
+
+    else :            
+
+        data = []
+
+                
+        for elt in items[0][1] :
+
+            id, item = elt
+
+            data.append(item)
+
+            redis.xack(stream, group, id)
+
+        return data
+
+
+def insert_data_all_into_folder(stop_event, redis:Redis, folder : FolderManager, config):
+
+    global STOP_INSERT_DATA_ALL
+
+    try:
+        
+        i = 0
+        df = None
+        time_start = None
+        time_stop = None
+        rate = None
+        line_nb = 0
+
+        while not STOP_INSERT_DATA_ALL[0] or (df != None):
+
+            
+            items = read_items_from_redis(redis=redis, stream=config['stream'], group=config['group'], consumer='C_Folder_all')
+
+            if (items == None) :
+
+                pass
+
+            else :
+
+                line_nb += int(config['sample_size'])*len(items)
+                
+                item = items[0]
+
+                # pprint.pprint(item)
+
+                data = {}
+
+                channels =[elt.replace("'", "") for elt in np.asarray(item['columns'][1:-2].split(", "), dtype=str).tolist()]
+
+                # print(channels)
+
+                for ch in channels :
+                    
+                    if (ch =='udp') or (ch =='timestamp'):
+
+                        data[ch] = np.asarray([None if (elt=='nan')  else elt.replace("'","") for elt in item[ch][1:-1].split(", ")], dtype=str).tolist()
+
+                    else:
+
+                        data[ch] = np.asarray([None if (elt=='nan')  else elt.replace("'","") for elt in item[ch][1:-1].split(", ")], dtype=float).tolist()
+
+                # print(data)
+
+
+                if df is not None:
+
+                    time_stop = str(item['timestop'])
+
+                    df= pd.concat([df, pd.DataFrame(data)], ignore_index=True)
+
+                else:
+
+                    time_start = str(item['timestart'])
+
+                    time_stop = str(item['timestop'])
+
+                    rate = int(item['rate'])
+
+                    df = pd.DataFrame(data)                               
+               
+
+                # print(df)
+                
+
+                if (line_nb >= int(config['max_file'])) or not STOP_INSERT_DATA_ALL[0]:
+                    
+                    date = Date.now()
+
+                    name_file =f"Donnees_completes_{date.day}_{date.month}_{date.year} {date.hour}_{date.minute}_{date.second}_index_{i}.csv"
+
+                    i+=1
+
+                    file_w = PandasFileManager(file_path=f"{folder.folder_path}/{name_file}")
+
+                    comments = f"Start: {time_start} \n \
+                    Stop: {time_stop} \n \
+                    Rate: {rate} \n \
+                    Unite: G \n \
+                    Settings: \n \
+                                        Acc1 (23-48331):                                        Acc2 (23-48332):\n \
+                                            - X = (ai1):                                            - X = (ai0):\n \
+                                                * Sensibility: 80.607 mV/g                              * Sensibility: 79.863 mV/g \n \
+                                                * Offset: -1 mV                                         * Offset: 0 mV \n  \
+                                            - Y = (ai3):                                            - Y = (ai2):\n \
+                                                * Sensibility: 80.366 mV/g                              * Sensibility: 80.243 mV/g \n \
+                                                * Offset: -4 mV                                         * Offset: -7 mV \n \
+                                            - Z = (ai5):                                            - Z = (ai4):\n \
+                                                * Sensibility: 80.917 mV/g                              * Sensibility: 80.154 mV/g \n \
+                                                * Offset: -2 mV                                         * Offset: -3 mV \n \n \
+                                acceleration(G) = (tension + offset)(V) / sensibility (V/g) \n \n \n"
+
+                    file_w.write_csv(df,comments)
+                
+
+        redis.close()
+    except Exception as ex:
+        print(f"Erreur {ex}")
+
+
 # Route pour écrire des données dans InfluxDB
 @app.route('/api/write_folder', methods=['POST'])
 def api_write_to_folder():
@@ -248,6 +393,79 @@ def api_stop_write_to_folder():
     
     except Exception as ex:
         return jsonify({'Message': f"Un problème à l'arret : {ex}"}), 500 
+    
+
+# Route pour écrire des données dans InfluxDB
+@app.route('/api/write_folder_all', methods=['POST'])
+def api_write_to_folder_all():
+    global BACKGROUND_THREAD_ALL
+
+    try:
+
+        data = request.get_json()
+
+        redis_conn = Redis(host=data.get('host'), port=int(data.get('port')), decode_responses=True)
+
+        folder = FolderManager(folder_path=data.get('folder_path'))
+
+        folder.create_folder()
+
+        list_group = redis_conn.xinfo_groups(data.get('stream'))
+
+        if len(list_group)==0:
+
+                redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+        else:
+
+            create = True
+
+            for elt in list_group:
+
+                if data.get('group') == elt['name'] :
+
+                    create=False
+
+            if create :
+
+                redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+
+
+        config = {}
+        config['sample_size'] = int(data.get('sample_size'))
+        config['group'] = data.get('group')
+        config['stream'] = data.get('stream')
+        config['max_file'] = int(data.get('max_file'))
+
+        # Créez un thread pour la tâche en arrière-plan
+        BACKGROUND_THREAD_ALL = threading.Thread(target=insert_data_all_into_folder, args=(STOP_INSERT_DATA_ALL, redis_conn, folder, config))
+        # Démarrez le thread en arrière-plan
+        BACKGROUND_THREAD_ALL.start()
+
+        return jsonify({'Message': f"Début de la sauvegarde dans fichier(all)"}), 200
+    
+    except Exception as e:
+        redis_conn.close()
+        return jsonify({'Message': f"Une erreur sur la sauvegarde dans fichier (all) :  {e}."}), 500
+
+
+
+# Route pour écrire des données dans InfluxDB
+@app.route('/api/stop_write_folder_all', methods=['GET'])
+def api_stop_write_to_folder_all():
+
+    global STOP_INSERT_DATA_ALL 
+    global BACKGROUND_THREAD_ALL
+
+    try:
+
+        STOP_INSERT_DATA_ALL[0] = True 
+
+        BACKGROUND_THREAD_ALL.join()
+
+        return jsonify({'Message': "Stop de la sauvegarde ALL"}), 200
+    
+    except Exception as ex:
+        return jsonify({'Message': f"Un problème à l'arret ALL: {ex}"}), 500 
 
 
 

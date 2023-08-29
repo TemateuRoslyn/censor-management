@@ -42,6 +42,53 @@ class USBHandler:
                 chemin_cle_usb = partition.mountpoint
                 break
         return cle_usb_trouvee, chemin_cle_usb
+    
+    def find_all_usb(self):
+
+        cle_usb_trouvee = False
+        list = []
+
+        partitions = psutil.disk_partitions()
+
+        for partition in partitions:
+            
+            if re.match(self.expression, partition.device) :
+
+                cle_usb_trouvee = True
+
+                list.append(partition.mountpoint)
+        
+        return cle_usb_trouvee, list
+    
+    def convert_bytes(self, bytes):
+        # Convertir les octets en format lisible (Go, Mo, Ko, etc.)
+        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+            if bytes < 1024:
+                return f"{bytes:.2f} {unit}"
+            bytes /= 1024
+
+    def usage(self, mountpoint):
+
+        partitions = psutil.disk_partitions()
+
+        message = {}
+
+        for partition in partitions:
+
+            if re.match(self.expression,partition.device):
+
+                if mountpoint == partition.mountpoint:
+
+                    usage = psutil.disk_usage(partition.mountpoint)
+
+                    message["path"] = partition.mountpoint
+                    message["total"]= self.convert_bytes(usage.total)
+                    message["used"] = self.convert_bytes(usage.used)
+                    message["taux"] = self.convert_bytes(usage.percent)
+
+        return message
+            
+
 
     def start_monitoring(self):
         for device in self.monitor:
