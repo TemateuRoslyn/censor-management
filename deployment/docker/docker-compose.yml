@@ -12,7 +12,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: admin
     volumes:
-      - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db
+      - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db 
       - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
 
   mongo-express:
@@ -30,27 +30,27 @@ services:
     image: influxdb:latest
     container_name: sensor-influxdb
     restart: always
-  hostname: influxdb
-  environment:
-    # INFLUX_DB: $INFLUX_DB  # nom de la base de données créée à l'initialisation d'InfluxDB
-    # INFLUXDB_USER: $INFLUXDB_USER  # nom de l'utilisateur pour gérer cette base de données
-    # INFLUXDB_USER_PASSWORD: $INFLUXDB_USER_PASSWORD  # mot de passe de l'utilisateur pour gérer cette base de données
-    DOCKER_INFLUXDB_INIT_MODE: upgrade
-    DOCKER_INFLUXDB_INIT_USERNAME: admin
-    DOCKER_INFLUXDB_INIT_PASSWORD: admin
-    DOCKER_INFLUXDB_INIT_ORG: my-org
-    DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
-    DOCKER_INFLUXDB_INIT_UPGRADE_V1_CONFIG: /root/influxdb/influxdb.conf
-    DOCKER_INFLUXDB_CONFIG_PATH: /root/influxdb2/config.toml
-    DOCKER_INFLUXDB_BOLT_PATH: /root/influxdb2/influxdb.bolt
-    DOCKER_INFLUXDB_ENGINE_PATH: /root/influxdb2/engine
-  ports:
-    - 8086:8086
-  volumes:
-    - ../../../dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
-    - ./influxdb2:/var/lib/influxdb2
-    - ./influxdb2-config:/etc/influxdb2
-    - $PWD/influxdb.conf:/root/influxdb/influxdb.conf
+    # hostname: influxdb
+    # environment:
+    #   # INFLUX_DB: $INFLUX_DB  # nom de la base de données créée à l'initialisation d'InfluxDB
+    #   # INFLUXDB_USER: $INFLUXDB_USER  # nom de l'utilisateur pour gérer cette base de données
+    #   # INFLUXDB_USER_PASSWORD: $INFLUXDB_USER_PASSWORD  # mot de passe de l'utilisateur pour gérer cette base de données
+    #   DOCKER_INFLUXDB_INIT_MODE: upgrade
+    #   DOCKER_INFLUXDB_INIT_USERNAME: admin
+    #   DOCKER_INFLUXDB_INIT_PASSWORD: admin
+    #   DOCKER_INFLUXDB_INIT_ORG: my-org
+    #   DOCKER_INFLUXDB_INIT_BUCKET: my-bucket
+    #   DOCKER_INFLUXDB_INIT_UPGRADE_V1_CONFIG: /root/influxdb/influxdb.conf 
+    #   DOCKER_INFLUXDB_CONFIG_PATH: /root/influxdb2/config.toml 
+    #   DOCKER_INFLUXDB_BOLT_PATH: /root/influxdb2/influxdb.bolt 
+    #   DOCKER_INFLUXDB_ENGINE_PATH: /root/influxdb2/engine 
+    ports:
+      - 8086:8086
+    volumes:
+       - ../../../dscdatasmart/deployment/docker/volumes/influxdb2:/var/lib/influxdb2 # volume pour stocker la base de données InfluxDB
+      # - ./influxdb2:/var/lib/influxdb2 
+      # - ./influxdb2-config:/etc/influxdb2
+      # - $PWD/influxdb.conf:/root/influxdb/influxdb.conf
 
   redis:
     image: redis/redis-stack:latest
@@ -58,7 +58,7 @@ services:
     restart: always
     ports:
       - 6379:6379/tcp
-    volumes:
+    volumes: 
       - ../../../dscdatasmart/deployment/docker/volumes/redis/data:/data
 
   api_mongodb:
@@ -123,8 +123,8 @@ services:
     ports:
       - 50010:50010
     environment:
-      - CONFIG_PATH=./ressources/configs.ini
-    volumes:
+      - CONFIG_PATH=./ressources/configs.ini    
+    volumes: 
       - ../../../dscdatasmart/datas:/home/sl_admin/dscdatasmart/datas
       - /media/sl_admin/5419-CCE7:/media/sl_admin/5419-CCE7
       - /media/sl_admin/9EE7-9230:/media/sl_admin/9EE7-9230

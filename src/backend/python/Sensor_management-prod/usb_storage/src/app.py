@@ -24,6 +24,24 @@ else:
 app = Flask(__name__)
 
 
+
+# Route pour le taux d'usage
+@app.route('/api/usb/usage', method=['POST'])
+def usb_usage():
+
+    data = request.get_json()
+    usb_handler = USBHandler()
+
+    try:
+
+        data = usb_handler.usage(data.get('mount_dir'))
+
+        return jsonify({"values":data}), 200
+
+    except Exception as e:
+
+        return jsonify({"Echec": e}), 500
+
 # Route pour démarrer la détection et le montage d'une clé USB
 @app.route('/api/usb/start_monitoring', methods=['POST'])
 def start_usb_monitoring():
@@ -52,6 +70,24 @@ def find_usb():
         
     except Exception as e:
         return jsonify({'error': 'Une erreur s\'est produite lors du démarrage de la détection des clés USB.'}), 500
+
+
+
+
+# Route pour démarrer la détection et le montage d'une clé USB
+@app.route('/api/usb/find_all', methods=['GET'])
+def find_all_usb():
+    # data = request.get_json()
+    usb_handler = USBHandler()
+    try:
+
+        present, list = usb_handler.find_usb()
+        
+        return jsonify({'usb_present':present, 'usb_mount_paths':list, 'message': 'Démarrage de la détection et du montage des clés USB.'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': 'Une erreur s\'est produite lors du démarrage de la détection des clés USB.'}), 500
+
 
 
 # Route pour démonter une clé USB

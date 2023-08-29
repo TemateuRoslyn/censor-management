@@ -34,6 +34,9 @@ app = Flask(__name__)
 STOP_INSERT_DATA =[False]
 BACKGROUND_THREAD = None
 
+STOP_INSERT_DATA_ALL =[False]
+BACKGROUND_THREAD_ALL = None
+
 def quering(data):
 
     query = {}
@@ -42,7 +45,7 @@ def quering(data):
 
     return query
 
-def process_messages(item: dict, sample_size : int = 1000, format_time : str = "%d-%m-%y %H:%M:%S.%f"):
+def process_ai_messages(item: dict, sample_size : int = 1000, format_time : str = "%d-%m-%y %H:%M:%S.%f"):
     """
        process message reads from redis   
 
@@ -96,7 +99,7 @@ def process_messages(item: dict, sample_size : int = 1000, format_time : str = "
     return msg
 
 
-def insert_data_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, config):
+def insert_data_ai_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, config):
 
     global STOP_INSERT_DATA
 
@@ -135,7 +138,7 @@ def insert_data_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, co
 
                     id, item = elt
 
-                    data = process_messages(item=item, sample_size=int(config['sample_size']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
+                    data = process_ai_messages(item=item, sample_size=int(config['sample_size']), format_time=f"%{config['day']}-%{config['month']}-%{config['year']} %{config['hour']}:%{config['minute']}:%{config['seconds']}.%{config['milliseconds']}")
 
                     mongo.insert_one(collection_name=config['collection_name'], data=data)
 
@@ -147,9 +150,151 @@ def insert_data_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, co
         mongo.close()
     except Exception as ex:
         print(f"Erreur {ex}")
-       
 
+def read_items_from_redis(redis, stream, group, consumer='consumer_i', block=1, count=1):
+
+      
+    items = []
+
+                           
+    items = redis.xreadgroup(groupname=group, consumername=consumer,block=block, count=count, streams={stream:'>'} )
+
+    
+    if (len(items)== 0)or (items == None):
+
+        return None
+    
+    elif (len(items[0][1])==0):
+
+        return None
+
+    else :            
+
+        data = []
+
+                
+        for elt in items[0][1] :
+
+            id, item = elt
+
+            data.append(item)
+
+            redis.xack(stream, group, id)
+
+        return data
+
+def insert_data_all_into_mongodb(stop_event, redis:Redis, mongo : MongoDBHandler, config):
+
+    global STOP_INSERT_DATA_ALL
+
+    try:
         
+        # lastid = '0-0'
+        # check_backlog = True
+
+        # lis = redis.xinfo_groups(config['stream'])
+
+        # if len(lis)!=0:
+        #     for elt in lis:
+        #         if elt['name']==config['group']:
+        #             lastid = elt['last-delivered-id']
+
+        while not STOP_INSERT_DATA_ALL[0]:
+
+            items = read_items_from_redis(redis=redis, stream=config['stream'], group=config['group'], consumer='C_mongodb_all')
+
+            if (items == None) :
+
+                pass
+
+            else :
+                
+                item = items[0]
+
+                # pprint.pprint(item)
+
+                data = {}
+
+                channels =[elt.replace("'", "") for elt in np.asarray(item['columns'][1:-2].split(", "), dtype=str).tolist()]
+
+                # print(channels)
+
+                for ch in channels :
+                    
+                    if (ch =='udp') or (ch =='timestamp'):
+
+                        data[ch] = np.asarray([None if (elt=='nan')  else elt.replace("'","") for elt in item[ch][1:-1].split(", ")], dtype=str).tolist()
+
+                    else:
+
+                        data[ch] = np.asarray([None if (elt=='nan')  else elt.replace("'","") for elt in item[ch][1:-1].split(", ")], dtype=float).tolist()
+
+                    
+                message = {}
+                message['time_start'] = str(item['timestart'])
+                message['time_stop'] = str(item['timestop'])
+                message['rate'] = int(item['rate'])
+                message['values'] = data
+                message['channels'] = channels
+
+
+                mongo.insert_one(collection_name=config['collection_name'], data=message)
+
+
+        redis.close()
+        mongo.close()
+    except Exception as ex:
+        print(f"Erreur {ex}")
+       
+       
+@app.route('/api/usb/find_session', methods=['GET'])
+def find_session():
+
+    try:
+
+        data = request.get_json()
+        # collection_name = data.get('collection_name')
+        # query = data.get('query')
+        #mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'))
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
+
+        if data.get('collection_name') is not None:
+            
+            results = mongo_handler.find(collection_name=data.get('collection_name'), query=quering(data.get('query')))
+            # mongo_handler.close()
+            return jsonify({'results': [result for result in results]}), 200
+        else:
+            mongo_handler.close()
+            return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
+
+    except Exception as e:
+
+        return jsonify({'Message': f"Une erreur sur la sauvegarde dans MongoDB :  {e}."}), 500
+        
+@app.route('/api/usb/save_session', methods=['POST'])
+def save_session():
+
+    try:
+
+        data = request.get_json()
+
+        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
+
+        message = {}
+
+        message["start_session"] = data.get("start_session")
+
+        message["end_session"] = data.get("end_session")
+
+        message["description"] = data.get("description")
+
+        mongo.insert_one(collection_name=data['collection_name'], data=message)
+        
+
+    except Exception as e:
+
+        return jsonify({'Message': f"Une erreur sur la sauvegarde de la session dans MongoDB :  {e}."}), 500
+
 
 
 # Route pour écrire des données dans InfluxDB
@@ -202,7 +347,7 @@ def api_write_to_mongodb():
         config['collection_name'] = data.get('collection_name')
 
         # Créez un thread pour la tâche en arrière-plan
-        BACKGROUND_THREAD = threading.Thread(target=insert_data_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
+        BACKGROUND_THREAD = threading.Thread(target=insert_data_ai_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
         # Démarrez le thread en arrière-plan
         BACKGROUND_THREAD.start()
 
@@ -233,6 +378,82 @@ def api_stop_write_to_mongodb():
     
     except Exception as ex:
         return jsonify({'Message': f"Un problème à l'arret : {ex}"}), 500 
+    
+
+# Route pour écrire des données dans InfluxDB
+@app.route('/api/write_loop_all', methods=['POST'])
+def api_write_all_to_mongodb():
+    global BACKGROUND_THREAD_ALL
+
+    try:
+
+        data = request.get_json()
+
+        redis_conn = Redis(host=data.get('host'), port=int(data.get('port')), decode_responses=True)
+
+        mongo = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
+
+        # if len(redis_conn.xinfo_groups(data.get('stream')))==0:
+
+        #         redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+
+        list_group = redis_conn.xinfo_groups(data.get('stream'))
+
+        if len(list_group)==0:
+
+                redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+        else:
+
+            create = True
+
+            for elt in list_group:
+
+                if data.get('group') == elt['name'] :
+
+                    create=False
+                    
+            if create :
+
+                redis_conn.xgroup_create(name=data.get('stream'), groupname=data.get('group'), id=0)
+
+        config = {}
+        config['group'] = data.get('group')
+        config['stream'] = data.get('stream')
+        config['collection_name'] = data.get('collection_name')
+
+        # Créez un thread pour la tâche en arrière-plan
+        BACKGROUND_THREAD_ALL = threading.Thread(target=insert_data_all_into_mongodb, args=(STOP_INSERT_DATA, redis_conn, mongo, config))
+        # Démarrez le thread en arrière-plan
+        BACKGROUND_THREAD_ALL.start()
+
+        return jsonify({'Message': f"Début de la sauvegarde(all) dans MongoDB"}), 200
+    
+    except Exception as e:
+        redis_conn.close()
+        mongo.close()
+        return jsonify({'Message': f"Une erreur sur la sauvegarde(all) dans MongoDB :  {e}."}), 500
+
+
+
+
+# Route pour écrire des données dans InfluxDB
+@app.route('/api/stop_write_loop_all', methods=['GET'])
+def api_stop_write_all_to_mongodb():
+
+    global STOP_INSERT_DATA_ALL 
+    global BACKGROUND_THREAD_ALL
+
+    try:
+
+        STOP_INSERT_DATA_ALL[0] = True 
+
+        BACKGROUND_THREAD_ALL.join()
+
+        return jsonify({'Message': "Stop de la sauvegarde(all) dans MongoDB"}), 200
+    
+    except Exception as ex:
+        return jsonify({'Message': f"Un problème à l'arret (all) : {ex}"}), 500 
+
 
 
 # Route pour rechercher des données dans MongoDB

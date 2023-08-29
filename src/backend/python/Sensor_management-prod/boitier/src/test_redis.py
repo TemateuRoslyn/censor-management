@@ -1,6 +1,8 @@
 from redis import Redis
 from datetime import datetime as Date
 import numpy as np
+import pandas as pd
+import pprint
 
 def process_messages(item: dict, sample_size : int = 1000, format_time : str = "%d-%m-%y %H:%M:%S.%f"):
     """
@@ -65,7 +67,7 @@ if __name__=='__main__' :
 
     redis = Redis(host='127.0.0.1',port=6379, decode_responses=True)
 
-    lis = redis.xinfo_groups("stream_chan_ai")
+    lis = redis.xinfo_groups("stream_all")
 
     if len(lis)!=0:
 
@@ -74,11 +76,21 @@ if __name__=='__main__' :
             if elt['name']=='mongo_ai':
                 lastid = elt['last-delivered-id']
 
-    len_r = redis.xlen("stream_chan_ai")
+    len_r = redis.xlen("stream_all")
 
     print(f"{lis}")
 
     print(f"len stream : {len_r}")
+
+    stream = {'stream_chan_ai': '0-0', 'stream_chan_ci': '0-0', 'stream_chan_di': '0-0', 'stream_udp': '0-0', 'stream_all': '0-0'}
+
+    messages = redis.xreadgroup(groupname='aggr_all', consumername='c1', streams={'stream_all':'>'}, count=1, block=0)
+
+    pprint.pprint(messages[0][1]['values'])
+
+    df = pd.DataFrame.from_dict(messages['values'])
+
+    print(df)
 
     # while True:
 
