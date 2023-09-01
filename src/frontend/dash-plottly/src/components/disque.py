@@ -2,6 +2,7 @@ from dash import html, dcc, callback, Input, Output
 import plotly.graph_objects as go
 import dash_mantine_components as dmc
 from services.request import get_request, post_request
+from ressources.configuration import api_url_usb_find_all, api_url_usb_usage
 
 
 def create_disque(id: str, values: [], labels: [], title: str):
@@ -49,15 +50,15 @@ def run_callback(output_id: str):
     )
     def update_disque(disque):
         """Je recupere d'abord tous les disques branché"""
-        api_url_usb_find_all = get_request("http://localhost:5003/api/usb/find_all")
+        api_url_usb_find_all_ = get_request(api_url_usb_find_all)
 
-        if api_url_usb_find_all is not None:
-            print("api_url_usb_find_all ====>", api_url_usb_find_all)
-            usb_present = api_url_usb_find_all["usb_present"]
-            usb_mount_paths = api_url_usb_find_all["usb_mount_paths"]
+        if api_url_usb_find_all_ is not None:
+            print("api_url_usb_find_all_ ====>", api_url_usb_find_all_)
+            usb_present = api_url_usb_find_all_["usb_present"]
+            usb_mount_paths = api_url_usb_find_all_["usb_mount_paths"]
 
             """Utiliser cette variable pour afficher un toast"""
-            message = api_url_usb_find_all["message"]
+            message = api_url_usb_find_all_["message"]
 
             """Je recupère à present l'espace sur les differents disque"""
             if usb_present:
@@ -66,7 +67,7 @@ def run_callback(output_id: str):
                     print("mount_path ====>", mount_path)
 
                     response = post_request(
-                        "http://localhost:5003/api/usb/usage",
+                        api_url_usb_usage,
                         data={"mount_dir": mount_path},
                     )
                     values = response["values"]
@@ -92,4 +93,5 @@ def run_callback(output_id: str):
             return [html.Div("Aucun disque présent")]
 
 
+## J'appelle le callback
 run_callback(output_id="liste_disque")

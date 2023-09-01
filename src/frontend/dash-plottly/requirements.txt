@@ -11,3 +11,4 @@ python-dotenv
 dash-mantine-components
 dash_iconify
 dash_auth
+configparser
