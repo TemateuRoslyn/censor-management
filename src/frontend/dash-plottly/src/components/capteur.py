@@ -78,18 +78,18 @@ def create_capteur(id: str, value=0, label="Label"):
     )
 
 
-run_capteur_callback(
-    capteur_id="capteur_1",
-    capteur_interval="capteur_1_interval",
-    capteur_mul="capteur_1_modal_mul",
-)
+# run_capteur_callback(
+#     capteur_id="capteur_1",
+#     capteur_interval="capteur_1_interval",
+#     capteur_mul="capteur_1_modal_mul",
+# )
 
-run_capteur_callback(
-    capteur_id="capteur_gps",
-    capteur_interval="capteur_gps_interval",
-    capteur_mul="capteur_gps_modal_mul",
-)
+# run_capteur_callback(
+#     capteur_id="capteur_gps",
+#     capteur_interval="capteur_gps_interval",
+#     capteur_mul="capteur_gps_modal_mul",
+# )
 
 
-run_interval_callback(output="capteur_1_interval", input="capteur_1_modal_freq")
-run_interval_callback(output="capteur_gps_interval", input="capteur_gps_modal_freq")
+# run_interval_callback(output="capteur_1_interval", input="capteur_1_modal_freq")
+# run_interval_callback(output="capteur_gps_interval", input="capteur_gps_modal_freq")

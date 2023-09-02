@@ -4,8 +4,6 @@ from requests.exceptions import HTTPError
 
 API_ADDR = str(os.getenv("api_addr"))
 
-# HOST = "http://backend:8000"
-
 
 def get_request(route: str):
     """Fonction qui doit lancer les requêtes en GET a l'API"""
@@ -24,7 +22,7 @@ def get_request(route: str):
 
 def post_request(route: str, data: any):
     try:
-        response = requests.post(route, data)
+        response = requests.post(route, json=data)
         if response.status_code == 200:
             return response.json()
         else:

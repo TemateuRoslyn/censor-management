@@ -11,6 +11,9 @@ from components.accelerometre import create_accelerometre
 from components.modal import create_modal, create_modal_ai
 from components.sauvegarde_form import create_sauvegarde_form
 from components.disque import create_disque
+from services.request import get_request, post_request
+from ressources.configuration import api_url_usb_find_all, api_url_usb_usage
+
 
 """Je crée ici un petit DataFrame que je vais afficher dans le tableau"""
 datas = {
@@ -87,6 +90,7 @@ def render_analogic_inputs():
             {"maxWidth": 755, "cols": 2, "spacing": "sm"},
             {"maxWidth": 600, "cols": 1, "spacing": "sm"},
         ],
+        id="analogique_input_frame",
         children=[
             html.Div(create_analogic_input_card(id="ai_0", titre="Analogic input 0")),
             html.Div(create_analogic_input_card(id="ai_1", titre="Analogic input 1")),
@@ -385,16 +389,70 @@ def render_ai_settings_form():
 """Les elements de la vue systemes"""
 
 
+""" Je vais un peu compliquer le code ici"""
+
+
 def render_disk():
-    return dmc.SimpleGrid(
-        cols=2,
-        spacing="lg",
-        mt=10,
-        breakpoints=[
-            {"maxWidth": 980, "cols": 2, "spacing": "md"},
-            {"maxWidth": 755, "cols": 1, "spacing": "sm"},
-            {"maxWidth": 600, "cols": 1, "spacing": "sm"},
-        ],
-        id="liste_disque",
-        children=[],
-    )
+    create_disque_graph = []
+
+    api_url_usb_find_all_ = get_request(api_url_usb_find_all)
+
+    if api_url_usb_find_all_ is not None:
+        usb_present = api_url_usb_find_all_["usb_present"]
+
+        usb_mount_paths = api_url_usb_find_all_["usb_mount_paths"]
+        message = api_url_usb_find_all_["message"]
+
+        """Je recupère à present l'espace sur les differents disque"""
+        if usb_present:
+            for mount_path in usb_mount_paths:
+                response = post_request(
+                    api_url_usb_usage,
+                    data={"mount_dir": mount_path},
+                )
+                values = response["values"]
+                espace_libre = float(values["total"][:-3]) - float(values["used"][:-3])
+                espace_occupe = values["used"][:-3]
+                espace_total = values["total"]
+
+                create_disque_graph.append(
+                    html.Div(
+                        create_disque(
+                            id=mount_path,
+                            labels=[
+                                "Espace libre " + format(espace_libre, ".2f") + " GB",
+                                "Espace occupé "
+                                + format(float(espace_occupe), ".2f")
+                                + " GB",
+                            ],
+                            title=mount_path + " - " + espace_total,
+                            values=[espace_libre, espace_occupe],
+                        )
+                    )
+                )
+
+    if len(create_disque_graph) != 0:
+        return dmc.SimpleGrid(
+            cols=2,
+            spacing="lg",
+            mt=10,
+            breakpoints=[
+                {"maxWidth": 980, "cols": 2, "spacing": "md"},
+                {"maxWidth": 755, "cols": 1, "spacing": "sm"},
+                {"maxWidth": 600, "cols": 1, "spacing": "sm"},
+            ],
+            id="liste_disque",
+            children=create_disque_graph,
+        )
+    else:
+        return dmc.Card(
+            children=[
+                html.Div(
+                    dmc.Text("Aucun disque n'a été détécté"),
+                ),
+            ],
+            withBorder=True,
+            shadow="sm",
+            radius="md",
+            style={"width": "100%"},
+        )

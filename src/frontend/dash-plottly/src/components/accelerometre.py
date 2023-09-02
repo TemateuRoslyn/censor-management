@@ -120,12 +120,12 @@ def run_interval_callback(output: str, input: str):
         return m.floor(float(value)) * 1000
 
 
-run_interval_callback(output="acc_1_interval", input="acc_1_modal_freq")
-run_interval_callback(output="acc_2_interval", input="acc_2_modal_freq")
+# run_interval_callback(output="acc_1_interval", input="acc_1_modal_freq")
+# run_interval_callback(output="acc_2_interval", input="acc_2_modal_freq")
 
-run_callback_accelerometre(
-    acc_id="acc_1", interval="acc_1_interval", mul="acc_1_modal_mul"
-)
-run_callback_accelerometre(
-    acc_id="acc_2", interval="acc_2_interval", mul="acc_2_modal_mul"
-)
+# run_callback_accelerometre(
+#     acc_id="acc_1", interval="acc_1_interval", mul="acc_1_modal_mul"
+# )
+# run_callback_accelerometre(
+#     acc_id="acc_2", interval="acc_2_interval", mul="acc_2_modal_mul"
+# )

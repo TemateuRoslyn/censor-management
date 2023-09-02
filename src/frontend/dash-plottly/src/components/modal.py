@@ -183,32 +183,32 @@ def run_calback_modal_ai(output_modal: str, input_btn: str, input_btn_close: str
         return not opened
 
 
-run_callback_modal(
-    input_btn="capteur_1_modal_btn",
-    input_btn_close="capteur_1_modal_close",
-    output_modal="capteur_1_modal",
-)
+# run_callback_modal(
+#     input_btn="capteur_1_modal_btn",
+#     input_btn_close="capteur_1_modal_close",
+#     output_modal="capteur_1_modal",
+# )
 
-run_callback_modal(
-    input_btn="acc_1_modal_btn",
-    input_btn_close="acc_1_modal_close",
-    output_modal="acc_1_modal",
-)
+# run_callback_modal(
+#     input_btn="acc_1_modal_btn",
+#     input_btn_close="acc_1_modal_close",
+#     output_modal="acc_1_modal",
+# )
 
-run_callback_modal(
-    input_btn="capteur_gps_modal_btn",
-    input_btn_close="capteur_gps_modal_close",
-    output_modal="capteur_gps_modal",
-)
+# run_callback_modal(
+#     input_btn="capteur_gps_modal_btn",
+#     input_btn_close="capteur_gps_modal_close",
+#     output_modal="capteur_gps_modal",
+# )
 
-run_callback_modal(
-    input_btn="acc_2_modal_btn",
-    input_btn_close="acc_2_modal_close",
-    output_modal="acc_2_modal",
-)
+# run_callback_modal(
+#     input_btn="acc_2_modal_btn",
+#     input_btn_close="acc_2_modal_close",
+#     output_modal="acc_2_modal",
+# )
 
 
-# J'execute donc ces differents callbacks
+# # J'execute donc ces differents callbacks
 run_calback_modal_ai(
     input_btn="ai_0_modal_btn",
     input_btn_close="ai_0_modal_close",

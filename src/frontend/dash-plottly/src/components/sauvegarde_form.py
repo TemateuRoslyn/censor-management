@@ -163,6 +163,6 @@ def run_download_callback(input: str, type: str):
             )
 
 
-run_download_callback(input="save_download_csv", type="CSV")
-run_download_callback(input="save_download_json", type="JSON")
-run_download_callback(input="save_download_txt", type="TXT")
+# run_download_callback(input="save_download_csv", type="CSV")
+# run_download_callback(input="save_download_json", type="JSON")
+# run_download_callback(input="save_download_txt", type="TXT")

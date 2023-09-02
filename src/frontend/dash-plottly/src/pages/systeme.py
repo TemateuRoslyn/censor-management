@@ -34,6 +34,7 @@ layout = html.Div(
                 dmc.Divider(my=20, size=0),
                 subTitle(subtile="Défaut et bugs"),
                 dmc.Divider(my=20, size=0),
+                html.Div(id="notifications-disque"),
             ],
         ),
         create_aside(

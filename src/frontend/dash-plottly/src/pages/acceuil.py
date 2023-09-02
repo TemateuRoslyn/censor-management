@@ -8,7 +8,10 @@ from libs.utils import (
     render_camemberg_graph,
     render_capteurs_graph,
     render_accelerometre_graph,
+    render_disk,
+    subTitle,
 )
+
 
 dash.register_page(
     __name__,
@@ -36,7 +39,9 @@ layout = html.Div(
                     link_steep_2="/",
                 ),
                 render_analogic_inputs(),
-                render_camemberg_graph(),
+                subTitle(subtile="Espace disque"),
+                render_disk(),
+                # render_camemberg_graph(),
                 render_capteurs_graph(),
                 render_accelerometre_graph(),
             ],

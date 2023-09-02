@@ -5,6 +5,7 @@ import dash_auth
 import dash
 
 from libs.shell import mount_app
+from services.request import get_request
 
 # Lire la valeur des variables d'environnement
 debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
@@ -40,6 +41,11 @@ app = Dash(
 )
 
 VALID_USERNAME_PASSWORD_PAIRS = {"demo": "demo"}
+
+# value = get_request(
+#     "https://b471-2a01-e0a-3b2-a7f0-9ec6-7757-e1c7-e484.ngrok-free.app/api/usb/find_all"
+# )
+# print(value)
 
 auth = dash_auth.BasicAuth(
     app,

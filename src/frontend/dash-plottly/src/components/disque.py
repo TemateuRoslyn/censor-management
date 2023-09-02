@@ -1,12 +1,11 @@
-from dash import html, dcc, callback, Input, Output
+from dash import html, dcc
 import plotly.graph_objects as go
 import dash_mantine_components as dmc
-from services.request import get_request, post_request
-from ressources.configuration import api_url_usb_find_all, api_url_usb_usage
 
 
 def create_disque(id: str, values: [], labels: [], title: str):
     """Le composant qui doit afficher les camembergs sur l'acceuil"""
+    """Pour des raisons de performance et de manque de moyen pour lancer le callback automatiquement avec juste un seul identifiant (celui en entre) j'ai mis la logique API dans le composant en direct."""
     return dmc.Card(
         children=[
             dmc.CardSection(
@@ -38,60 +37,3 @@ def create_disque(id: str, values: [], labels: [], title: str):
         radius="md",
         style={"width": "100%"},
     )
-
-
-""" Implementaion des callbacks """
-
-
-def run_callback(output_id: str):
-    @callback(
-        [Output(output_id, "children")],
-        Input("liste_disque", "value"),
-    )
-    def update_disque(disque):
-        """Je recupere d'abord tous les disques branché"""
-        api_url_usb_find_all_ = get_request(api_url_usb_find_all)
-
-        if api_url_usb_find_all_ is not None:
-            print("api_url_usb_find_all_ ====>", api_url_usb_find_all_)
-            usb_present = api_url_usb_find_all_["usb_present"]
-            usb_mount_paths = api_url_usb_find_all_["usb_mount_paths"]
-
-            """Utiliser cette variable pour afficher un toast"""
-            message = api_url_usb_find_all_["message"]
-
-            """Je recupère à present l'espace sur les differents disque"""
-            if usb_present:
-                create_disque_graph = []
-                for mount_path in usb_mount_paths:
-                    print("mount_path ====>", mount_path)
-
-                    response = post_request(
-                        api_url_usb_usage,
-                        data={"mount_dir": mount_path},
-                    )
-                    values = response["values"]
-
-                    create_disque_graph.insert(
-                        html.Div(
-                            create_disque(
-                                id=mount_path,
-                                labels=["Espace libre", "Espace occupé"],
-                                title=mount_path,
-                                values=[
-                                    values["total"] - values["used"],
-                                    values["used"],
-                                ],
-                            )
-                        )
-                    )
-                return create_disque_graph
-            else:
-                return [html.Div("Aucun disque présent")]
-
-        else:
-            return [html.Div("Aucun disque présent")]
-
-
-## J'appelle le callback
-run_callback(output_id="liste_disque")

@@ -3,11 +3,26 @@ import dash_mantine_components as dmc
 import dash_daq as daq
 from dash_iconify import DashIconify
 
-from services.request import get_request
+from services.request import post_request
+
+from ressources.configuration import (
+    api_ni_read_all,
+    buffer_size,
+    channels,
+    device,
+    host,
+    period,
+    rate,
+    sample_size,
+)
 
 
 def run_analogic_callback(
-    output_etat: str, output_valeur: str, output_actif: str, output_color: str
+    output_etat: str,
+    output_valeur: str,
+    output_actif: str,
+    output_color: str,
+    position: int,
 ):
     """C'est juste pour les callback des entrées analogiques"""
 
@@ -22,17 +37,45 @@ def run_analogic_callback(
         prevent_initial_call=True,
     )
     def update_analogique_input(n):
-        result_ai_7 = get_request("http://127.0.0.1:5000/")
-        # result_ai_7 = get_request("/analogic-input")
-        etat = result_ai_7["etat"]
-        valeur = result_ai_7["valeur"]
+        data_ai = {
+            "host": host,
+            "period": period,
+            "rate": rate,
+            "buffer_size": buffer_size,
+            "sample_size": sample_size,
+            "device": device,
+            "channels": channels,
+        }
 
-        return [
-            etat,
-            "NaN" if valeur == 0 else valeur,
-            "Inactif" if etat == False else "Actif",
-            "red" if etat == False else "green",
-        ]
+        values = post_request(api_ni_read_all, data=data_ai)
+
+        if values is not None:
+            valeur = values["values"]["values"][position]
+            channel = values["values"]["channels"][position]
+
+            if valeur is not None:
+                return [
+                    False if valeur == None else True,
+                    "NaN" if valeur == None else format(valeur[0], ".3f"),
+                    "Inactif" if valeur == None else "Actif",
+                    "red" if valeur == None else "green",
+                ]
+
+                # Dans le cas contraire
+            else:
+                return [
+                    False,
+                    "NaN",
+                    "Inactif",
+                    "red",
+                ]
+        else:
+            return [
+                False,
+                "NaN",
+                "Inactif",
+                "red",
+            ]
 
 
 def create_analogic_input_card(titre: str, id: str):
@@ -73,8 +116,8 @@ def create_analogic_input_card(titre: str, id: str):
                     ),
                     dcc.Interval(
                         id="ai_interval",
-                        interval=9 * 1000,
-                        n_intervals=0,
+                        interval=10 * 1000,
+                        n_intervals=1,
                     ),
                 ],
                 position="apart",
@@ -97,48 +140,54 @@ run_analogic_callback(
     output_color="ai_0_etat",
     output_etat="ai_0",
     output_valeur="ai_0_valeur",
+    position=0,
 )
 run_analogic_callback(
     output_actif="ai_1_etat",
     output_color="ai_1_etat",
     output_etat="ai_1",
     output_valeur="ai_1_valeur",
+    position=1,
 )
 run_analogic_callback(
     output_actif="ai_2_etat",
     output_color="ai_2_etat",
     output_etat="ai_2",
     output_valeur="ai_2_valeur",
+    position=2,
 )
 run_analogic_callback(
     output_actif="ai_3_etat",
     output_color="ai_3_etat",
     output_etat="ai_3",
     output_valeur="ai_3_valeur",
+    position=3,
 )
 run_analogic_callback(
     output_actif="ai_4_etat",
     output_color="ai_4_etat",
     output_etat="ai_4",
     output_valeur="ai_4_valeur",
+    position=4,
 )
 run_analogic_callback(
     output_actif="ai_5_etat",
     output_color="ai_5_etat",
     output_etat="ai_5",
     output_valeur="ai_5_valeur",
+    position=5,
 )
-
 run_analogic_callback(
     output_actif="ai_6_etat",
     output_color="ai_6_etat",
     output_etat="ai_6",
     output_valeur="ai_6_valeur",
+    position=6,
 )
-
 run_analogic_callback(
     output_actif="ai_7_etat",
     output_color="ai_7_etat",
     output_etat="ai_7",
     output_valeur="ai_7_valeur",
+    position=7,
 )
