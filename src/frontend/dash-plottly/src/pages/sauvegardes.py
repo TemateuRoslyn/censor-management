@@ -28,7 +28,7 @@ layout = html.Div(
             ],
         ),
         create_aside(
-            "",
+            description="La sauvegarde de toutes les données",
             title="Sauvegardes.",
         ),
     ]

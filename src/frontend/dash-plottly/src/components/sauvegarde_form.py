@@ -3,16 +3,35 @@ from dash import (
     callback,
     Input,
     Output,
-    callback_context as ctx,
     clientside_callback,
     dcc,
 )
+import pandas as pd
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 from datetime import datetime, timedelta, date
 from time import sleep
+import json
 
-from libs.datas import data_frame
+from services.request import post_request
+from ressources.configuration import (
+    api_url_mongo_find_all,
+    mongo_url,
+    mongo_db,
+    mongo_collection_name,
+    mongo_password,
+    mongo_username,
+)
+
+
+def create_preview_header(df):
+    columns = df.columns.tolist()
+    return html.Thead(html.Tr([html.Th(col) for col in columns]))
+
+
+def create_preview_body(df):
+    values = df.values
+    return html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in values])
 
 
 def create_sauvegarde_form():
@@ -135,34 +154,61 @@ def run_download_callback(input: str, type: str):
     @callback(
         Output("download", "data", allow_duplicate=True),
         Output(input, "loading"),
+        Output("preview_save_data", "children", allow_duplicate=True),
         Input(input, "n_clicks"),
         prevent_initial_call=True,
     )
     def download(n):
-        sleep(5)
-        if type == "CSV":
-            return (
-                dcc.send_data_frame(
-                    data_frame.to_csv, filename=str(datetime.now()) + "data_save.csv"
-                ),
-                False,
-            )
-        elif type == "JSON":
-            return (
-                dcc.send_data_frame(
-                    data_frame.to_json, filename=str(datetime.now()) + "data_save.json"
-                ),
-                False,
-            )
-        elif type == "TXT":
-            return (
-                dcc.send_string(
-                    data_frame.to_string, filename=str(datetime.now()) + "data_save.txt"
-                ),
-                False,
-            )
+        liste_json = []
+        prarams = {
+            "url": mongo_url,
+            "db": mongo_db,
+            "username": mongo_username,
+            "password": mongo_password,
+            "collection_name": mongo_collection_name,
+            "query": {},
+        }
+        result = post_request(route=api_url_mongo_find_all, data=prarams)
+
+        if result is not None:
+            values = result["values"]
+            for value in values:
+                json_values = json.loads(value)
+                liste_json.append(json_values["values"])
+
+            df = pd.DataFrame(liste_json)
+
+            if type == "CSV":
+                return (
+                    dcc.send_data_frame(
+                        df.to_csv,
+                        filename=str(datetime.now()) + "data_save.csv",
+                    ),
+                    False,
+                    (create_preview_header(df.head()), create_preview_body(df.head())),
+                )
+            elif type == "JSON":
+                return (
+                    dcc.send_data_frame(
+                        df.to_json,
+                        filename=str(datetime.now()) + "data_save.json",
+                    ),
+                    False,
+                    (create_preview_header(df.head()), create_preview_body(df.head())),
+                )
+            elif type == "TXT":
+                return (
+                    dcc.send_string(
+                        df.to_string,
+                        filename=str(datetime.now()) + "data_save.txt",
+                    ),
+                    False,
+                    (create_preview_header(df.head()), create_preview_body(df.head())),
+                )
+        else:
+            return
 
 
-# run_download_callback(input="save_download_csv", type="CSV")
-# run_download_callback(input="save_download_json", type="JSON")
-# run_download_callback(input="save_download_txt", type="TXT")
+run_download_callback(input="save_download_csv", type="CSV")
+run_download_callback(input="save_download_json", type="JSON")
+run_download_callback(input="save_download_txt", type="TXT")

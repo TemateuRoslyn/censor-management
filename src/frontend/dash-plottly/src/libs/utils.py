@@ -70,14 +70,15 @@ def create_preview_body(df):
 
 
 def create_table(df):
-    header = create_preview_header(df)
-    body = create_preview_body(df)
+    # header = create_preview_header(df)
+    # body = create_preview_body(df)
     return dmc.Table(
         striped=True,
         highlightOnHover=True,
         withBorder=True,
         withColumnBorders=True,
-        children=[header, body],
+        id="preview_save_data",
+        # children=[header, body],
     )
 
 
