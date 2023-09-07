@@ -61,21 +61,21 @@ services:
   #   volumes:
   #     - ../../../dscdatasmart/deployment/docker/volumes/redis/data:/data
 
-  api_mongodb:
-    image: dscdatasmart/api_mongodb:latest
-    container_name: sensor-api-mongodb
-    restart: always
-    build:
-      context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
-      dockerfile: ./Dockerfile
-      args:
-        - DEBUG=false
-        - HOST=0.0.0.0
-        - PORT=5002
-    ports:
-      - 5002:5002
-    environment:
-      - CONFIG_PATH=./ressources/configs.ini
+  # api_mongodb:
+  #   image: dscdatasmart/api_mongodb:latest
+  #   container_name: sensor-api-mongodb
+  #   restart: always
+  #   build:
+  #     context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
+  #     dockerfile: ./Dockerfile
+  #     args:
+  #       - DEBUG=false
+  #       - HOST=0.0.0.0
+  #       - PORT=5002
+  #   ports:
+  #     - 5002:5002
+  #   environment:
+  #     - CONFIG_PATH=./ressources/configs.ini
 
   # api_influxdb:
   #   image: dscdatasmart/api_influxdb:latest

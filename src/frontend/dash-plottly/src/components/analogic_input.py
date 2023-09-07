@@ -37,6 +37,8 @@ def run_analogic_callback(
         prevent_initial_call=True,
     )
     def update_analogique_input(n):
+
+        print(3/0)
         data_ai = {
             "host": host,
             "period": period,

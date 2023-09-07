@@ -28,7 +28,7 @@ layout = html.Div(
             ],
         ),
         create_aside(
-            description="La sauvegarde de toutes les données",
+            description="La sauvegarde de toutes les données \n Selectionnez un intervalle et telechagez les données de cet intervalle",
             title="Sauvegardes.",
         ),
     ]

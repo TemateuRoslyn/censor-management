@@ -42,11 +42,6 @@ app = Dash(
 
 VALID_USERNAME_PASSWORD_PAIRS = {"demo": "demo"}
 
-# value = get_request(
-#     "https://b471-2a01-e0a-3b2-a7f0-9ec6-7757-e1c7-e484.ngrok-free.app/api/usb/find_all"
-# )
-# print(value)
-
 auth = dash_auth.BasicAuth(
     app,
     VALID_USERNAME_PASSWORD_PAIRS,

@@ -45,6 +45,7 @@ channels = ["ai0", "ai1", "ai2", "ai3", "ai4", "ai5", "ai6", "ai7"]
 config_mongo = dict(config_parser["Api_mongo"])
 
 api_url_mongo_find_all = f"{config_mongo.get('endpoint')}/api/find"
+api_url_mongo_find_session = f"{config_mongo.get('endpoint')}/api/find_session"
 
 
 config_mongo_param = dict(config_parser["Config_mongo"])
@@ -54,3 +55,4 @@ mongo_db = config_mongo_param.get("db")
 mongo_username = config_mongo_param.get("username")
 mongo_password = config_mongo_param.get("password")
 mongo_collection_name = config_mongo_param.get("collection_name")
+session_name = config_mongo_param.get("session_name")

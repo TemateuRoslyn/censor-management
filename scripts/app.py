@@ -1,23 +1,9 @@
-import json
-import pandas as pd
+import sentry_sdk
 
-# Liste pour stocker les objets JSON extraits
-liste_json = []
+sentry_sdk.init(
+    dsn="https://62a0bdb5b9b5cb73233e28527aacfae7@o4505835118592000.ingest.sentry.io/4505835128356864",
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 
-# Supposons que vous ayez une liste "values" contenant des chaînes JSON
-values = [
-    '{"values": {"nom": "John", "age": 30}}',
-    '{"values": {"nom": "Alice", "age": 25}}',
-    '{"values": {"nom": "Bob", "age": 35}}',
-]
-
-# Parcourez la liste "values" et extrayez les objets JSON
-for value in values:
-    json_values = json.loads(value)
-    liste_json.append(json_values["values"])
-
-# Transformez la liste de dictionnaires en un DataFrame avec Pandas
-df = pd.DataFrame(liste_json)
-
-# Affichez le DataFrame
-print(df)
+division_by_zero = 1 / 0
