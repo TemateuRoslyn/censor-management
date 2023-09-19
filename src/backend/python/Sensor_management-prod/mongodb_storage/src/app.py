@@ -7,6 +7,7 @@ from flask import Flask, jsonify, request
 from datetime import datetime as Date
 from redis import Redis
 from mongodb import MongoDBHandler
+from bson import json_util
 
 # Lire la valeur des variables d'environnement
 debug_val = os.getenv("debug")  # La variable "debug" sera soit True ou False (str)
@@ -40,8 +41,12 @@ BACKGROUND_THREAD_ALL = None
 def quering(data):
 
     query = {}
-    query['time_start'] = {'$gte':Date.fromisoformat(data['time_start'])}
-    # query['time_stop'] = {'$lte':Date.fromisoformat(data['time_start'])}
+
+    if data == "nan":
+        pass
+    else:
+        query['time_start'] = {'$gte':Date.fromisoformat(data['time_start'])}
+        query['time_stop'] = {'$lte':Date.fromisoformat(data['time_stop'])}
 
     return query
 
@@ -261,8 +266,15 @@ def find_session():
         if data.get('collection_name') is not None:
             
             results = mongo_handler.find(collection_name=data.get('collection_name'), query=quering(data.get('query')))
+
+            results_ = []
+
+            for result in results: 
+               result.pop("_id", None)
+               results_.append(result)
+
             # mongo_handler.close()
-            return jsonify({'results': [result for result in results]}), 200
+            return jsonify({'results': results_}), 200
         else:
             mongo_handler.close()
             return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
@@ -270,7 +282,7 @@ def find_session():
     except Exception as e:
 
         return jsonify({'Message': f"Une erreur sur la sauvegarde dans MongoDB :  {e}."}), 500
-        
+    
 @app.route('/api/usb/save_session', methods=['POST'])
 def save_session():
 
@@ -471,13 +483,48 @@ def find_data():
             
             results = mongo_handler.find(collection_name=data.get('collection_name'), query=quering(data.get('query')))
             # mongo_handler.close()
-            return jsonify({'results': [result for result in results]}), 200
+
+            results_ = []
+
+            for result in results: 
+               result.pop("_id", None)
+               results_.append(result)
+
+            return jsonify({'results': results_}), 200
         else:
             mongo_handler.close()
             return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
 
     except Exception as e:
         return jsonify({'error': f"Une erreur s\'est produite lors du traitement de la requête. {e}"}), 500
+    
+
+# Ma methode pour le find session 
+@app.route("/api/find_session", methods=['POST'])
+def find_sessions(): 
+    try: 
+        data = request.get_json()
+        mongo_handler = MongoDBHandler(host=data.get('url'), db_name=data.get('db'), usename=data.get('username'), password=data.get('password'))
+
+        if data.get('collection_name') is not None:
+            projection = {"timestamp": 1} 
+            results = mongo_handler.find(collection_name=data.get('collection_name'), query=quering(data.get('query')), projection=projection)
+
+            # mongo_handler.close()
+
+            results_ = []
+
+            for result in results: 
+                result.pop("_id", None)
+                results_.append(result)
+
+            return jsonify({'results': results_}), 200
+        else:
+            mongo_handler.close()
+            return jsonify({'error': 'La collection doit être spécifiée dans le corps de la requête JSON.'}), 400
+
+    except Exception as e:
+        return jsonify({'Message': f"Une erreur sur la sauvegarde dans MongoDB :  {e}."}), 500
     
 
 

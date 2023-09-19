@@ -15,11 +15,11 @@ class MongoDBHandler:
             print(f"Erreur lors de l'insertion dans la collection {collection_name}: {e}")
             return None
 
-    def find(self, collection_name, query=None):
+    def find(self, collection_name, query=None, projection=None):
         try:
             collection = self.db[collection_name]
             if query:
-                return collection.find(query)
+                return collection.find(query, projection)
             else:
                 return collection.find()
         except Exception as e:

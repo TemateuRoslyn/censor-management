@@ -39,14 +39,17 @@ def create_preview_body(df):
 def create_sauvegarde_form():
     # Je dois recuperer la liste des sessions ici
     sessions_list = []
+    capteurs_list = []
     tableau_json = []
+
+    print(sessions_list)
 
     params = {
         "url": mongo_url,
         "db": mongo_db,
         "username": mongo_username,
         "password": mongo_password,
-        "collection_name": session_name,
+        "collection_name": mongo_collection_name,
         "query": "nan",
     }
 
@@ -54,19 +57,26 @@ def create_sauvegarde_form():
 
     if(sessions is not None): 
         results = sessions['results']
-
-        for el in results:
-            objet_json = json.loads(el)
-            tableau_json.append(objet_json)
-
-        for table in tableau_json: 
-            start= datetime.fromisoformat(table["start_session"])
-            end= datetime.fromisoformat(table["end_session"])
+        
+        for el in results: 
             new_val = {
-                "value": table["start_session"] + "," + table["end_session"] , 
-                "label": table["description"] + " du " + start.strftime("%d/%m/%Y %H:%M:%S") + " au " + end.strftime("%d/%m/%Y %H:%M:%S")
+                "value": el["timestamp"], 
+                "label": "Description" + el["timestamp"]
             }
             sessions_list.append(new_val)
+
+        # for el in results:
+        #     objet_json = json.loads(el)
+        #     tableau_json.append(objet_json)
+
+        # for table in tableau_json: 
+        #     start= datetime.fromisoformat(table["start_session"])
+        #     end= datetime.fromisoformat(table["end_session"])
+        #     new_val = {
+        #         "value": table["start_session"] + "," + table["end_session"] , 
+        #         "label": table["description"] + " du " + start.strftime("%d/%m/%Y %H:%M:%S") + " au " + end.strftime("%d/%m/%Y %H:%M:%S")
+        #     }
+        # sessions_list.append(new_val)
 
     return html.Div(
         children=[
@@ -84,11 +94,16 @@ def create_sauvegarde_form():
                         label="Choisir les capteurs",
                         placeholder="Selectionnez un capteur",
                         id="save_capteurs",
-                        value=["Capteur 0", "Capteur 1"],
+                        value=["AI 1"],
                         data=[
-                            {"value": "c0", "label": "Capteur 0"},
-                            {"value": "c1", "label": "Capteur 1"},
-                            {"value": "c2", "label": "Capteur 2"},
+                            {"value": "ai0", "label": "AI 0"},
+                            {"value": "ai1", "label": "AI 1"},
+                            {"value": "ai2", "label": "AI 2"},
+                            {"value": "ai3", "label": "AI 3"},
+                            {"value": "ai4", "label": "AI 4"},
+                            {"value": "ai5", "label": "AI 5"},
+                            {"value": "ai6", "label": "AI 6"},
+                            {"value": "ai7", "label": "AI 7"},
                         ],
                         style={"width": "100%", "marginBottom": 10},
                     ),
@@ -197,15 +212,16 @@ def run_download_callback(input: str, type: str):
         Output(input, "loading"),
         Output("preview_save_data", "children", allow_duplicate=True),
         Input(input, "n_clicks"),
-        Input("session", 'value'),
+        Input("save_capteurs", "value"),
+        # Input("session", 'value'),
         prevent_initial_call=True,
     )
-    def download(n, session_date_interval):
+    def download(n):
         
-        date_parts = session_date_interval.split(',')
+        # date_parts = session_date_interval.split(',')
         
-        start_session = date_parts[0]
-        end_session = date_parts[1]
+        # start_session = date_parts[0]
+        # end_session = date_parts[1]
 
         liste_json = {}
         params = {
@@ -215,30 +231,31 @@ def run_download_callback(input: str, type: str):
             "password": mongo_password,
             "collection_name": mongo_collection_name,
             "query": "nan",
-            "projection": {
-                "_id": 0, 
-                "time_start":0, 
-                "time_stop":0, 
-                "rate":1, 
-                "values":1
-            }
         }
 
-        if start_session is not None:
-            params["start_session"] = start_session
 
-        if end_session is not None:
-            params["end_session"] = end_session
+        # if start_session is not None:
+        #     params["start_session"] = start_session
+
+        # if end_session is not None:
+        #     params["end_session"] = end_session
         
         result = post_request(route=api_url_mongo_find_all, data=params)
+        print(result)
 
         if result is not None:
-            values = result["values"]
-            for value in values:
-                json_values = json.loads(value)
-                liste_json.update(json_values["values"])
+            # Pour la V1
+            # values = result["values"]
+            # for value in values:
+            #     json_values = json.loads(value)
+            #     liste_json.update(json_values["values"])
 
-            df = pd.DataFrame(liste_json)
+            values = result["results"]
+            # for value in values: 
+            #     json_value = json.loads(value)
+            #     liste_json.update(json_value)
+
+            df = pd.DataFrame(values)
 
             if type == "CSV":
                 return (

@@ -2,29 +2,29 @@
 version: "3.8"
 
 services:
-  # mongo:
-  #   image: mongo
-  #   container_name: sensor-mongo
-  #   restart: always
-  #   ports:
-  #     - 27017:27017
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: admin
-  #   volumes:
-  #     - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db
-  #     - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
+  mongo:
+    image: mongo
+    container_name: sensor-mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    volumes:
+      - ../../../dscdatasmart/deployment/docker/volumes/mongoDB/data:/data/db
+      - ../../../dscdatasmart/deployment/docker/logs/mongoDB/logs:/var/log/mongodb
 
-  # mongo-express:
-  #   image: mongo-express
-  #   container_name: sensor-ui-mongodb
-  #   restart: always
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: admin
-  #     ME_CONFIG_MONGODB_URL: mongodb://root:admin@mongo:27017/
+  mongo-express:
+    image: mongo-express
+    container_name: sensor-ui-mongodb
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://root:admin@mongo:27017/
 
   # influxdb:
   #   image: influxdb:latest
@@ -159,6 +159,22 @@ services:
         - PORT=8000
     ports:
       - 8000:8000
+
+  api_mongodb:
+    image: dscdatasmart/api_mongodb:latest
+    container_name: sensor-api-mongodb
+    restart: always
+    build:
+      context: ../../src/backend/python/Sensor_management-prod/mongodb_storage
+      dockerfile: ./Dockerfile
+      args:
+        - DEBUG=false
+        - HOST=0.0.0.0
+        - PORT=5002
+    ports:
+      - 5002:5002
+    environment:
+      - CONFIG_PATH=./ressources/configs.ini
 # networks:
 #   dscdatasmart:
 #     driver: bridge
