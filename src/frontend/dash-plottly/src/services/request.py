@@ -21,6 +21,7 @@ def get_request(route: str):
 
 
 def post_request(route: str, data: any):
+    """Fonction API qui doit effectuer les requêtes en POST"""
     try:
         response = requests.post(route, json=data)
         if response.status_code == 200:

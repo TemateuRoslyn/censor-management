@@ -1,6 +1,8 @@
 import os
 from configparser import ConfigParser
 
+############## Initialisation du Config Parser #############
+
 config_parser = ConfigParser()
 
 config_parser.read(os.getenv("CONFIG_PATH", "./configs.ini"))

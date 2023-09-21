@@ -15,7 +15,7 @@ from services.request import get_request, post_request
 from ressources.configuration import api_url_usb_find_all, api_url_usb_usage
 
 
-"""Je crée ici un petit DataFrame que je vais afficher dans le tableau"""
+"""Je crée ici un petit DataFrame que je vais afficher dans le tableau, juste pour le test."""
 datas = {
     "ID": [0, 1, 2, 3, 4],
     "Capteur": ["Capteur 0", "Capteur 1", "Capteur 2", "Capteur 3", "Capteur 4"],
@@ -36,6 +36,7 @@ list_entree_analogiques = [
     "Entrée analogique 06",
     "Entrée analogique 07",
 ]
+
 type_capteurs = [
     "Accéléromètre",
     "Microphone",
@@ -49,40 +50,45 @@ list_unite = [
 
 
 def title(title):
+    """Composant qui doit afficher un titre de niveau avec une taille de 30px"""
+    
     return dmc.Text(title, align="center", style={"fontSize": 30})
 
 
 def subTitle(subtile):
+    """Composant qui doit afficher un titre de niveau 2, avec une taille de 20px"""
+    
     return dmc.Text(subtile, style={"fontSize": 20}, my=10)
 
-
-"""Le header du tableau de previsualisation."""
-
-
 def create_preview_header(df):
+    """Le header du tableau de previsualisation."""
+    
     columns = df.columns.tolist()
     return html.Thead(html.Tr([html.Th(col) for col in columns]))
 
 
 def create_preview_body(df):
+    """Le body pour le preview des données lors du téléchargement"""
+
     values = df.values
     return html.Tbody([html.Tr([html.Td(cell) for cell in row]) for row in values])
 
 
-def create_table(df):
-    # header = create_preview_header(df)
-    # body = create_preview_body(df)
+def create_table(df=None):
+    """Le composant qui doit afficher la table avec des stripe """
+
     return dmc.Table(
         striped=True,
         highlightOnHover=True,
         withBorder=True,
         withColumnBorders=True,
         id="preview_save_data",
-        # children=[header, body],
     )
 
 
 def render_analogic_inputs():
+    """ Le composant qui doit nous rendre les entrées analogique sur la page d'acceuil"""
+
     return dmc.SimpleGrid(
         cols=4,
         spacing="lg",
@@ -107,6 +113,8 @@ def render_analogic_inputs():
 
 
 def render_camemberg_graph():
+    """Le composant qui doit afficher les Camembergs (2)"""
+
     return dmc.SimpleGrid(
         cols=2,
         spacing="lg",
@@ -124,6 +132,8 @@ def render_camemberg_graph():
 
 
 def render_capteurs_graph():
+    """Le composant qui doit afficher les different capteurs (GPS et autres)"""
+
     return dmc.SimpleGrid(
         cols=2,
         spacing="lg",
@@ -143,6 +153,8 @@ def render_capteurs_graph():
 
 
 def render_accelerometre_graph():
+    """Le composant qui doit afficher les deux accéléromètres, (Accéléromètre 1, Accéléromètre 2)"""
+
     return dmc.SimpleGrid(
         cols=1,
         spacing="lg",
@@ -155,13 +167,15 @@ def render_accelerometre_graph():
         children=[
             html.Div(create_accelerometre(id="acc_1", label="Accéléromètre 1")),
             html.Div(create_accelerometre(id="acc_2", label="Accéléromètre 2")),
-            create_modal(title="Parametrer l'accélérometre 1", id="acc_1_modal"),
-            create_modal(title="Parametrer l'accélérometre 2", id="acc_2_modal"),
+            create_modal(title="Paramétrer l'accéléromètre 1", id="acc_1_modal"),
+            create_modal(title="Paramétrer l'accéléromètre 2", id="acc_2_modal"),
         ],
     )
 
 
 def render_sauvegarde_form():
+    """Le composant qui doit rendre le formulaire de sauvegarde, avec l'option de sauvegarde"""
+
     return dmc.Container(
         children=[
             create_sauvegarde_form(),
@@ -172,6 +186,8 @@ def render_sauvegarde_form():
 
 
 def render_sensor_settings_form():
+    """Le composant qui doit rendre le paramétrage des Sensors """
+
     return dmc.Container(
         children=[
             dmc.SimpleGrid(
@@ -278,6 +294,8 @@ def render_sensor_settings_form():
 
 
 def render_ai_settings_form():
+    """ Analogic Input settings form"""
+
     return dmc.Container(
         children=[
             dmc.SimpleGrid(

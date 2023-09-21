@@ -6,7 +6,11 @@ import dash_mantine_components as dmc
 from libs.utils import title, render_sensor_settings_form, render_ai_settings_form
 
 
+####### Ce fichier sera comme le point de montage de l'application, avec les composants de base. Le reste se trouve dans le fichier utils.py ####
+
+
 def render_settings_tabs():
+    """Le composant pour afficher les tabs dans la page setting. Ne prend aucun paramètre"""
     return dmc.Tabs(
         [
             dmc.TabsList(
@@ -58,6 +62,7 @@ def create_breadcrumbs(
 
 
 def create_home_link(label):
+    """create_home_link est le composant utilisé dans le sidebar pour créer la navigation"""
     return dmc.Anchor(
         label,
         size="xl",
@@ -304,6 +309,7 @@ def create_side_navbar(nav_data):
 
 
 def create_navbar_drawer(nav_data):
+    """DRAWER FOR APP"""
     return dmc.Drawer(
         id="components-navbar-drawer",
         overlayOpacity=0.55,
@@ -323,6 +329,7 @@ def create_navbar_drawer(nav_data):
 
 
 def create_aside(description: str, title="Une description de la section"):
+    """ASIDE FOR APP, A utiliser pour afficher une description. Lorsque l'ecran est large, il est affiché"""
     return dmc.Aside(
         position={"top": 140, "right": 0},
         fixed=True,
@@ -347,7 +354,9 @@ def create_aside(description: str, title="Une description de la section"):
     )
 
 
+###### Le point de montage de l'application ####
 def mount_app(nav_data):
+    """ Ici c'est le point de montage de l'application."""
     return dmc.MantineProvider(
         dmc.MantineProvider(
             theme={
@@ -389,6 +398,7 @@ def mount_app(nav_data):
     )
 
 
+######## Callbaks pour gerer le mode sombre-clair ########
 clientside_callback(
     """ function(data) { return data } """,
     Output("theme-provider", "theme"),
@@ -412,6 +422,7 @@ clientside_callback(
     State("theme-store", "data"),
 )
 
+##### Calback pour gerer le scroll 👌 ############
 clientside_callback(
     """
     function(children) { 
